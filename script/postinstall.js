@@ -13,7 +13,7 @@ function log(it) {
 }
 
 if (!ADBLOCK && !CI && !SILENT) {
-  log('\u001B[96m🙌  Thank you for using 🍊 image3D (\u001B[94m https://github.com/yelloxing/image3D \u001B[96m) for Drawing Two-Dimensional Pictures!\u001B[0m\n');
+  log('\u001B[96m🙌  Thank you for using 🍊 image3D (\u001B[94m https://github.com/yelloxing/image3D \u001B[96m) for Drawing three-dimensional images using webGL!\u001B[0m\n');
   log('\u001B[96mThe project needs your help! Please consider supporting of image3D on github,the document is located in: \u001B[0m');
   log('\u001B[96m>\u001B[94m 📦  https://yelloxing.github.io/image3D \u001B[0m');
   log('\u001B[96m>\u001B[94m 📦  https://github.com/yelloxing/image3D/tree/master/docs \u001B[0m');

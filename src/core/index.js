@@ -1,6 +1,7 @@
 import { useShader } from './shader';
 import { newBuffer, writeBuffer, useBuffer, deleteBuffer } from './buffer';
 import { initTexture, configTexture, linkImage, deleteTexture } from './texture';
+import isObject from '@yelloxing/core.js/isObject';
 
 // 获取webgl上下文
 let getCanvasWebgl = function (node, opts) {
