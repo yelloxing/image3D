@@ -1,0 +1,47 @@
+{
+  "name": "image3d",
+  "version": "0.0.1-alpha",
+  "description": "🍊 使用webGL绘制三维图片。Drawing three-dimensional images using webGL.",
+  "main": "build/image3D.min.js",
+  "scripts": {
+    "start": "npm install && node ./task/explain.js",
+    "build": "node ./task/module.js && node ./task/babel.js && node ./task/uglify.js",
+    "postinstall": "node ./script/postinstall.js || echo \"ignore\""
+  },
+  "keywords": [
+    "image",
+    "algorithm",
+    "webgl"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yelloxing/image3D.git"
+  },
+  "author": "心叶",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/yelloxing/image3D/issues"
+  },
+  "homepage": "https://yelloxing.github.io/image3D",
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "babel-preset-es2015": "^6.24.1",
+    "babelify": "^8.0.0",
+    "image2d": "^1.3.1",
+    "jasmine-core": "^2.9.0",
+    "karma": "^4.2.0",
+    "karma-browserify": "^5.1.3",
+    "karma-chrome-launcher": "^2.2.0",
+    "karma-firefox-launcher": "^1.1.0",
+    "karma-jasmine": "^1.1.1",
+    "karma-jasmine-html-reporter": "^0.2.2",
+    "karma-opera-launcher": "^1.0.0",
+    "karma-safari-launcher": "^1.0.0",
+    "rollup": "^1.17.0",
+    "rollup-plugin-commonjs": "^10.1.0",
+    "rollup-plugin-node-resolve": "^5.2.0",
+    "uglify-js": "^3.5.6",
+    "watchify": "^3.9.0"
+  }
+}

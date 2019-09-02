@@ -1,0 +1,18 @@
+
+    /*!
+    * image3D - 🍊 使用webGL绘制三维图片。Drawing three-dimensional images using webGL.
+    * git+https://github.com/yelloxing/image3D.git
+    *
+    * author 心叶
+    *
+    * version 0.0.1-alpha
+    *
+    * build Thu Apr 11 2019
+    *
+    * Copyright yelloxing
+    * Released under the MIT license
+    *
+    * Date:Mon Sep 02 2019 11:57:29 GMT+0800 (GMT+08:00)
+    */
+
+"use strict";var _typeof=typeof Symbol==="function"&&typeof Symbol.iterator==="symbol"?function(r){return typeof r}:function(r){return r&&typeof Symbol==="function"&&r.constructor===Symbol&&r!==Symbol.prototype?"symbol":typeof r};(function(){"use strict";var u=function r(e,t,n){var o=e.createShader(t);if(o==null)throw new Error("Unable to create shader!");e.shaderSource(o,n);e.compileShader(o);if(!e.getShaderParameter(o,e.COMPILE_STATUS))throw new Error("Failed to compile shader:"+e.getShaderInfoLog(o));return o};var n=function r(e,t,n){var o=u(e,e.VERTEX_SHADER,t),i=u(e,e.FRAGMENT_SHADER,n);var a=e.createProgram();e.attachShader(a,o);e.attachShader(a,i);e.linkProgram(a);if(!e.getProgramParameter(a,e.LINK_STATUS))throw new Error("Failed to link program: "+e.getProgramInfoLog(a));e.useProgram(a);return a};var t=function r(e,t){var n=e.createBuffer(),o=t?e.ELEMENT_ARRAY_BUFFER:e.ARRAY_BUFFER;e.bindBuffer(o,n);return n};var i=function r(e,t,n,o){var i=o?e.ELEMENT_ARRAY_BUFFER:e.ARRAY_BUFFER;e.bufferData(i,t,n)};var d=function r(e,t,n,o,i,a,u){e.vertexAttribPointer(t,n,o,u||false,i||0,a||0);e.enableVertexAttribArray(t)};var a=function r(e,t){e.deleteBuffer(t)};var f=function r(e,t,n){var o=e.createTexture();e.activeTexture(e["TEXTURE"+t]);e.bindTexture(n,o);return o};var c=function r(e,t,n){var o=void 0;for(o in n){e.texParameteri(t,e[o],e[n[o]])}};var p=function r(e,t,n,o,i,a){e.texImage2D(t,n,o,o,i,a)};var v=function r(e,t){e.deleteTexture(t)};var e=function r(e,t){var n=["webgl","experimental-webgl","webkit-3d","moz-webgl"],o=null,i=void 0;for(i=0;i<n.length;i++){try{o=e.getContext(n[i],t)}catch(r){}if(o)break}return o};var o=function r(e){return new r.prototype.init(e)};o.prototype.init=function(r){this[0]=r;return this};o.prototype.extend=o.extend=function(){var r=arguments[0]||{};var e=arguments[1]||{};var t=arguments.length;if(t===1){e=r;r=this}if(!isObject(r)){r={}}for(var n in e){try{r[n]=e[n]}catch(r){throw new Error("Illegal property value！")}}return r};o.prototype.init.prototype=o.prototype;o.prototype.render3D=function(r){var l=e(this[0],r),o={painter:function r(){return l},shader:function r(e,t){l.program=n(l,e,t);return o},buffer:function e(n){var e=t(l,n),f=void 0,c={write:function r(e,t){t=t||l.STATIC_DRAW;i(l,e,t,n);f=e;return c},use:function r(e,t,n,o,i,a){var u=f.BYTES_PER_ELEMENT;if(typeof e=="string")e=l.getAttribLocation(l.program,e);n=n||0;o=o||0;i=i||l.FLOAT;d(l,e,t,i,n*u,o*u,a);return c},close:function r(){a(l,e);return o}};return c},texture:function e(r,i){i=i||l.TEXTURE_2D;var e=f(l,r,i);var a={config:function r(e){c(l,i,e);return a},use:function r(e,t,n,o){p(l,i,e,t,n,o);return a},close:function r(){v(l,e);return o}};return a}};return o};o.fn=o.prototype;if((typeof module==="undefined"?"undefined":_typeof(module))==="object"&&_typeof(module.exports)==="object"){module.exports=o}else{var l=window.image3D,m=window.$$;o.noConflict=function(r){if(window.$$===o){window.$$=m}if(r&&window.image3D===o){window.image3D=l}return o};window.image3D=window.$$=o}})();
