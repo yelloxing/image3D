@@ -5,14 +5,14 @@
     *
     * author 心叶
     *
-    * version 0.0.2-alpha
+    * version 0.1.0-alpha
     *
     * build Thu Apr 11 2019
     *
     * Copyright yelloxing
     * Released under the MIT license
     *
-    * Date:Mon Sep 02 2019 14:18:53 GMT+0800 (GMT+08:00)
+    * Date:Fri Sep 06 2019 23:27:31 GMT+0800 (中国标准时间)
     */
 
 'use strict';
@@ -187,7 +187,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
      */
     function isObject(value) {
         var type = typeof value === 'undefined' ? 'undefined' : _typeof(value);
-        return value != null && (type == 'object' || type == 'function');
+        return value != null && (type === 'object' || type === 'function');
     }
 
     // 获取webgl上下文
@@ -331,31 +331,46 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
         return glObj;
     };
 
-    // 在(a,b,c)方向位移d
+    /**
+     * 在(a,b,c)方向位移d
+     * @private
+     */
     function _move(d, a, b, c) {
         c = c || 0;
         var sqrt = Math.sqrt(a * a + b * b + c * c);
         return [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, a * d / sqrt, b * d / sqrt, c * d / sqrt, 1];
     }
 
-    // 围绕0Z轴旋转
-    // 其它的旋转可以借助transform实现
-    // 旋转角度单位采用弧度制
+    /**
+     * 围绕0Z轴旋转
+     * 其它的旋转可以借助transform实现
+     * 旋转角度单位采用弧度制
+     * 
+     * @private
+     */
     function _rotate(deg) {
         var sin = Math.sin(deg),
             cos = Math.cos(deg);
         return [cos, sin, 0, 0, -sin, cos, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
     }
 
-    // 围绕圆心x、y和z分别缩放xTimes, yTimes和zTimes倍
+    /**
+     * 围绕圆心x、y和z分别缩放xTimes, yTimes和zTimes倍
+     * 
+     * @private
+     */
     function _scale(xTimes, yTimes, zTimes, cx, cy, cz) {
         cx = cx || 0;cy = cy || 0;cz = cz || 0;
         return [xTimes, 0, 0, 0, 0, yTimes, 0, 0, 0, 0, zTimes, 0, cx - cx * xTimes, cy - cy * yTimes, cz - cz * zTimes, 1];
     }
 
-    // 针对任意射线(a1,b1,c1)->(a2,b2,c2)
-    // 计算出二个变换矩阵
-    // 分别为：任意射线变成OZ轴变换矩阵 + OZ轴变回原来的射线的变换矩阵
+    /**
+     * 针对任意射线(a1,b1,c1)->(a2,b2,c2)
+     * 计算出二个变换矩阵
+     * 分别为：任意射线变成OZ轴变换矩阵 + OZ轴变回原来的射线的变换矩阵
+     * 
+     * @private
+     */
     function _transform(a1, b1, c1, a2, b2, c2) {
 
         if (typeof a1 === 'number' && typeof b1 === 'number') {
@@ -408,6 +423,8 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
     /**
      * 4x4矩阵
      * 列主序存储
+     * @since V0.2.0
+     * @public
      */
     function Matrix4(initMatrix4) {
 
@@ -475,6 +492,8 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
     /**
      * 动画轮播
+     * @since V0.2.0
+     * @public
      * @param {function} doback 轮询函数，有一个形参deep，0-1，表示执行进度
      * @param {number} duration 动画时长，可选
      * @param {function} callback 动画结束回调，可选，有一个形参deep，0-1，表示执行进度
