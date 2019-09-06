@@ -1,6 +1,6 @@
 import image3D from './core/index';
-import Matrix4 from './Matrix4/index';
-import animation from './animation';
+import Matrix4 from '@yelloxing/core.js/tools/Matrix4';
+import animation from '@yelloxing/core.js/tools/animation';
 
 /**
  * 挂载静态方法

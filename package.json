@@ -1,6 +1,6 @@
 {
   "name": "image3d",
-  "version": "0.0.2-alpha",
+  "version": "0.1.0-alpha",
   "description": "🍊 使用webGL绘制三维图片。Drawing three-dimensional images using webGL.",
   "main": "build/image3D.min.js",
   "scripts": {
@@ -34,6 +34,6 @@
     "uglify-js": "^3.5.6"
   },
   "dependencies": {
-    "@yelloxing/core.js": "^0.1.2"
+    "@yelloxing/core.js": "^0.2.0"
   }
 }
