@@ -12,7 +12,7 @@
     * Copyright yelloxing
     * Released under the MIT license
     *
-    * Date:Mon Sep 09 2019 11:59:35 GMT+0800 (GMT+08:00)
+    * Date:Mon Sep 09 2019 18:13:11 GMT+0800 (GMT+08:00)
     */
 
 'use strict';
@@ -312,12 +312,182 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
     };
 
     /**
+     * 在(a,b,c)方向位移d
+     * @private
+     */
+    function _move(d, a, b, c) {
+        c = c || 0;
+        var sqrt = Math.sqrt(a * a + b * b + c * c);
+        return [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, a * d / sqrt, b * d / sqrt, c * d / sqrt, 1];
+    }
+
+    /**
+     * 围绕0Z轴旋转
+     * 其它的旋转可以借助transform实现
+     * 旋转角度单位采用弧度制
+     * 
+     * @private
+     */
+    function _rotate(deg) {
+        var sin = Math.sin(deg),
+            cos = Math.cos(deg);
+        return [cos, sin, 0, 0, -sin, cos, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
+    }
+
+    /**
+     * 围绕圆心x、y和z分别缩放xTimes, yTimes和zTimes倍
+     * 
+     * @private
+     */
+    function _scale(xTimes, yTimes, zTimes, cx, cy, cz) {
+        cx = cx || 0;cy = cy || 0;cz = cz || 0;
+        return [xTimes, 0, 0, 0, 0, yTimes, 0, 0, 0, 0, zTimes, 0, cx - cx * xTimes, cy - cy * yTimes, cz - cz * zTimes, 1];
+    }
+
+    /**
+     * 针对任意射线(a1,b1,c1)->(a2,b2,c2)
+     * 计算出二个变换矩阵
+     * 分别为：任意射线变成OZ轴变换矩阵 + OZ轴变回原来的射线的变换矩阵
+     * 
+     * @private
+     */
+    function _transform(a1, b1, c1, a2, b2, c2) {
+
+        if (typeof a1 === 'number' && typeof b1 === 'number') {
+
+            // 如果设置二个点
+            // 表示二维上围绕某个点旋转
+            if (typeof c1 !== 'number') {
+                c1 = 0;a2 = a1;b2 = b1;c2 = 1;
+            }
+            // 只设置三个点(设置不足六个点都认为只设置了三个点)
+            // 表示围绕从原点出发的射线旋转
+            else if (typeof a2 !== 'number' || typeof b2 !== 'number' || typeof c2 !== 'number') {
+                    a2 = a1;b2 = b1;c2 = c1;a1 = 0;b1 = 0;c1 = 0;
+                }
+
+            if (a1 == a2 && b1 == b2 && c1 == c2) throw new Error('It\'s not a legitimate ray!');
+
+            var sqrt1 = Math.sqrt((a2 - a1) * (a2 - a1) + (b2 - b1) * (b2 - b1)),
+                cos1 = sqrt1 != 0 ? (b2 - b1) / sqrt1 : 1,
+                sin1 = sqrt1 != 0 ? (a2 - a1) / sqrt1 : 0,
+                b = (a2 - a1) * sin1 + (b2 - b1) * cos1,
+                c = c2 - c1,
+                sqrt2 = Math.sqrt(b * b + c * c),
+                cos2 = sqrt2 != 0 ? c / sqrt2 : 1,
+                sin2 = sqrt2 != 0 ? b / sqrt2 : 0;
+
+            return [
+
+            // 任意射线变成OZ轴变换矩阵
+            [cos1, cos2 * sin1, sin1 * sin2, 0, -sin1, cos1 * cos2, cos1 * sin2, 0, 0, -sin2, cos2, 0, b1 * sin1 - a1 * cos1, c1 * sin2 - a1 * sin1 * cos2 - b1 * cos1 * cos2, -a1 * sin1 * sin2 - b1 * cos1 * sin2 - c1 * cos2, 1],
+
+            // OZ轴变回原来的射线的变换矩阵
+            [cos1, -sin1, 0, 0, cos2 * sin1, cos2 * cos1, -sin2, 0, sin1 * sin2, cos1 * sin2, cos2, 0, a1, b1, c1, 1]];
+        } else {
+            throw new Error('a1 and b1 is required!');
+        }
+    }
+
+    // 二个4x4矩阵相乘
+    // 或矩阵和齐次坐标相乘
+    var _multiply = function _multiply(matrix4, param) {
+        var newParam = [];
+        for (var i = 0; i < 4; i++) {
+            for (var j = 0; j < param.length / 4; j++) {
+                newParam[j * 4 + i] = matrix4[i] * param[j * 4] + matrix4[i + 4] * param[j * 4 + 1] + matrix4[i + 8] * param[j * 4 + 2] + matrix4[i + 12] * param[j * 4 + 3];
+            }
+        }return newParam;
+    };
+
+    /**
+     * 4x4矩阵
+     * 列主序存储
+     * @since V0.2.0
+     * @public
+     */
+    function Matrix4(initMatrix4) {
+
+        var matrix4 = initMatrix4 || [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
+
+        var matrix4Obj = {
+
+            // 移动
+            "move": function move(dis, a, b, c) {
+                matrix4 = _multiply(_move(dis, a, b, c), matrix4);
+                return matrix4Obj;
+            },
+
+            // 旋转
+            "rotate": function rotate(deg, a1, b1, c1, a2, b2, c2) {
+                var matrix4s = _transform(a1, b1, c1, a2, b2, c2);
+                matrix4 = _multiply(_multiply(_multiply(matrix4s[1], _rotate(deg)), matrix4s[0]), matrix4);
+                return matrix4Obj;
+            },
+
+            // 缩放
+            "scale": function scale(xTimes, yTimes, zTimes, cx, cy, cz) {
+                matrix4 = _multiply(_scale(xTimes, yTimes, zTimes, cx, cy, cz), matrix4);
+                return matrix4Obj;
+            },
+
+            // 乘法
+            // 可以传入一个矩阵(matrix4,flag)
+            "multiply": function multiply(newMatrix4, flag) {
+                matrix4 = flag ? _multiply(matrix4, newMatrix4) : _multiply(newMatrix4, matrix4);
+                return matrix4Obj;
+            },
+
+            // 对一个坐标应用变换
+            // 齐次坐标(x,y,z,w)
+            "use": function use(x, y, z, w) {
+                // w为0表示点位于无穷远处，忽略
+                z = z || 0;w = w || 1;
+                var temp = _multiply(matrix4, [x, y, z, w]);
+                temp[0] = +temp[0].toFixed(7);
+                temp[1] = +temp[1].toFixed(7);
+                temp[2] = +temp[2].toFixed(7);
+                temp[3] = +temp[3].toFixed(7);
+                return temp;
+            },
+
+            // 矩阵的值
+            "value": function value() {
+                return matrix4;
+            }
+
+        };
+
+        return matrix4Obj;
+    }
+
+    function transform(initMatrix4) {
+
+        var matrix4 = Matrix4(initMatrix4);
+
+        return {
+            "value": matrix4.value,
+
+            /**
+             * 基本变换
+             * --------------
+             * 旋转、缩放和移动
+             */
+            "rotate": matrix4.rotate,
+            "scale": matrix4.scale,
+            "move": matrix4.move
+        };
+    }
+
+    /**
      * 挂载静态方法
      * -------------------
      * 这里挂载的方法可以通过image3D.XXX()形式直接调用
      * 主要是一个辅助方法
      */
-    image3D.extend({});
+    image3D.extend({
+        transform: transform
+    });
 
     /**
      * 挂载对象方法

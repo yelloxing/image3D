@@ -1,4 +1,5 @@
 import image3D from './core/index';
+import transform from './transform/index';
 
 /**
  * 挂载静态方法
@@ -7,7 +8,7 @@ import image3D from './core/index';
  * 主要是一个辅助方法
  */
 image3D.extend({
-
+    transform
 });
 
 /**
