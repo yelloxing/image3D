@@ -28,7 +28,6 @@
     "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-preset-es2015": "^6.24.1",
     "babelify": "^8.0.0",
-    "image2d": "^1.4.0",
     "rollup": "^1.17.0",
     "rollup-plugin-commonjs": "^10.1.0",
     "rollup-plugin-node-resolve": "^5.2.0",
