@@ -36,9 +36,59 @@
     </header>
     <div class="content">
 
+        <h4>
+            基本运算
+        </h4>
         <p>
-            开发或整理文档中，敬请期待！
+            坐标变换包括缩放、旋转和移动等基本变换，还有透视等特殊场景的变换，因为归根到底都是坐标的改变，这里统一选择Matrix4矩阵来表示。
         </p>
+        <p>
+            Matrix4是一个列主序存储的4x4矩阵，使用该矩阵对象的第一步是像下面这样获取该对象，参数initMatrix4可选，你可以传递一个初始化矩阵或默认采用单位矩阵E初始化。
+        </p>
+        <pre class='prettyprint lang-js'>var transform=$$.transform(initMatrix4);</pre>
+        <p>
+            transform上定义了各种变换，如果想获取矩阵的值传递给着色器使用，可以这样：
+        </p>
+        <pre class='prettyprint lang-js'>var val=transform.value();</pre>
+        <p>
+            比如采用默认值初始化的矩阵对象，打印结果如下：
+        </p>
+        <pre class='prettyprint lang-js'>(16) [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]</pre>
+
+        <h4>
+            基本变换
+        </h4>
+        <p>
+            主要是三大基本变换：缩放、移动和旋转。
+        </p>
+        <h6>
+            移动
+        </h6>
+        <p>
+            沿着向量(a, b, c)方向移动距离dis（其中c可以不传，默认0）：
+        </p>
+        <pre class='prettyprint lang-js'>transform.move(dis, a, b, c);</pre>
+        <h6>
+            缩放
+        </h6>
+        <p>
+            以点(cx, cy, cz)为中心，分别在x、y和z方向上缩放xTimes、yTimes和zTimes倍（其中cx、cy和cz都可以不传递，默认0）：
+        </p>
+        <pre class='prettyprint lang-js'>transform.scale(xTimes, yTimes, zTimes, cx, cy, cz);</pre>
+        <h6>
+            旋转
+        </h6>
+        <p>
+            围绕射线(a1, b1, c1) -> (a2, b2, c2)旋转deg度（方向由右手法则确定）：
+        </p>
+        <pre class='prettyprint lang-js'>transform.rotate(deg, a1, b1, c1, a2, b2, c2);</pre>
+        <p>
+            a1、b1、c1、a2、b2和c2这6个值在设置的时候，不是一定需要全部设置，还有以下可选：
+        </p>
+        <ul>
+            <li>1.只设置了a1和b1，表示在xoy平面围绕（a1, b1）旋转。</li>
+            <li>2.只设置三个点(设置不足六个点都认为只设置了三个点)，表示围绕从原点出发的射线旋转。</li>
+        </ul>
 
     </div>
     <footer>
