@@ -50,8 +50,3 @@ export let configTexture = function (gl, type, config) {
 export let linkImage = function (gl, type, level, format, textureType, image) {
     gl.texImage2D(type, level, format, format, textureType, image);
 };
-
-// 删除纹理
-export let deleteTexture = function (gl, texture) {
-    gl.deleteTexture(texture);
-};

@@ -44,8 +44,3 @@ export let useBuffer = function (gl, location, size, type, stride, offset, norma
     // 连接目标对象和缓冲区对象
     gl.enableVertexAttribArray(location);
 };
-
-// 删除缓冲区
-export let deleteBuffer = function (gl, buffer) {
-    gl.deleteBuffer(buffer);
-};

@@ -1,6 +1,6 @@
 import { useShader } from './shader';
-import { newBuffer, writeBuffer, useBuffer, deleteBuffer } from './buffer';
-import { initTexture, configTexture, linkImage, deleteTexture } from './texture';
+import { newBuffer, writeBuffer, useBuffer } from './buffer';
+import { initTexture, configTexture, linkImage } from './texture';
 import isObject from '@yelloxing/core.js/isObject';
 
 // 获取webgl上下文
@@ -103,11 +103,6 @@ image3D.prototype.render3D = function (opts) {
                             type = type || gl.FLOAT;
                             useBuffer(gl, location, size, type, stride * fsize, offset * fsize, normalized);
                             return bufferObj;
-                        },
-                        // 关闭退出
-                        "close": function () {
-                            deleteBuffer(gl, buffer);
-                            return glObj;
                         }
                     };
                 return bufferObj;
@@ -128,11 +123,6 @@ image3D.prototype.render3D = function (opts) {
                     "use": function (level, format, textureType, image) {
                         linkImage(gl, type, level, format, textureType, image);
                         return textureObj;
-                    },
-                    // 关闭纹理
-                    "close": function () {
-                        deleteTexture(gl, texture);
-                        return glObj;
                     }
                 };
                 return textureObj;

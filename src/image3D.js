@@ -1,6 +1,4 @@
 import image3D from './core/index';
-import Matrix4 from '@yelloxing/core.js/tools/Matrix4';
-import animation from '@yelloxing/core.js/tools/animation';
 
 /**
  * 挂载静态方法
@@ -9,12 +7,6 @@ import animation from '@yelloxing/core.js/tools/animation';
  * 主要是一个辅助方法
  */
 image3D.extend({
-
-    // 矩阵变换
-    Matrix4,
-
-    // 动画
-    animation
 
 });
 
