@@ -226,28 +226,87 @@ body>.content {
 
 body>.content>h4 {
     line-height: 3em;
-    color:red;
+    color: red;
 }
 
-body>.content>p{
+body>.content>p {
     margin: .2rem 0;
     line-height: 1.4em;
 }
 
-pre{
+pre {
     line-height: 1.6em;
 }
 
 body>.content>h6 {
-    color:blue;
+    color: blue;
     font-size: .14rem;
 }
 
-body>.content>ul>li{
+body>.content>ul>li {
     line-height: 2em;
     font-size: .13rem;
 }
 
-li>ul{
+li>ul {
     margin: 0 .2rem;
+}
+
+body>footer {
+    padding: .4rem .1rem;
+    text-align: center;
+    background-color: #f6f9fa;
+    font-size: .12rem;
+}
+
+body>footer>ul {
+    padding-bottom: .2rem;
+}
+
+body>footer>em {
+    font-style: normal;
+    font-family: cursive;
+}
+
+body>footer a {
+    font-weight: bold;
+    color: #000;
+}
+
+body>footer>ul>li {
+    display: inline-block;
+    padding: 0 .2rem;
+    line-height: 1.2em;
+}
+
+body>footer>ul>li:not(:last-child) {
+    border-right: 1px solid #000;
+}
+
+body>footer a {
+    font-weight: bold;
+    color: #000;
+}
+
+body>header ul {
+    padding-right: calc(50vw - 5.5rem);
+    position: absolute;
+    right: 1rem;
+    color: #030303;
+}
+
+body>header ul li[active='yes'] {
+    color: #f10c0c;
+    border-bottom: 3px solid red;
+}
+
+body>header ul li {
+    padding: 0 .05rem;
+    font-size: .12rem;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+body>header * {
+    display: inline-block;
 }
