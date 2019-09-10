@@ -310,3 +310,33 @@ body>header ul li {
 body>header * {
     display: inline-block;
 }
+
+table.type1 {
+    line-height: 2em;
+    border-width: 2px 0;
+    margin-bottom: .2rem;
+}
+
+table.type1,
+table.type1 thead {
+    border-style: solid;
+}
+
+table.type1 thead {
+    font-weight: 800;
+    border-width: 0 0 2px 0;
+}
+
+table.type1 td {
+    padding: 0 .1rem;
+}
+
+.content p>a {
+    color: #2196F3;
+    text-decoration: underline;
+}
+table.type1 pre{
+    background-color: rgba(246, 246, 248, 0);
+    padding:0;
+    line-height: 1em;
+}
