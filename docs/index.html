@@ -27,6 +27,7 @@
             <li onclick='window.location.href="./shader.html"'>着色器</li>
             <li onclick='window.location.href="./matrix4.html"'>坐标变换</li>
             <li onclick='window.location.href="./model.html"'>3D模型</li>
+            <li onclick='window.location.href="./layer.html"'>层次模型</li>
             <li onclick='window.location.href="https://github.com/yelloxing/image3D/issues"'>帮助</li>
         </ul>
         <a href="https://github.com/yelloxing/image3D" class="github" target="_blank">
@@ -49,6 +50,29 @@
         <pre class='prettyprint lang-js'>var gl=render3D.painter();</pre>
         <p>
             总结起来就是：render3D管理绘图，gl绘图。
+        </p>
+
+        <h6>
+            绘图方法
+        </h6>
+        <p>
+            后面要说明的都是数据的准备，而准备好数据以后，就是绘制图形：
+        </p>
+
+        <p>
+            首先，我们来看一种比较简单的绘制方法。指定绘制的类型，传递点的位置（其实是指定起点和个数就可以了）：
+        </p>
+        <pre class='prettyprint lang-js'>gl.drawArrays(mode, first, count);</pre>
+        <p>
+            mode可以取点（gl.POINTS）、线（gl.LINES、gl.LINE_STRIP和gl.LINE_LOOP），和三角形(gl.TRIANGLES、gl.TRIANGLE_STRIP、gl.TRIANGLE_FAN)。
+        </p>
+
+        <p>
+            上面的方法使用起来比较简单，但是，有时候，下面这种方法可能更高效：
+        </p>
+        <pre class='prettyprint lang-js'>gl.drawElements(mode, count, type, offset);</pre>
+        <p>
+            mode和上面一样，count表示绘制的点的个数，type指定索引值类型（gl.UNSIGNED_BYTE或gl.UNSIGNED_SHORT），offset指定索引数组中开始绘制的位置，以字节为单位。
         </p>
 
         <h4>着色器</h4>
@@ -260,6 +284,9 @@ void main(){
             </li>
             <li>
                 <a href="./model.html">3D模型</a>
+            </li>
+            <li>
+                <a href="./layer.html">层次模型</a>
             </li>
             <li>
                 <a href="https://github.com/yelloxing/image3D/issues" target="_blank">帮助</a>
