@@ -1,6 +1,6 @@
 {
   "name": "image3d",
-  "version": "0.1.1-beta",
+  "version": "1.0.0",
   "description": "🍊 使用webGL绘制三维图片。Drawing three-dimensional images using webGL.",
   "main": "build/image3D.min.js",
   "scripts": {
