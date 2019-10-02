@@ -4,7 +4,6 @@
 <a href="https://yelloxing.github.io/npm-downloads?interval=7&packages=image3d"><img src="https://img.shields.io/npm/dm/image3d.svg" alt="Downloads"></a>
 <a href="https://www.npmjs.com/package/image3d"><img src="https://img.shields.io/npm/v/image3d.svg" alt="Version"></a>
 <a href="https://github.com/yelloxing/image3D/blob/master/LICENSE"><img src="https://img.shields.io/npm/l/image3d.svg" alt="License"></a>
-<a class="badge-link" href="https://snyk.io.cnpmjs.org/test/npm/image3d" target="_blank"><img title="Known Vulnerabilities" src="https://snyk.io.cnpmjs.org/test/npm/image3d/badge.svg"></a>
 
 >目前项目处于[RFC](https://github.com/yelloxing/image3D/issues/1)阶段，欢迎给出意见或建议！
 

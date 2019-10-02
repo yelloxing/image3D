@@ -332,11 +332,15 @@ table.type1 td {
 }
 
 .content p>a {
-    color: #2196F3;
+    margin: 0 .1rem;
+    background-color: rgb(8, 156, 241);
+    color: white;
     text-decoration: underline;
+    padding:0 .05rem;
 }
-table.type1 pre{
+
+table.type1 pre {
     background-color: rgba(246, 246, 248, 0);
-    padding:0;
+    padding: 0;
     line-height: 1em;
 }
