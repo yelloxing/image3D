@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="shortcut icon" href="../../image3D.png">
+    <script src="../../image3D.min.guider.js"></script>
+    <script src="../../prettify.js"></script>
+    <link rel="stylesheet" href="../../style.css">
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="../../prettify.css">
+    <title>image3D 查询手册</title>
+</head>
+
+<body onload='prettyPrint();'>
+    <div class="content">
+        <span class='nav'>
+            当前位置：基础篇 / 基本结构
+        </span>
+        <h4>
+            前要说明
+        </h4>
+        <p>
+            基本的绘图步骤我们在
+            <a href="../../index.html" target="_blank">快速开始</a>
+            中给出了具体的例子，这里不再赘述。这里主要是想对教程的主体和将说明的内容，包括代码结构进行说明。
+        </p>
+        <p>
+            本教程主要说明的内容包括以下部分：
+        </p>
+        <ul>
+            <li>
+                第一部分：image3D.js的使用（主要是核心接口和辅助方法）；
+            </li>
+            <li>
+                第二部分：WebGL重要的原生知识或接口；
+            </li>
+            <li>
+                第三部分：三维绘图的技巧和实践校验。
+            </li>
+        </ul>
+        <p>
+            以上三部分并不会独立的提出来说明，而是穿插在整个文档中来说明，其目的只有一个：借助image3D绘制有趣的图形！
+        </p>
+
+        <h4>
+            代码结构
+        </h4>
+        <p>
+            我们给出一份简洁的代码结构，后续所有的用例都可以基于此开始开发：
+        </p>
+        <pre class='prettyprint lang-html'>&lt;!DOCTYPE html&gt;
+&lt;html lang="zh-cn"&gt;
+&lt;head&gt;
+    &lt;script src="build/image3D.js"&gt;&lt;/script&gt;
+    &lt;!-- 顶点着色器 --&gt;
+    &lt;script type='x-shader/x-vertex' id='vs'&gt;
+        void main(){
+           // todo
+        }
+    &lt;/script&gt;
+    &lt;!-- 片段着色器 --&gt;
+    &lt;script type='x-shader/x-fragment' id='fs'&gt;
+        void main(){
+            // todo
+        }
+    &lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;canvas width=500 height=500&gt;非常抱歉，您的浏览器不支持canvas!&lt;/canvas&gt;
+&lt;/body&gt;
+&lt;script&gt;
+    var render3D = $$(document.getElementsByTagName('canvas')[0]).render3D();
+
+    // 启用着色器
+    render3D.shader(
+        document.getElementById('vs').innerHTML,
+        document.getElementById('fs').innerHTML
+    );
+
+    // 获取画笔
+    var gl = render3D.painter();
+
+   // todo
+
+&lt;/script&gt;
+&lt;/html&gt;</pre>
+        <p>
+            当然，以上结构仅供参考，具体的结构可根据具体情况而定（比如着色器，可以提前预定义好各种着色器字符串，根据情况选择加载）。
+        </p>
+    </div>
+</body>
+
+
+<!--
+
+    我还惊讶地意识到， 在我生命中有很多时刻， 每当我遇到一个遥不可及、令人害怕的情境，
+    并感到惊慌失措时， 我都能够应付——因为我回想起了很久以前自己上过的那一课。
+    我提醒自己不要看下面遥远的岩石， 而是注意相对轻松、容易的第一小步， 迈出一小步、再一小步，
+    就这样体会每一步带来的成就感， 直到完成了自己想要完成的， 达到了自己的目标，
+    然后再回头看时， 不禁对自己走过的这段漫漫长路感到惊讶和自豪。
+
+                                            ———— 摘自 莫顿·亨特《走一步，再走一步》
+
+-->
+
+</html>

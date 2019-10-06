@@ -17,9 +17,58 @@
             document.documentElement.scrollTop = 0;
         }
     </script>
+    <style>
+        .content {
+            white-space: nowrap;
+        }
+
+        .course-menu,
+        .course-content {
+            display: inline-block;
+            height: calc(100vh - 1.9rem);
+            vertical-align: top;
+            white-space: normal;
+        }
+
+        .course-menu {
+            width: 1.6rem;
+        }
+
+        .course-content {
+            width: calc(100% - 1.6rem);
+        }
+
+        .course-menu h4 {
+            margin-top: .2rem;
+            line-height: 1.5em;
+            font-size: .15rem;
+        }
+
+        .course-menu li {
+            line-height: 1.6em;
+            font-size: .14rem;
+            text-indent: .6em;
+            cursor: pointer;
+            color: rgb(71, 67, 67);
+        }
+    </style>
+    <script>
+        function updateHeight() {
+            var iframe = document.getElementById("course-content");
+            if (navigator.userAgent.indexOf("MSIE") > 0 || navigator.userAgent.indexOf("rv:11") > 0 || navigator.userAgent.indexOf("Firefox") > 0) {
+                iframe.height = iframe.contentWindow.document.body.scrollHeight;
+            } else {
+                iframe.height = iframe.contentWindow.document.documentElement.scrollHeight;
+            }
+        }
+        function loadPage(url) {
+            document.getElementById('course-content').setAttribute('src', "./course/" + url + ".html");
+            updateHeight();
+        }
+    </script>
 </head>
 
-<body onload='prettyPrint();'>
+<body onload='prettyPrint();updateHeight();'>
     <header>
         <h2>image3D</h2>
         <ul>
@@ -36,9 +85,15 @@
     </header>
     <div class="content">
 
-        <p style='color:red;font-size:20px;'>
-            教程正在整理中，敬请期待！
-        </p>
+        <div class="course-menu">
+
+            <h4>基础篇</h4>
+            <ul>
+                <li onclick="loadPage('basic/frame')">基本结构</li>
+            </ul>
+
+        </div>
+        <iframe id='course-content' class='course-content' src="./course/basic/frame.html" frameborder="0"></iframe>
 
     </div>
     <footer>

@@ -1,0 +1,8 @@
+body>.content{
+    padding: 0;
+}
+body>.content>.nav{
+    line-height: 2em;
+    font-size: .12rem;
+    color:gray;
+}
