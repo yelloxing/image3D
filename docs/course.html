@@ -53,22 +53,13 @@
         }
     </style>
     <script>
-        function updateHeight() {
-            var iframe = document.getElementById("course-content");
-            if (navigator.userAgent.indexOf("MSIE") > 0 || navigator.userAgent.indexOf("rv:11") > 0 || navigator.userAgent.indexOf("Firefox") > 0) {
-                iframe.height = iframe.contentWindow.document.body.scrollHeight;
-            } else {
-                iframe.height = iframe.contentWindow.document.documentElement.scrollHeight;
-            }
-        }
         function loadPage(url) {
             document.getElementById('course-content').setAttribute('src', "./course/" + url + ".html");
-            updateHeight();
         }
     </script>
 </head>
 
-<body onload='prettyPrint();updateHeight();'>
+<body onload='prettyPrint();'>
     <header>
         <h2>image3D</h2>
         <ul>
