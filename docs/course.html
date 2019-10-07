@@ -47,19 +47,72 @@
         .course-menu li {
             line-height: 1.6em;
             font-size: .14rem;
-            text-indent: .6em;
+            text-indent: 1em;
             cursor: pointer;
-            color: rgb(71, 67, 67);
+        }
+
+        .course-menu li[active='yes'] {
+            color: rgb(250, 3, 3);
+        }
+
+        .course-menu li[active='yes']::before {
+            content: ">>"
         }
     </style>
     <script>
-        function loadPage(url) {
+        var preNav;
+        function loadPage(url, flag) {
             document.getElementById('course-content').setAttribute('src', "./course/" + url + ".html");
+            url = url.replace('/', '_');
+            preNav.setAttribute('active', 'no');
+            preNav = document.getElementById(url);
+            preNav.setAttribute('active', 'yes');
+
+            if (!flag) {
+                // 修改url
+                window.location.href = "#/" + url.replace('/', '_');
+            }
+        }
+        function initPreNav() {
+            preNav = document.getElementById('basic_frame');
+
+            // 如果有#url
+            var urls = (window.location.href + "").split("#");
+            if (urls.length > 1) {
+                if (document.getElementById(urls[1].replace('/', ''))) {
+                    loadPage(urls[1].replace('/', '').replace('_', '/'), true);
+                }
+            }
+        }
+
+
+        // 具体的通知内容
+        function doNotify() {
+            var notification = new Notification('温馨提示', {
+                body: "教程中有不足地方请提出，我们会尽力修改和完善！",
+                icon: "./image3D.png"
+            });
+            setTimeout(function () { notification.close(); }, 10000);
+        }
+
+        // 通知一些重要事情
+        function notify() {
+            if (window.Notification) {
+                if (window.Notification.permission == "granted") {
+                    doNotify();
+                } else {
+                    window.Notification.requestPermission(function (permission) {
+                        if (permission == 'granted') {
+                            doNotify();
+                        }
+                    });
+                }
+            }
         }
     </script>
 </head>
 
-<body onload='prettyPrint();'>
+<body onload='prettyPrint();initPreNav();notify()'>
     <header>
         <h2>image3D</h2>
         <ul>
@@ -80,7 +133,8 @@
 
             <h4>基础篇</h4>
             <ul>
-                <li onclick="loadPage('basic/frame')">基本结构</li>
+                <li onclick="loadPage('basic/frame')" id='basic_frame' active='yes'>简单说明</li>
+                <li onclick="loadPage('basic/shader')" id='basic_shader'>着色器</li>
             </ul>
 
         </div>

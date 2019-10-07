@@ -16,9 +16,6 @@
 
 <body onload='prettyPrint();'>
     <div class="content">
-        <span class='nav'>
-            当前位置：基础篇 / 基本结构
-        </span>
         <h4>
             前要说明
         </h4>
@@ -49,47 +46,31 @@
             代码结构
         </h4>
         <p>
-            我们给出一份简洁的代码结构，后续所有的用例都可以基于此开始开发：
+            我们给出一份简洁的
+            <a href="https://github.com/yelloxing/image3D/blob/dev/docs/course/basic/frame.code.html" target="_blank">代码结构</a> ，后续所有的用例都可以基于此开始开发。
         </p>
-        <pre class='prettyprint lang-html'>&lt;!DOCTYPE html&gt;
-&lt;html lang="zh-cn"&gt;
-&lt;head&gt;
-    &lt;script src="build/image3D.js"&gt;&lt;/script&gt;
-    &lt;!-- 顶点着色器 --&gt;
-    &lt;script type='x-shader/x-vertex' id='vs'&gt;
-        void main(){
-           // todo
-        }
-    &lt;/script&gt;
-    &lt;!-- 片段着色器 --&gt;
-    &lt;script type='x-shader/x-fragment' id='fs'&gt;
-        void main(){
-            // todo
-        }
-    &lt;/script&gt;
-&lt;/head&gt;
-&lt;body&gt;
-    &lt;canvas width=500 height=500&gt;非常抱歉，您的浏览器不支持canvas!&lt;/canvas&gt;
-&lt;/body&gt;
-&lt;script&gt;
-    var render3D = $$(document.getElementsByTagName('canvas')[0]).render3D();
-
-    // 启用着色器
-    render3D.shader(
-        document.getElementById('vs').innerHTML,
-        document.getElementById('fs').innerHTML
-    );
-
-    // 获取画笔
-    var gl = render3D.painter();
-
-   // todo
-
-&lt;/script&gt;
-&lt;/html&gt;</pre>
         <p>
             当然，以上结构仅供参考，具体的结构可根据具体情况而定（比如着色器，可以提前预定义好各种着色器字符串，根据情况选择加载）。
         </p>
+
+        <h4>
+            坐标系统
+        </h4>
+        <p>
+            我们对canvas2D或svg的坐标是清楚的，而这里就不一样了，稍微有点特殊，不那么严格的理解的话，我们给出一个简单的坐标模型：
+        </p>
+        <img src="./coordinate.jpg" width=300>
+        <p>
+            如上图，我们x和z轴类似，y轴方向相反（和浏览器坐标相比），另外，绘制的图形都被限制在一个2x2x2的正方体中，超过范围的不会显示出来（当然可以通过坐标变换缩小物体）。
+        </p>
+
+        <h4>
+            开启深度
+        </h4>
+        <p>
+            默认情况下，没有开启深度计算，如果想开启，添加如下代码即可：
+        </p>
+        <pre class='prettyprint lang-js'>gl.enable(gl.DEPTH_TEST);</pre>
     </div>
 </body>
 
