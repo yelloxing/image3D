@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="shortcut icon" href="../../image3D.png">
+    <script src="../../image3D.min.guider.js"></script>
+    <script src="../../prettify.js"></script>
+    <link rel="stylesheet" href="../../style.css">
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="../../prettify.css">
+    <title>image3D 查询手册</title>
+</head>
+
+<body onload='prettyPrint();'>
+    <div class="content">
+        <h4>
+            什么是缓冲区？
+        </h4>
+        <p>
+            我们现在知道，绘制的数据都是需要传递给二个着色器的，如果是一个点还好，可以通过写死在着色器或方法传递，可是对于实际情况，往往数据成千上万，如果快速的把这些数据传递给着色器？答案就是缓冲区。
+        </p>
+        <p>
+            所谓缓冲区，简单的理解就是帮助我们把非常多的数据传递给GPU的。缓冲区一共就二种：
+        </p>
+        <ul>
+            <li>
+                第一种：gl.ARRAY_BUFFER，表示缓冲区中保存的是顶点数据；
+            </li>
+            <li>
+                第二种：gl.ELEMENT_ARRAY_BUFFER，表示缓冲区中保存的是顶点的索引。
+            </li>
+        </ul>
+        <p>
+            缓冲区本身并不难，无非就是一个接口，难的是数据本身，这已经和缓冲区没有什么关系了。
+        </p>
+        <h4>
+            如何使用缓冲区？
+        </h4>
+        <p>
+            我们拿第一种缓冲区的使用举例子，第二种缓冲区以后再说明，二种主要是数据本身的区别，操作上并没有太大区别。
+        </p>
+        <p>
+            我们这次是绘制一个红色的矩形（你可以查看
+            <a href="https://github.com/yelloxing/image3D/blob/dev/docs/course/basic/buffer.code.html"
+                target="_blank">例子代码</a> ），着色器很简单，主要说明一下数据的传递和绘图部分。
+        </p>
+        <h6>
+            数据的传递
+        </h6>
+        <p>
+            首先，我们需要把数据准备好，然后写入缓冲区，最后分配给着色器中的变量。
+        </p>
+        <pre class='prettyprint lang-js'>// 数据
+var data = new Float32Array([
+    0.5, 0.5, -0.5, 0.5, -0.5, -0.5,
+    0.5, 0.5, -0.5, -0.5, 0.5, -0.5
+]);
+render3D
+    // 初始化缓冲区
+    .buffer()
+    // 数据写入缓冲区
+    .write(data)
+    // 写入缓冲区的数据分配
+    .use('a_position', 2, 2, 0);</pre>
+        <p>
+            数据有二排，二个数据表示一个点的坐标，一排六个数据三个点，刚好是一个三角形，一共二个三角形就组成了一个正方形。
+        </p>
+        <p>
+            数据准备好以后，把数据写入缓冲区中即可，写入缓冲区的数据通过use方法和着色器中的变量（只可能是attribute类型的变量）关联起来。
+        </p>
+        <p>
+            是不是很简单，大家唯一要留心的是render3D.buffer()这步，如果什么都不传递那么创建的缓冲区是第一类缓冲区，如果传递一个true就是第二类缓冲区。
+        </p>
+        <h6>
+            绘图部分
+        </h6>
+        <p>
+            数据部分搞定了，着色器有了数据以后就是调用画笔gl上的api绘图了：
+        </p>
+        <pre class='prettyprint lang-js'>// 绘制二个三角形
+gl.drawArrays(gl.TRIANGLES, 0, 6);</pre>
+        <p>
+            因为一个三角形是三个点，六个点就是绘制二个三角形。
+        </p>
+    </div>
+</body>
+
+
+<!--
+
+    我还惊讶地意识到， 在我生命中有很多时刻， 每当我遇到一个遥不可及、令人害怕的情境，
+    并感到惊慌失措时， 我都能够应付——因为我回想起了很久以前自己上过的那一课。
+    我提醒自己不要看下面遥远的岩石， 而是注意相对轻松、容易的第一小步， 迈出一小步、再一小步，
+    就这样体会每一步带来的成就感， 直到完成了自己想要完成的， 达到了自己的目标，
+    然后再回头看时， 不禁对自己走过的这段漫漫长路感到惊讶和自豪。
+
+                                            ———— 摘自 莫顿·亨特《走一步，再走一步》
+
+-->
+
+</html>

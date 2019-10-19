@@ -89,7 +89,7 @@
         // 具体的通知内容
         function doNotify() {
             var notification = new Notification('温馨提示', {
-                body: "教程中有不足地方请提出，我们会尽力修改和完善！",
+                body: "不足地方请提出，我们会尽力修改或完善！",
                 icon: "./image3D.png"
             });
             setTimeout(function () { notification.close(); }, 10000);
@@ -135,6 +135,9 @@
             <ul>
                 <li onclick="loadPage('basic/frame')" id='basic_frame' active='yes'>简单说明</li>
                 <li onclick="loadPage('basic/shader')" id='basic_shader'>着色器</li>
+                <li onclick="loadPage('basic/buffer')" id='basic_buffer'>缓冲区</li>
+                <li onclick="loadPage('basic/texture')" id='basic_texture'>纹理</li>
+                <li onclick="loadPage('basic/transform')" id='basic_transform'>坐标变换</li>
             </ul>
 
         </div>
