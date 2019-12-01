@@ -1,19 +1,18 @@
-
-    /*!
-    * image3D - 🍊 使用webGL绘制三维图片。Drawing three-dimensional images using webGL.
-    * git+https://github.com/yelloxing/image3D.git
-    *
-    * author 心叶
-    *
-    * version 1.0.2
-    *
-    * build Thu Apr 11 2019
-    *
-    * Copyright yelloxing
-    * Released under the MIT license
-    *
-    * Date:Thu Nov 07 2019 15:15:27 GMT+0800 (GMT+08:00)
-    */
+/*!
+* image3D - 🍊 使用webGL绘制三维图片。Drawing three-dimensional images using webGL.
+* git+https://github.com/yelloxing/image3D.git
+*
+* author 心叶
+*
+* version 1.0.2-alpha
+*
+* build Thu Apr 11 2019
+*
+* Copyright yelloxing
+* Released under the MIT license
+*
+* Date:Sun Dec 01 2019 12:19:19 GMT+0800 (GMT+08:00)
+*/
 
 'use strict';
 

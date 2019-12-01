@@ -42,4 +42,4 @@ const $$ = require("image3d");
 
 [MIT](https://github.com/yelloxing/image3D/blob/master/LICENSE)
 
-Copyright (c) 2007夏-present 走一步 再走一步
+Copyright (c) 2007-2019 走一步 再走一步
