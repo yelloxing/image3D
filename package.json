@@ -1,12 +1,17 @@
 {
   "name": "image3d",
-  "version": "1.0.1",
+  "version": "1.0.2-alpha",
   "description": "🍊 使用webGL绘制三维图片。Drawing three-dimensional images using webGL.",
   "main": "build/image3D.min.js",
   "scripts": {
     "start": "npm install && node ./task/explain.js",
-    "build": "node ./task/module.js && node ./task/babel.js && node ./task/uglify.js",
-    "postinstall": "node ./script/postinstall.js || echo \"ignore\""
+    "build": "npm run build:init && npm run build:bundle && npm run build:babel && npm run build:uglifyjs && npm run build:end",
+    "build:init": "cuf --config ./cuf.config.js init",
+    "build:end": "cuf --config ./cuf.config.js end",
+    "build:bundle": "cuf --config ./cuf.config.js bundle",
+    "build:babel": "cuf --config ./cuf.config.js babel",
+    "build:uglifyjs": "cuf --config ./cuf.config.js uglifyjs",
+    "postinstall": "node ./script/postinstall.js"
   },
   "keywords": [
     "image",
@@ -28,12 +33,13 @@
     "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-preset-es2015": "^6.24.1",
     "babelify": "^8.0.0",
+    "cuf": "^1.1.3",
     "rollup": "^1.17.0",
     "rollup-plugin-commonjs": "^10.1.0",
     "rollup-plugin-node-resolve": "^5.2.0",
     "uglify-js": "^3.5.6"
   },
   "dependencies": {
-    "@yelloxing/core.js": "^0.2.0"
+    "@yelloxing/core.js": "^0.3.1"
   }
 }

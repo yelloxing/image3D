@@ -23,16 +23,22 @@
     <header>
         <h2>image3D</h2>
         <ul>
-            <li onclick='window.location.href="./index.html"'>3D对象</li>
+            <li onclick='window.location.href="./index.html"'>快速开始</li>
+            <li onclick='window.location.href="./render3D.html"'>3D对象</li>
             <li onclick='window.location.href="./shader.html"'>着色器</li>
             <li active='yes'>坐标变换</li>
             <li onclick='window.location.href="https://github.com/yelloxing/image3D/issues"'>帮助</li>
+            <li onclick='window.location.href="./course.html"'>教程</li>
         </ul>
         <a href="https://github.com/yelloxing/image3D" class="github" target="_blank">
             Fork me on Github
         </a>
     </header>
     <div class="content">
+        <p>
+            控制图形变化或使用投影等，其实都是通过传递一个坐标变换矩阵给着色器来实现的，本章节就是提供一个Matrix4矩阵对象，你可以通过它获取需要的矩阵，然后传递给着色器使用，一个简单的例子，请
+            <a href="https://github.com/yelloxing/image3D/blob/dev/test/use-case/transform.simple.html" target="_blank">点击这里</a>查看代码！
+        </p>
 
         <h4>
             基本运算
@@ -92,7 +98,10 @@
     <footer>
         <ul>
             <li>
-                <a href="./index.html">3D对象</a>
+                <a href="./index.html">快速开始</a>
+            </li>
+            <li>
+                <a href="./render3D.html">3D对象</a>
             </li>
             <li>
                 <a href="./shader.html">着色器</a>
@@ -102,6 +111,9 @@
             </li>
             <li>
                 <a href="https://github.com/yelloxing/image3D/issues" target="_blank">帮助</a>
+            </li>
+            <li>
+                <a href="./course.html">教程</a>
             </li>
         </ul>
         Copyright © 2007 - 2019

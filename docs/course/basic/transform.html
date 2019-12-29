@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="shortcut icon" href="../../image3D.png">
+    <script src="../../image3D.min.guider.js"></script>
+    <script src="../../prettify.js"></script>
+    <link rel="stylesheet" href="../../style.css">
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="../../prettify.css">
+    <title>image3D 查询手册</title>
+</head>
+
+<body onload='prettyPrint();'>
+    <div class="content">
+        <h4>
+            坐标变换的基础
+        </h4>
+        <p>
+            坐标变化的本质就是顶点着色器在计算点的位置的时候，和事先准备好的矩阵相乘：
+        </p>
+        <pre class='prettyprint lang-js'>gl_Position=u_matrix *a_position;</pre>
+        <p>
+            因此，我们的重点是如何求解这个矩阵u_matrix。幸运的是，image3D提供了坐标变换矩阵的求解API，具体的可以查看
+            <a href="../../matrix4.html" target="_blank">坐标变换</a>
+            一节。
+        </p>
+        <h4>
+            一个简单的例子
+        </h4>
+        <p>
+            我们这里还是用一个简单的例子来整体梳理一下如何实现坐标变换（你可以查看
+            <a href="https://github.com/yelloxing/image3D/blob/dev/docs/course/basic/transform.code.html"
+                target="_blank">例子代码</a> ）。
+        </p>
+        <p>
+            例子中我们实现一个一个矩形的点围绕O(0.0, 0.0)点旋转。下面来看看关键代码：
+        </p>
+        <pre class='prettyprint lang-js'>&lt;!-- 顶点着色器 --&gt;
+&lt;script type='x-shader/x-vertex' id='vs'&gt;
+    uniform mat4 u_matrix;
+    void main(){
+        gl_Position=u_matrix *vec4(0.5,0.5,0.0,1.0);
+        gl_PointSize=10.0;
+    }
+&lt;/script&gt;</pre>
+        <p>
+            我们在顶点着色器中定义了mat4类型的变量u_matrix来接收传递的变换矩阵，接收以后和坐标相乘。
+        </p>
+        <pre class='prettyprint lang-js'>// 围绕Z=0再旋转Math.PI / 15弧度
+transform.rotate(Math.PI / 15, 0, 0);
+
+// 矩阵传递给着色器
+var u_matrix = gl.getUniformLocation(gl.program, 'u_matrix');
+gl.uniformMatrix4fv(u_matrix, false, transform.value());</pre>
+        <p>
+            使用transform对象获得变换矩阵，然后把这个矩阵传递给上面着色器中定义的变量。
+        </p>
+        <h4>
+            补充说明
+        </h4>
+        <p>
+            不只是普通的坐标变换，包括后面的透视等，基本都是这样实现的，只不过变换矩阵的求解不同，而后者直接由image3D提供的接口实现即可。
+        </p>
+    </div>
+</body>
+
+
+<!--
+
+    我还惊讶地意识到， 在我生命中有很多时刻， 每当我遇到一个遥不可及、令人害怕的情境，
+    并感到惊慌失措时， 我都能够应付——因为我回想起了很久以前自己上过的那一课。
+    我提醒自己不要看下面遥远的岩石， 而是注意相对轻松、容易的第一小步， 迈出一小步、再一小步，
+    就这样体会每一步带来的成就感， 直到完成了自己想要完成的， 达到了自己的目标，
+    然后再回头看时， 不禁对自己走过的这段漫漫长路感到惊讶和自豪。
+
+                                            ———— 摘自 莫顿·亨特《走一步，再走一步》
+
+-->
+
+</html>

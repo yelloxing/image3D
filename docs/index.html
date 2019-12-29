@@ -23,10 +23,12 @@
     <header>
         <h2>image3D</h2>
         <ul>
-            <li active='yes'>3D对象</li>
+            <li active='yes'>快速开始</li>
+            <li onclick='window.location.href="./render3D.html"'>3D对象</li>
             <li onclick='window.location.href="./shader.html"'>着色器</li>
             <li onclick='window.location.href="./matrix4.html"'>坐标变换</li>
             <li onclick='window.location.href="https://github.com/yelloxing/image3D/issues"'>帮助</li>
+            <li onclick='window.location.href="./course.html"'>教程</li>
         </ul>
         <a href="https://github.com/yelloxing/image3D" class="github" target="_blank">
             Fork me on Github
@@ -34,245 +36,114 @@
     </header>
     <div class="content">
 
-        <h4>绘图对象</h4>
+        <h4>
+            概要
+        </h4>
         <p>
-            3D绘图采用的是WebGL实现，首先需要获取一个绘图管理对象：
+            我们的目的是借助这份文档和image3D可以比较轻松的绘制三维图形，包括一些交互和控制。这个库永远都是自由、开源、讨论和进步的。
         </p>
-        <pre class='prettyprint lang-js'>var render3D=$$(canvasNode).render3D();</pre>
+
+        <p>我们欢迎任何人的加入，任何时候，特别是遇到疑惑，联系
+            <a href="mailto:yelloxing@gmail.com">作者</a>都会是一个好主意。当然，提
+            <a href="https://github.com/yelloxing/image3D/issues">issue</a>也是不错的，因为这样更方便大家交流！</p>
+
+        <h4>
+            起步
+        </h4>
         <p>
-            Canvas默认就是一个画布，调用render3D方法，表示我们要在上面绘制3D图形，这样就返回了一个3D启动器。
+            具体的接口请查看对应章节，我们这里来演示一个简单的例子，向你说明绘制图形的基本方法，以便让你有一个整体的认识。
         </p>
         <p>
-            3D启动器用于处理许多基础的操作（比如着色器，缓冲区等），而绘制图形的时候，使用的是画笔：
-        </p>
-        <pre class='prettyprint lang-js'>var gl=render3D.painter();</pre>
-        <p>
-            总结起来就是：render3D管理绘图，gl绘图。
+            我们将绘制一个红色的正方形点（更复杂的图形绘制请学习
+            <a href="./course.html">教程</a>一章 ），完整的代码你可以
+            <a href="https://github.com/yelloxing/image3D/blob/dev/test/use-case/shader.html" target="_blank">点击这里</a>查看。
         </p>
 
         <h6>
-            绘图方法
+            第一步：获得绘图对象
         </h6>
         <p>
-            后面要说明的都是数据的准备，而准备好数据以后，就是绘制图形：
+            因为webgl是把canvas作为画布的，因此，我们首先需要有一个canvas结点：
+        </p>
+        <pre class='prettyprint lang-html'>&lt;canvas width=500 height=500&gt;非常抱歉，您的浏览器不支持canvas!&lt;/canvas&gt;</pre>
+        <p>
+            有了画布以后，就可以获取画笔了?不，三维绘图比较麻烦，为了更方便绘制，我们要先获取一个叫
+            <a href="./render3D.html">3D对象</a> 的东西：
+        </p>
+        <pre class='prettyprint lang-js'>var render3D = $$(document.getElementsByTagName('canvas')[0]).render3D();</pre>
+        <p>
+            这个绘图对象非常重要，会提供我们需要的画笔和别的最基本的绘图相关接口。
         </p>
 
+        <h6>
+            第二步：设置着色器
+        </h6>
         <p>
-            首先，我们来看一种比较简单的绘制方法。指定绘制的类型，传递点的位置（其实是指定起点和个数就可以了）：
+            和svg或canvas2D不一样，webgl绘图其实是借助着色器来实现的，以这个例子来简单说明就是：我们需要提供二个着色器，前者存储点的位置、大小，后者存储颜色。
         </p>
-        <pre class='prettyprint lang-js'>gl.drawArrays(mode, first, count);</pre>
         <p>
-            mode可以取点（gl.POINTS）、线（gl.LINES、gl.LINE_STRIP和gl.LINE_LOOP），和三角形(gl.TRIANGLES、gl.TRIANGLE_STRIP、gl.TRIANGLE_FAN)。
+            是不是有点糊涂？其实简单的说，就是二段字符串（我们用script标签包裹起来只是为了方便编辑），我们直接看看代码：
         </p>
-
         <p>
-            上面的方法使用起来比较简单，但是，有时候，下面这种方法可能更高效：
+            存储点的位置、大小的着色器我们称为顶点着色器：
         </p>
-        <pre class='prettyprint lang-js'>gl.drawElements(mode, count, type, offset);</pre>
-        <p>
-            mode和上面一样，count表示绘制的点的个数，type指定索引值类型（gl.UNSIGNED_BYTE或gl.UNSIGNED_SHORT），offset指定索引数组中开始绘制的位置，以字节为单位。
-        </p>
-
-        <h4>着色器</h4>
-        <p>
-            着色器的语法采用的是GLSL SE语法，分为两种：顶点着色器（Vertex shader）和片元（或片段）着色器（Fragment shader），你可以像这样定义他们：
-        </p>
-
-        <h6>顶点着色器</h6>
-        <p>
-            用于描述顶点特征（比如位置，大小，颜色等）的程序，在这里就是一段字符串，为了书写和调试方便，常常这样书写：
-        </p>
-        <pre class='prettyprint lang-html'>
-&lt;script type='x-shader/x-vertex' id='vs'&gt;
-    // 定义变量
+        <pre class='prettyprint lang-html'>&lt;script type='x-shader/x-vertex' id='vs'&gt;
     void main(){
-        gl_Position=XXX;
+        gl_Position=vec4(0.0,0.0,0.0,1.0);
+        gl_PointSize=100.0;
     }
 &lt;/script&gt;</pre>
-
-        <h6>片段着色器</h6>
         <p>
-            用于配置逐片元处理过程中，如何计算光照等数据，和上面一样，也是一段字符串，和上面的区别在与，这是针对全部点的配置：
+            存储颜色的我们称为片段着色器或片元着色器：
         </p>
-        <pre class='prettyprint lang-html'>
-&lt;script type='x-shader/x-fragment' id='fs'&gt;
-    // 定义变量(或设置精度)
+        <pre class='prettyprint lang-html'>&lt;script type='x-shader/x-fragment' id='fs'&gt;
     void main(){
-        gl_FragColor=XXX;
+        gl_FragColor=vec4(1.0,0.0,0.0,1.0);
     }
 &lt;/script&gt;</pre>
-
         <p>
-            上面只是提供一种写法，其实着色器在这里就是二段字符串：
+            上面已经说过了，这只是二段字符串，我们需要让它生效：
         </p>
         <pre class='prettyprint lang-js'>// 启用着色器
 render3D.shader(
     document.getElementById('vs').innerHTML,
     document.getElementById('fs').innerHTML
 );</pre>
-
         <p>
-            编辑好着色器字符串以后，运行上面的语句，表示启用着色器，然后才可以借助这两个着色器程序绘图（编译着色器字符串创建的着色器程序存储在gl.program中）。
-        </p>
-
-        <h4>缓冲区</h4>
-
-        <p>
-            什么是缓冲区？说的简单点，就是程序快速给GPU一堆数据的特殊通道。分为二种：
-        </p>
-        <ul>
-            <li>1.缓冲区中保存了包含顶点的数据；</li>
-            <li>2.缓冲区保存了包含顶点的索引值（特殊使用，比如gl.drawElements方法等）。</li>
-        </ul>
-        <p>
-            特别注意：因为缓冲区是用来记录多条数据的，而片元着色器是针对一个片元处理的，因此不可以直接和缓冲区打交道，一般借助顶点着色器间接使用（我不知道这样说是否合适，不过大概是这个意思）。
+            到这一步，绘图的信息（也就是着色器）已经准备好了。
         </p>
 
         <h6>
-            GLES变量
+            第三步：绘制
         </h6>
+        <pre class='prettyprint lang-js'>// 获取画笔
+var gl = render3D.painter();
+// 绘制一个点
+gl.drawArrays(gl.POINTS, 0, 1);
+        </pre>
         <p>
-            在使用缓冲区之前，让我们先了解一下着色器语言的变量。其实只有三种（这和int、boolean之类的不是一个概念，这里的"种"是指这个变量是干什么的）：
+            至此，一个红色的矩形点就绘制好了！
         </p>
-        <ul>
-            <li>1.attribute：只可以出现在顶点着色器里，且只可以声明为全局变量，用来表示逐顶点信息；</li>
-            <li>2.uniform：可以出现在两个着色器中，不过只可以声明为全局变量，只读，用来表示一致的数据（顶点和片元共用，如果两个着色器说明同名的，会共享）；</li>
-            <li>3.varying：只可以声明为全局变量，主要用于从顶点着色器传递数据到片元着色器（此时两个着色器需要定义同名的变量）。</li>
-        </ul>
         <p>
-            第一种缓冲区数据流动过程大概是：许多数据流到顶点着色器attribute定义的变量 -> 通过varying变量，数据再流到片元着色器（如果需要）。
-        </p>
-
-        <h6>
-            初始化（或创建）缓冲区对象
-        </h6>
-        <pre class='prettyprint lang-js'>var bufferObj=render3D.buffer(boolean);</pre>
-        <p>
-            可以传递一个boolean类型的参数，缺省为fasle，表示创建第一种类型的缓冲区，如果会true，创建的是第二种类型的缓冲区。
+            怎么样？是不是挺简单的，更复杂的图形其实绘制流程也是这样子，只不过数据更多了（这就需要用到缓冲区等别的辅助工具，这些工具也是由render3D或image3D提供），业务更复杂了，不过究其本质都大同小异。
         </p>
 
-        <h6>
-            数据写入缓冲区
-        </h6>
-        <pre class='prettyprint lang-js'>bufferObj.write(data[, usage]);</pre>
-        <p>第一个参数是一个类型化数组，表示写入的数据，必输；第二个参数表示程序如何使用存储在缓冲区的数据，非必输。返回bufferObj。</p>
-
-        <h6>
-            分配缓冲区中数据到指定的attribute变量
-        </h6>
-        <pre class='prettyprint lang-js'>bufferObj.use(location, size[, stride, offset, type, normalized]);</pre>
-        <ul>
-            <li>1.location：必输，字符串或指定待分配的attribute变量的存储位置；</li>
-            <li>2.size：必输，每个分量个数；</li>
-            <li>3.stride：非必输，相邻二个数据项的字节数（如果给一个变量参数数据可以不传）；</li>
-            <li>4.offset：非必输，数据的起点字节位置，默认0；</li>
-            <li>5.type：非必输，数据类型，默认为gl.FLOAT，也就是Float32Array；</li>
-            <li>6.normalized：非必输，表示是否把非浮点型的数据归一化到[0,1]或[-1,1]区间。</li>
-        </ul>
+        <h4>
+            下一步
+        </h4>
         <p>
-            注意：第二种缓冲区到上一步就结束了，这一步是针对第一类缓冲区的。返回bufferObj。
-        </p>
-
-        <h4>纹理</h4>
-
-        <p>
-            纹理的过程就是把选择片元着色器中使用指定颜色逐片元替换成指定图片逐片元。
-        </p>
-
-        <h6>
-            创建纹理对象
-        </h6>
-        <pre class='prettyprint lang-js'>var textureObj = render3D.texture(unit[, type]);</pre>
-        <p>
-            第一个参数表示创建的纹理单元是哪个，比如0表示0号纹理，必输；第二个是可选参数，表示纹理类型，默认选择为gl.TEXTURE_2D代表二维纹理。
-        </p>
-
-        <h6>
-            配置纹理
-        </h6>
-        <pre class='prettyprint lang-js'>textureObj.config({
-    "TEXTURE_WRAP_S": "CLAMP_TO_EDGE"
-    ...
-});</pre>
-        <p>
-            可配置项有四个：
-        </p>
-        <ul>
-            <li>1. TEXTURE_MAX_FILTER：放大方法</li>
-            <li>2. TEXTURE_MIN_FILTER：缩小方法</li>
-            <li>3. TEXTURE_WRAP_S：水平填充方法</li>
-            <li>4. TEXTURE_WRAP_T：垂直填充方法</li>
-        </ul>
-        <p>
-            上面的例子配置了水平填充方法，有点类似css中设置背景图片的填充方法。返回textureObj。
-        </p>
-
-        <h6>
-            链接资源图片
-        </h6>
-        <pre class='prettyprint lang-js'>textureObj.use(level, format, textureType, image);</pre>
-        <ul>
-            <li>1.level：默认传入0即可，和金字塔纹理有关；</li>
-            <li>
-                2.format：表示图像的内部格式；
-                <ul>
-                    <li>gl.RGB(红绿蓝)</li>
-                    <li>gl.RGBA(红绿蓝透明度)</li>
-                    <li>gl.ALPHA(0.0,0.0,0.0,透明度)</li>
-                    <li>gl.LUMINANCE(L、L、L、1L:流明)</li>
-                    <li>gl.LUMINANCE_ALPHA(L、L、L,透明度)</li>
-                </ul>
-            </li>
-            <li>
-                3.textureType：表示纹理数据的格式；
-                <ul>
-                    <li>gl.UNSIGNED_BYTE: 表示无符号整形，每一个颜色分量占据1字节</li>
-                    <li>gl.UNSIGNED_SHORT_5_6_5: 表示RGB，每一个分量分别占据占据5, 6, 5比特</li>
-                    <li>gl.UNSIGNED_SHORT_4_4_4_4: 表示RGBA，每一个分量分别占据占据4, 4, 4, 4比特</li>
-                    <li>gl.UNSIGNED_SHORT_5_5_5_1: 表示RGBA，每一个分量分别占据占据5比特，A分量占据1比特</li>
-                </ul>
-            </li>
-            <li>4.image：表示贴图的图片（比如new Image()）。</li>
-        </ul>
-        <p>
-            需要明白的是，到这一步为止，我们也只是把0号纹理和具体的图片联系起来了，具体使用的时候，还是看片元着色器。
-        </p>
-
-        <h6>
-            片元中使用纹理
-        </h6>
-        <p>
-            先来看看片元着色器应该怎么写：
-        </p>
-        <pre class='prettyprint lang-js'>precision mediump float;
-varying vec2 v_textcoord;
-void main(){
-    gl_FragColor=texture2D(0, v_textcoord);
-}</pre>
-        <p>
-            texture2D是GLES内置的方法，此处表示从0号（由第一个参数0指定）纹理获取v_textcoord指定的纹理坐标处的像素颜色。
-        </p>
-        <p>
-            v_textcoord是什么意思？就是webgl坐标对应的图片坐标，举个例子：
-        </p>
-        <pre class='prettyprint lang-js'>var data = new Float32Array([
-    // 顶点坐标2，纹理坐标2
-    -1.0, 0.707, 0.0, 0.0,
-    -1.0, -0.707, 0.0, 1.0,
-    1.0, 0.707, 1.0, 0.0,
-    1.0, -0.707, 1.0, 1.0
-]);</pre>
-        <p>
-            现在绘制一个矩形，四个点（顶点坐标）确定图形，这个矩形用图片（也就是纹理）填充颜色。
-        </p>
-        <p>
-            对于顶点(-1.0, 0.707)对应图片上的点(0.0, 0.0)，四个点，就明确了所有点的对应方法。
+            通过上面的学习，你应该已经感受到了2D绘图和3D绘图的一些区别，接下来你应该跟着
+            <a href="./course.html">教程</a> 章节来系统学习一下（其余章节是重要文档，在学习和开发的时候随时查阅）。这里还有一个
+            <a href="https://github.com/yelloxing/image3D/issues">问题交流</a> 的部分，你可以把你使用的后的改进意见反馈给我们，或者在这里提出使用疑惑。
         </p>
     </div>
     <footer>
         <ul>
             <li>
-                <a href="javascriot:void(0)" onclick='toTop()'>3D对象</a>
+                <a href="javascriot:void(0)" onclick='toTop()'>快速开始</a>
+            </li>
+            <li>
+                <a href="./render3D.html">3D对象</a>
             </li>
             <li>
                 <a href="./shader.html">着色器</a>
@@ -282,6 +153,9 @@ void main(){
             </li>
             <li>
                 <a href="https://github.com/yelloxing/image3D/issues" target="_blank">帮助</a>
+            </li>
+            <li>
+                <a href="./course.html">教程</a>
             </li>
         </ul>
         Copyright © 2007 - 2019
