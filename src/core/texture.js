@@ -6,7 +6,7 @@
  */
 
 // 初始化一个纹理对象
-// type有两个选择gl.TEXTURE_2D代表二维纹理，gl.TEXTURE_CUBE_MAP 立方体纹理
+// type有gl.TEXTURE_2D代表二维纹理，gl.TEXTURE_CUBE_MAP 立方体纹理等
 export let initTexture = function (gl, unit, type) {
     // 创建纹理对象
     let texture = gl.createTexture();
@@ -48,5 +48,13 @@ export let configTexture = function (gl, type, config) {
 //      gl.UNSIGNED_SHORT_4_4_4_4: 表示RGBA，每一个分量分别占据占据4, 4, 4, 4比特
 //      gl.UNSIGNED_SHORT_5_5_5_1: 表示RGBA，每一个分量分别占据占据5比特，A分量占据1比特
 export let linkImage = function (gl, type, level, format, textureType, image) {
-    gl.texImage2D(type, level, format, format, textureType, image);
+    format = {
+        "rgb": gl.RGB,
+        "rgba": gl.RGBA,
+        "alpha": gl.ALPHA
+    }[format] || gl.RGB;
+
+    gl.texImage2D(type, level, format, format, {
+        // todo
+    }[textureType] || gl.UNSIGNED_BYTE, image);
 };

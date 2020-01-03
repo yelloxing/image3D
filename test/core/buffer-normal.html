@@ -40,16 +40,16 @@
 
     <script>
 
-        var render = image3D.render(document.getElementsByTagName('canvas')[0]);
+        var core = image3D.core(document.getElementsByTagName('canvas')[0]);
 
         // 启用着色器
-        render.shader(
+        core.shader(
             document.getElementById('vs').innerHTML,
             document.getElementById('fs').innerHTML
         );
 
         // 获取画笔
-        var gl = render.painter();
+        var painter = core.painter();
 
         // 数据
         var data = new Float32Array([
@@ -67,7 +67,7 @@
         ]);
 
         // 初始化缓冲区
-        var buffer = render.buffer()
+        var buffer = core.buffer()
             // 数据写入缓冲区
             .write(data)
             // 写入缓冲区的数据分配
@@ -75,7 +75,7 @@
             .use('a_color', 3, 6, 3);
 
         // 绘制三个三角形
-        gl.drawArrays(gl.TRIANGLES, 0, 9);
+        painter.triangles(0, 3);
 
     </script>
 

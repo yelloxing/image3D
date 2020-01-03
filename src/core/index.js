@@ -1,6 +1,8 @@
 import { useShader } from './shader';
 import { newBuffer, writeBuffer, useBuffer } from './buffer';
 import { initTexture, configTexture, linkImage } from './texture';
+import value from './value';
+import painter from './painter';
 
 // 获取webgl上下文
 let getCanvasWebgl = function (node, opts) {
@@ -19,8 +21,10 @@ let getCanvasWebgl = function (node, opts) {
 export default function (node, opts) {
     let gl = getCanvasWebgl(node, opts),
         glObj = {
+
+            // 画笔
             "painter": function () {
-                return gl;
+                return painter(gl);
             },
 
             // 启用着色器
@@ -58,7 +62,11 @@ export default function (node, opts) {
 
             // 纹理
             "texture": function (unit, type) {
-                type = type || gl.TEXTURE_2D;
+                type = {
+                    "2d": gl.TEXTURE_2D,
+                    "3d": gl.TEXTURE_3D,
+                    "cube": gl.TEXTURE_CUBE_MAP
+                }[type] || gl.TEXTURE_2D;
                 // 创建纹理
                 initTexture(gl, unit, type);
                 let textureObj = {
@@ -68,7 +76,7 @@ export default function (node, opts) {
                         return textureObj;
                     },
                     // 链接图片资源
-                    "use": function (level, format, textureType, image) {
+                    "use": function (image, level, format, textureType) {
                         linkImage(gl, type, level, format, textureType, image);
                         return textureObj;
                     }
@@ -77,6 +85,12 @@ export default function (node, opts) {
             }
 
         };
+
+    // attribue和uniform数据设置
+    let valueMethods = value(gl);
+    for (let key in valueMethods) {
+        glObj[key] = valueMethods[key];
+    }
 
     return glObj;
 };

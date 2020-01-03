@@ -35,19 +35,19 @@
 
     <script>
 
-        var render = image3D.render(document.getElementsByTagName('canvas')[0]);
+        var core = image3D.core(document.getElementsByTagName('canvas')[0]);
 
         // 启用着色器
-        render.shader(
+        core.shader(
             document.getElementById('vs').innerHTML,
             document.getElementById('fs').innerHTML
         );
 
         // 获取画笔
-        var gl = render.painter();
+        var painter = core.painter();
 
         // 绘制一个点
-        gl.drawArrays(gl.POINTS, 0, 1);
+        painter.points(0, 1);
 
     </script>
 

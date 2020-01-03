@@ -4,14 +4,14 @@
 *
 * author 心叶
 *
-* version 2.0.0-alpha
+* version 2.0.1-alpha
 *
 * build Thu Apr 11 2019
 *
 * Copyright yelloxing
 * Released under the MIT license
 *
-* Date:Fri Jan 03 2020 23:40:28 GMT+0800 (GMT+08:00)
+* Date:Sat Jan 04 2020 04:15:35 GMT+0800 (GMT+08:00)
 */
 
 'use strict';
@@ -121,7 +121,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
      */
 
     // 初始化一个纹理对象
-    // type有两个选择gl.TEXTURE_2D代表二维纹理，gl.TEXTURE_CUBE_MAP 立方体纹理
+    // type有gl.TEXTURE_2D代表二维纹理，gl.TEXTURE_CUBE_MAP 立方体纹理等
     var initTexture = function initTexture(gl, unit, type) {
         // 创建纹理对象
         var texture = gl.createTexture();
@@ -163,8 +163,156 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
     //      gl.UNSIGNED_SHORT_4_4_4_4: 表示RGBA，每一个分量分别占据占据4, 4, 4, 4比特
     //      gl.UNSIGNED_SHORT_5_5_5_1: 表示RGBA，每一个分量分别占据占据5比特，A分量占据1比特
     var linkImage = function linkImage(gl, type, level, format, textureType, image) {
-        gl.texImage2D(type, level, format, format, textureType, image);
+        format = {
+            "rgb": gl.RGB,
+            "rgba": gl.RGBA,
+            "alpha": gl.ALPHA
+        }[format] || gl.RGB;
+
+        gl.texImage2D(type, level, format, format, {
+            // todo
+        }[textureType] || gl.UNSIGNED_BYTE, image);
     };
+
+    function value(gl) {
+        return {
+
+            /**
+             * attribue
+             * ----------------------------------------
+             */
+
+            // 浮点数
+            setAttribute1f: function setAttribute1f(name, v0) {
+                // 获取存储位置
+                var location = gl.getAttribLocation(gl.program, name);
+                // 传递数据给变量
+                gl.vertexAttrib1f(location, v0);
+            },
+            setAttribute2f: function setAttribute2f(name, v0, v1) {
+                var location = gl.getAttribLocation(gl.program, name);
+                gl.vertexAttrib2f(location, v0, v1);
+            },
+            setAttribute3f: function setAttribute3f(name, v0, v1, v2) {
+                var location = gl.getAttribLocation(gl.program, name);
+                gl.vertexAttrib3f(location, v0, v1, v2);
+            },
+            setAttribute4f: function setAttribute4f(name, v0, v1, v2, v3) {
+                var location = gl.getAttribLocation(gl.program, name);
+                gl.vertexAttrib4f(location, v0, v1, v2, v3);
+            },
+
+
+            // 整数
+            setAttribute1i: function setAttribute1i(name, v0) {
+                // 获取存储位置
+                var location = gl.getAttribLocation(gl.program, name);
+                // 传递数据给变量
+                gl.vertexAttrib1i(location, v0);
+            },
+            setAttribute2i: function setAttribute2i(name, v0, v1) {
+                var location = gl.getAttribLocation(gl.program, name);
+                gl.vertexAttrib2i(location, v0, v1);
+            },
+            setAttribute3i: function setAttribute3i(name, v0, v1, v2) {
+                var location = gl.getAttribLocation(gl.program, name);
+                gl.vertexAttrib3i(location, v0, v1, v2);
+            },
+            setAttribute4i: function setAttribute4i(name, v0, v1, v2, v3) {
+                var location = gl.getAttribLocation(gl.program, name);
+                gl.vertexAttrib4i(location, v0, v1, v2, v3);
+            },
+
+
+            /**
+            * uniform
+            * ----------------------------------------
+            */
+
+            // 浮点数
+            setUniform1f: function setUniform1f(name, v0) {
+                var location = gl.getUniformLocation(gl.program, name);
+                gl.uniform1f(location, v0);
+            },
+            setUniform2f: function setUniform2f(name, v0, v1) {
+                var location = gl.getUniformLocation(gl.program, name);
+                gl.uniform2f(location, v0, v1);
+            },
+            setUniform3f: function setUniform3f(name, v0, v1, v2) {
+                var location = gl.getUniformLocation(gl.program, name);
+                gl.uniform3f(location, v0, v1, v2);
+            },
+            setUniform4f: function setUniform4f(name, v0, v1, v2, v3) {
+                var location = gl.getUniformLocation(gl.program, name);
+                gl.uniform4f(location, v0, v1, v2, v3);
+            },
+
+
+            // 整数
+            setUniform1i: function setUniform1i(name, v0) {
+                var location = gl.getUniformLocation(gl.program, name);
+                gl.uniform1i(location, v0);
+            },
+            setUniform2i: function setUniform2i(name, v0, v1) {
+                var location = gl.getUniformLocation(gl.program, name);
+                gl.uniform2i(location, v0, v1);
+            },
+            setUniform3i: function setUniform3i(name, v0, v1, v2) {
+                var location = gl.getUniformLocation(gl.program, name);
+                gl.uniform3i(location, v0, v1, v2);
+            },
+            setUniform4i: function setUniform4i(name, v0, v1, v2, v3) {
+                var location = gl.getUniformLocation(gl.program, name);
+                gl.uniform4i(location, v0, v1, v2, v3);
+            }
+        };
+    }
+
+    function _painter(gl) {
+        return {
+
+            // 绘制点
+            points: function points(first, count) {
+                gl.drawArrays(gl.POINTS, first, count);
+            },
+
+
+            // 绘制直线
+            lines: function lines(first, count) {
+                gl.drawArrays(gl.LINES, first, count * 2);
+            },
+
+
+            // 绘制连续直线
+            stripLines: function stripLines(first, count) {
+                gl.drawArrays(gl.LINE_STRIP, first, count + 1);
+            },
+
+
+            // 绘制闭合直线
+            loopLines: function loopLines(first, count) {
+                gl.drawArrays(gl.LINE_LOOP, first, count);
+            },
+
+
+            // 绘制三角形
+            triangles: function triangles(first, count) {
+                gl.drawArrays(gl.TRIANGLES, first, count * 3);
+            },
+
+
+            // 绘制共有边三角形
+            stripTriangles: function stripTriangles(first, count) {
+                gl.drawArrays(gl.TRIANGLE_STRIP, first, count + 2);
+            },
+
+
+            // 绘制旋转围绕三角形
+            fanTriangles: function fanTriangles(first, count) {
+                gl.drawArrays(gl.TRIANGLE_FAN, first, count + 2);
+            }
+        };
+    }
 
     // 获取webgl上下文
     var getCanvasWebgl = function getCanvasWebgl(node, opts) {
@@ -181,11 +329,13 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
     };
 
     // 绘图核心对象
-    function render(node, opts) {
+    function core(node, opts) {
         var gl = getCanvasWebgl(node, opts),
             glObj = {
+
+            // 画笔
             "painter": function painter() {
-                return gl;
+                return _painter(gl);
             },
 
             // 启用着色器
@@ -223,7 +373,11 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
             // 纹理
             "texture": function texture(unit, type) {
-                type = type || gl.TEXTURE_2D;
+                type = {
+                    "2d": gl.TEXTURE_2D,
+                    "3d": gl.TEXTURE_3D,
+                    "cube": gl.TEXTURE_CUBE_MAP
+                }[type] || gl.TEXTURE_2D;
                 // 创建纹理
                 initTexture(gl, unit, type);
                 var textureObj = {
@@ -233,7 +387,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
                         return textureObj;
                     },
                     // 链接图片资源
-                    "use": function use(level, format, textureType, image) {
+                    "use": function use(image, level, format, textureType) {
                         linkImage(gl, type, level, format, textureType, image);
                         return textureObj;
                     }
@@ -243,13 +397,19 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
         };
 
+        // attribue和uniform数据设置
+        var valueMethods = value(gl);
+        for (var key in valueMethods) {
+            glObj[key] = valueMethods[key];
+        }
+
         return glObj;
     }
 
     var image3D = function image3D() {};
 
     // 挂载3D核心启动器
-    image3D.render = render;
+    image3D.core = core;
 
     if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === "object" && _typeof(module.exports) === "object") {
         module.exports = image3D;
