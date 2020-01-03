@@ -1,7 +1,6 @@
 import { useShader } from './shader';
 import { newBuffer, writeBuffer, useBuffer } from './buffer';
 import { initTexture, configTexture, linkImage } from './texture';
-import isObject from '@yelloxing/core.js/isObject';
 
 // 获取webgl上下文
 let getCanvasWebgl = function (node, opts) {
@@ -16,60 +15,9 @@ let getCanvasWebgl = function (node, opts) {
     return context;
 }
 
-let image3D = function (node) {
-    return new image3D.prototype.init(node);
-};
-
-image3D.prototype.init = function (node) {
-    this[0] = node;
-    return this;
-};
-
-// 扩展方法
-// 在image3D和image3D.prototype上分别调用extend方法就可以在类和对象上扩展方法了
-image3D.prototype.extend = image3D.extend = function () {
-
-    var target = arguments[0] || {};
-    var source = arguments[1] || {};
-    var length = arguments.length;
-
-    /*
-     * 确定复制目标和源
-     */
-    if (length === 1) {
-        //如果只有一个参数，目标对象是自己
-        source = target;
-        target = this;
-    }
-    if (!isObject(target)) {
-        //如果目标不是对象或函数，则初始化为空对象
-        target = {};
-    }
-
-    /*
-     * 复制属性到对象上面
-     */
-    for (let key in source) {
-        try {
-            target[key] = source[key];
-        } catch (e) {
-
-            // 为什么需要try{}catch(e){}？
-            // 一些对象的特殊属性不允许覆盖，比如name
-            // 执行：image3D.extend({'name':'新名称'})
-            // 会抛出TypeError
-            throw new Error("Illegal property value！");
-        }
-    }
-
-    return target;
-};
-
-image3D.prototype.init.prototype = image3D.prototype;
-
-// 启动webgl绘图
-image3D.prototype.render3D = function (opts) {
-    let gl = getCanvasWebgl(this[0], opts),
+// 绘图核心对象
+export default function (node, opts) {
+    let gl = getCanvasWebgl(node, opts),
         glObj = {
             "painter": function () {
                 return gl;
@@ -84,8 +32,8 @@ image3D.prototype.render3D = function (opts) {
             // 缓冲区
             "buffer": function (isElement) {
                 // 创建缓冲区
-                let buffer = newBuffer(gl, isElement),
-                    bufferData,
+                newBuffer(gl, isElement);
+                let bufferData,
                     bufferObj = {
                         // 写入数据
                         "write": function (data, usage) {
@@ -112,7 +60,7 @@ image3D.prototype.render3D = function (opts) {
             "texture": function (unit, type) {
                 type = type || gl.TEXTURE_2D;
                 // 创建纹理
-                let texture = initTexture(gl, unit, type);
+                initTexture(gl, unit, type);
                 let textureObj = {
                     // 配置纹理对象
                     "config": function (config) {
@@ -132,6 +80,3 @@ image3D.prototype.render3D = function (opts) {
 
     return glObj;
 };
-
-
-export default image3D;

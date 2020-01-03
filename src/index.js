@@ -5,23 +5,13 @@ if (typeof module === "object" && typeof module.exports === "object") {
 } else {
     let
         // 保存之前的image3D，防止直接覆盖
-        _image3D = window.image3D,
+        _image3D = window.image3D;
 
-        // 保存之前的$$，防止直接覆盖
-        _$$ = window.$$;
-
-    image3D.noConflict = function (deep) {
+    image3D.noConflict = function () {
 
         // 如果当前的$$是被最新的image3D覆盖的
         // 恢复之前的
-        if (window.$$ === image3D) {
-            window.$$ = _$$;
-        }
-
-        // 如果当前的image3D是被最新的image3D覆盖的
-        // 且标记需要恢复
-        // 恢复之前的
-        if (deep && window.image3D === image3D) {
+        if (window.image3D === image3D) {
             window.image3D = _image3D;
         }
 
@@ -33,6 +23,6 @@ if (typeof module === "object" && typeof module.exports === "object") {
 
     };
 
-    // 挂载库对象到根
-    window.image3D = window.$$ = image3D;
+    // 挂载对象到根
+    window.image3D = image3D;
 }

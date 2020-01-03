@@ -121,7 +121,7 @@ module.exports = {
          */
         uglifyjs(cuf, pkg) {
 
-            cuf.log("\n[3]babel转义:./build/image3D.js → ./build/image3D.min.js + ./docs/image3D.min.guider.js\n");
+            cuf.log("\n[3]babel转义:./build/image3D.js → ./build/image3D.min.js\n");
 
             cp.exec("uglifyjs ./build/image3D.js -m -o ./build/uglifyjs.new.js", function (error) {
                 if (error) {
@@ -130,9 +130,6 @@ module.exports = {
 
                     fs.writeFileSync("./build/image3D.min.js", banner(pkg));
                     fs.appendFileSync("./build/image3D.min.js", fs.readFileSync("./build/uglifyjs.new.js"));
-
-                    // 复制一份用于文档
-                    cuf.copySync("./build/image3D.min.js", "./docs/image3D.min.guider.js");
 
                     cuf.error('压缩完毕');
                 }

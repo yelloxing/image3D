@@ -5,9 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="shortcut icon" href="../../docs/image3D.png">
     <script src="../../build/image3D.js"></script>
-    <title>着色器</title>
+    <title>着色器 | 测试</title>
 
     <!-- 顶点着色器 -->
     <script type='x-shader/x-vertex' id='vs'>
@@ -28,27 +27,30 @@
 
 <body>
 
-    <canvas width=500 height=500>非常抱歉，您的浏览器不支持canvas!</canvas>
+    <h2>
+        Tips:你应该看见一个位于中心的100*100的红色正方形！
+    </h2>
+
+    <canvas width=200 height=200>非常抱歉，您的浏览器不支持canvas!</canvas>
+
+    <script>
+
+        var render = image3D.render(document.getElementsByTagName('canvas')[0]);
+
+        // 启用着色器
+        render.shader(
+            document.getElementById('vs').innerHTML,
+            document.getElementById('fs').innerHTML
+        );
+
+        // 获取画笔
+        var gl = render.painter();
+
+        // 绘制一个点
+        gl.drawArrays(gl.POINTS, 0, 1);
+
+    </script>
 
 </body>
-
-<script>
-
-    var render3D = $$(document.getElementsByTagName('canvas')[0]).render3D();
-
-    // 启用着色器
-    render3D.shader(
-        document.getElementById('vs').innerHTML,
-        document.getElementById('fs').innerHTML
-    );
-
-    // 获取画笔
-    var gl = render3D.painter();
-
-    // 绘制一个点
-    gl.drawArrays(gl.POINTS, 0, 1);
-
-
-</script>
 
 </html>
