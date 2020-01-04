@@ -16,7 +16,7 @@
 使用的时候遇到任何问题或有好的建议，请点击进入[issue](https://github.com/yelloxing/image3D/issues)！
 
 ## 如何引入
-如果你开发的是一个web项目，直接在页面引入打包后的文件后即可（在代码中通过image3D或$$调用）：
+请直接在页面中加入下面这行代码，然后通过image3D即可调用（查看[更新日志](https://github.com/yelloxing/image3D/blob/master/CHANGELOG)选择版本）：
 
 ```html
 <script src="https://cdn.jsdelivr.net/npm/image3d@1.0.2/build/image3D.min.js"></script>
@@ -31,13 +31,13 @@ npm install --save image3d
 安装好了以后，在需要的地方引入即可：
 
 ```js
-import $$ from 'image3d';
+import image3D from 'image3d';
 ```
 
 或
 
 ```js
-const $$ = require("image3d");
+const image3D = require("image3d");
 ```
 
 ## License
