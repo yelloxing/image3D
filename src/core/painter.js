@@ -1,6 +1,10 @@
 export default function (gl) {
     return {
 
+        /**
+         * gl.drawArrays
+         */
+
         // 绘制点
         points(first, count) {
             gl.drawArrays(gl.POINTS, first, count);

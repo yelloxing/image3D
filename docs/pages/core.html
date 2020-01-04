@@ -24,10 +24,16 @@
                 <a href="#shader">着色器</a>
             </li>
             <li>
+                <a href="#setData">设置数据</a>
+            </li>
+            <li>
                 <a href="#buffer">缓冲区</a>
             </li>
             <li>
                 <a href="#texture">纹理</a>
+            </li>
+            <li>
+                <a href="#painter">绘图方法</a>
             </li>
         </ul>
         <div>
@@ -57,6 +63,24 @@
     document.getElementById('vs').innerHTML,
     document.getElementById('fs').innerHTML
 );</pre>
+
+            <h2 id='setData'>设置数据</h2>
+            <p>
+                我们知道uniform是只读的，可以是除了数组和结构体外的任意类型，主要用于二个着色器间数据传递，因此，设置数据其实涉及的是attribue和varying类型的变量（只能是float、vec2、vec3、vec4和mat2、mat3、mat4其中的一种类型）。
+            </p>
+
+            <h4>1.attribue</h4>
+
+            <pre class='prettyprint lang-js'>core.setAttribute[1,2,3,4][f,i](location, v0, v1, v2, v3);</pre>
+
+            <h4>2.varying</h4>
+
+            <pre class='prettyprint lang-js'>core.setUniform[1,2,3,4](location, v0, v1, v2, v3);</pre>
+
+            <p>
+                此外，如果设置的数据是矩阵：
+            </p>
+            <pre class='prettyprint lang-js'>core.setUniformMatrix[2,3,4][f,i](location, value);</pre>
 
             <h2 id='buffer'>缓冲区</h2>
 
@@ -105,6 +129,44 @@
                 到这一步，纹理准备工作已经完成了，后面的就是在片元着色器中去使用这个纹理了。
             </p>
 
+            <h2 id="painter">绘图方法</h2>
+            <pre class='prettyprint lang-js'>var painter=core.painter();</pre>
+            <p>
+                绘制方法可以划分为二类：顶点绘制方法和顶点索引绘制方法。
+            </p>
+
+            <h4>
+                1.顶点绘制
+            </h4>
+
+            <p>点：</p>
+            <pre class='prettyprint lang-js'>painter.points(first, count);</pre>
+
+            <p>直线：</p>
+            <pre class='prettyprint lang-js'>painter.lines(first, count);</pre>
+
+            <p>连续直线：</p>
+            <pre class='prettyprint lang-js'>painter.stripLines(first, count);</pre>
+
+            <p>闭合直线：</p>
+            <pre class='prettyprint lang-js'>painter.loopLines(first, count);</pre>
+
+            <p>三角形：</p>
+            <pre class='prettyprint lang-js'>painter.triangles(first, count);</pre>
+
+            <p>共边三角形：</p>
+            <pre class='prettyprint lang-js'>painter.stripTriangles(first, count);</pre>
+
+            <p>旋转围绕三角形：</p>
+            <pre class='prettyprint lang-js'>painter.fanTriangles(first, count);</pre>
+
+            <h4>
+                2.顶点索引绘制
+            </h4>
+            <p>
+                待整理！
+            </p>
+
         </div>
     </div>
 
@@ -131,6 +193,13 @@
         line-height: 1.5em;
         margin: .1rem 0;
         font-size: .14rem;
+    }
+
+    body>div>div>h4 {
+        font-size: .15rem;
+        font-weight: 800;
+        color: #7e6357;
+        margin-top: .3rem;
     }
 
     body>div>div>h2 {

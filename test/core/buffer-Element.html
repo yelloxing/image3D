@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="../../build/image3D.js"></script>
+    <title>缓冲区 - 索引 | 测试</title>
+
+    <!-- 顶点着色器 -->
+    <script type='x-shader/x-vertex' id='vs'>
+
+        void main(){
+
+        }
+    </script>
+
+    <!-- 片段着色器 -->
+    <script type='x-shader/x-fragment' id='fs'>
+        precision mediump float;
+
+        void main(){
+
+        }
+    </script>
+
+</head>
+
+<body>
+
+    <h2>
+        Tips:待开发！
+    </h2>
+
+    <canvas width=500 height=500>非常抱歉，您的浏览器不支持canvas!</canvas>
+
+    <script>
+
+        var core = image3D.core(document.getElementsByTagName('canvas')[0]);
+
+        // 启用着色器
+        core.shader(
+            document.getElementById('vs').innerHTML,
+            document.getElementById('fs').innerHTML
+        );
+
+        // 获取画笔
+        var painter = core.painter();
+
+
+
+    </script>
+
+</body>
+
+</html>
