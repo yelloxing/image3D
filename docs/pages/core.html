@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="../libs/normalize.css">
+    <link rel="stylesheet" href="../libs/prettify.css">
+    <script src="../libs/prettify.js"></script>
+    <link rel="shortcut icon" href="../image3D.png">
+    <title>核心 | image3D.js</title>
+</head>
+
+<body onload='prettyPrint();'>
+
+    <header>
+        <span>image3D</span>
+        <a href="../index.html">返回首页</a>
+    </header>
+    <div>
+        <ul>
+            <li>
+                <a href="#shader">着色器</a>
+            </li>
+            <li>
+                <a href="#buffer">缓冲区</a>
+            </li>
+            <li>
+                <a href="#texture">纹理</a>
+            </li>
+        </ul>
+        <div>
+
+            <pre class='prettyprint lang-js'>var core = image3D.core(document.getElementsByTagName('canvas')[0]);</pre>
+
+            <p>
+                通过调用image3D上的core方法，传递一个canvas结点，返回的是一个对象，记作core，通过它你可以直接使用image3D提供的最基础的原始方法。
+            </p>
+
+            <h2 id='shader'>着色器</h2>
+
+            <pre class='prettyprint lang-html'>&lt;!-- 顶点着色器 --&gt;
+&lt;script type='x-shader/x-vertex' id='vs'&gt;
+    void main(){}
+&lt;/script&gt;</pre>
+
+            <pre class='prettyprint lang-html'>&lt;!-- 片段着色器 --&gt;
+&lt;script type='x-shader/x-fragment' id='fs'&gt;
+    void main(){}
+&lt;/script&gt;</pre>
+
+            <p>
+                在JavaScript层面上着色器就是二段字符串，调用下面的便可以让着色器生效：
+            </p>
+            <pre class='prettyprint lang-js'>core.shader(
+    document.getElementById('vs').innerHTML,
+    document.getElementById('fs').innerHTML
+);</pre>
+
+            <h2 id='buffer'>缓冲区</h2>
+
+            <p>
+                缓冲区是一种更快速的给GPU大量数据的特殊通道，为了使用缓冲区，首先需要创建一个缓冲区：
+            </p>
+            <pre class='prettyprint lang-js'>var buffer = core.buffer(isElement)</pre>
+            <p>
+                在创建的时候需要传递一个boolean值类型的参数isElement，默认false表示缓冲区中保存了包含顶点的数据，如果传递true表示缓冲区保存了包含顶点的索引值。
+            </p>
+
+            <p>
+                缓冲区创建好了以后，你就可以直接往缓冲区里面写入数据了：
+            </p>
+            <pre class='prettyprint lang-js'>buffer.write(data);</pre>
+
+            <p>
+                如果你创建的缓冲区是包含顶点的索引值的话，可能到这一步就结束了，否则，你可能还需要把缓冲区中的数据分配给具体的使用者：
+            </p>
+            <pre class='prettyprint lang-js'>buffer.use(location, size, stride, offset);</pre>
+            <ul>
+                <li>1.location：字符串类型，对应顶点着色器中定义的attribute类型的变量名；</li>
+                <li>2.size：整数，表示一个完整的数据的个数；</li>
+                <li>3.stride：整数，表示写入缓冲区数据一组的个数；</li>
+                <li>4.offset：整数，表示读取起点。</li>
+            </ul>
+
+            <h2 id='texture'>纹理</h2>
+            <p>
+                纹理是片元着色器在逐片元过程中使用的，类似贴图，使用的第一步也是创建一个纹理：
+            </p>
+            <pre class='prettyprint lang-js'>var texture = core.texture(unit, type)</pre>
+            <p>
+                其中unit表示使用哪个纹理单元（开启的编号）；type表示纹理的类型，因为纹理有很多种，下面列出目前支持的类型：
+            </p>
+            <ul>
+                <li>1."2d"：二维纹理(默认值)；</li>
+                <li>2."cube"：立方体纹理。</li>
+            </ul>
+
+            <p>
+                纹理创建好了以后，你需要把材料（比如图片等）和纹理绑定（假如我们这里已经准备好了一张图片img）：
+            </p>
+            <pre class='prettyprint lang-js'>texture.use(img);</pre>
+            <p>
+                到这一步，纹理准备工作已经完成了，后面的就是在片元着色器中去使用这个纹理了。
+            </p>
+
+        </div>
+    </div>
+
+</body>
+
+<style>
+    body>div>div>ul>li {
+        font-size: .14rem;
+        line-height: 1.4em;
+    }
+
+    body>div>div>ul {
+        padding-left: 2em;
+    }
+
+    body>div>div>pre {
+        line-height: 1.4em;
+        font-size: .14rem;
+        background-color: rgb(244, 241, 241);
+    }
+
+    body>div>div>p {
+        text-indent: 2em;
+        line-height: 1.5em;
+        margin: .1rem 0;
+        font-size: .14rem;
+    }
+
+    body>div>div>h2 {
+        font-size: .18rem;
+        font-weight: 300;
+        color: #bc6036;
+        margin-top: .3rem;
+    }
+
+    body>header>a {
+        float: right;
+        font-size: 0;
+        margin-right: .15rem;
+        width: .55rem;
+        height: .55rem;
+        background-image: url("../images/home.png");
+        background-repeat: no-repeat;
+        background-size: auto 60%;
+        background-position: center center;
+    }
+
+    body>header {
+        line-height: .55rem;
+        height: .55rem;
+        border-bottom: 1px solid #eaecef;
+        background-image: url('../image3D.png');
+        background-repeat: no-repeat;
+        background-size: auto 80%;
+        background-position: .2rem center;
+    }
+
+    body>header>span {
+        font-size: .2rem;
+        font-family: fantasy;
+        font-weight: 800;
+        color: #bc6036;
+        padding-left: .7rem;
+    }
+
+    body>div {
+        font-size: 0;
+        white-space: nowrap;
+        height: calc(100vh - .55rem);
+        overflow: auto;
+    }
+
+    body>div>* {
+        display: inline-block;
+        vertical-align: top;
+        font-size: .16rem;
+        white-space: normal;
+        height: 100%;
+        overflow: auto;
+    }
+
+    body>div>ul {
+        width: 2rem;
+        border-right: 1px solid #eaecef;
+        padding: .2rem;
+        padding-top: 2rem;
+    }
+
+    body>div>ul>li>a {
+        line-height: 2.2em;
+        color: #bc6036;
+        font-weight: 800;
+    }
+
+    body>div>div {
+        width: calc(100vw - 2rem);
+        padding: .2rem calc(50% - 5rem);
+        min-width: 10rem;
+    }
+
+    html {
+        font-size: 100px;
+    }
+
+    body {
+        font-size: .16rem;
+    }
+</style>
+
+</html>

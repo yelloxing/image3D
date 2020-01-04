@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="./libs/prettify.css">
     <script src="./libs/prettify.js"></script>
     <link rel="shortcut icon" href="./image3D.png">
-    <title>image3D</title>
+    <title>image3D.js</title>
 </head>
 
 <body onload='prettyPrint();'>
@@ -18,7 +18,10 @@
             image3D
         </a>
         <ul>
-            <li onclick="alert('开发中，敬请期待！')">接口文档</li>
+            <li class='active'>首页</li>
+            <li onclick="alert('整理中，敬请期待！')">接口文档</li>
+            <li onclick="alert('整理中，敬请期待！')">教程</li>
+            <li onclick="alert('整理中，敬请期待！')">资料</li>
             <li onclick='window.location.href="https://github.com/yelloxing/image3D/issues"'>参与讨论</li>
         </ul>
     </header>
@@ -34,7 +37,7 @@
                 JavaScript 3D绘图
             </span>
             <span>
-                <a>核心</a>
+                <a href="./pages/core.html">核心</a>
                 <a href="https://github.com/yelloxing/image3D/issues">获得帮助</a>
                 <a href="https://github.com/yelloxing/image3D">GITHUB</a>
             </span>
@@ -103,6 +106,11 @@
         margin-top: .4rem;
     }
 
+    body>.import>div>a {
+        color: rgb(35, 141, 221);
+        text-decoration: underline;
+    }
+
     body>.import>div {
         padding-bottom: .1rem;
         line-height: 2em;
@@ -131,7 +139,6 @@
         font-size: .13rem;
         width: 6rem;
         margin: auto;
-        background-color: whitesmoke;
         text-align: left;
     }
 
@@ -268,6 +275,7 @@
         line-height: 2em;
         height: 2em;
         margin-top: .2rem;
+        min-width: 6rem;
     }
 
     body>header>* {
@@ -284,6 +292,13 @@
 
     body>header>ul {
         float: right;
+    }
+
+    body>header>ul>li.active {
+        cursor: default;
+        text-decoration: underline;
+        color: #bc6036;
+        font-weight: 800;
     }
 
     body>header>ul>li {
