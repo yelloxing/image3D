@@ -7,6 +7,8 @@
 [![Version](https://img.shields.io/npm/v/image3d.svg)](https://www.npmjs.com/package/image3d)
 [![License](https://img.shields.io/npm/l/image3d.svg)](https://github.com/yelloxing/image3D/blob/master/LICENSE)
 
+> 鉴于当前浏览器支持情况，本项目只支持webGL 1上下文，更高级版本未来会考虑支持！
+
 ## 文档
 使用中可以访问[在线接口文档](https://yelloxing.github.io/image3D/)。
 

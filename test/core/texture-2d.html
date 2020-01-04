@@ -37,7 +37,7 @@
         Tips:(请用服务器访问)你应该看见一张图片！
     </h2>
 
-    <canvas width=600 height=400>非常抱歉，您的浏览器不支持canvas!</canvas>
+    <canvas width=400 height=300>非常抱歉，您的浏览器不支持canvas!</canvas>
 
     <script>
 
@@ -72,18 +72,11 @@
         // 创建纹理对象
         var texture = core.texture(0);
 
-        // 配置纹理对象
-        texture.config({
-            "TEXTURE_MIN_FILTER": "LINEAR",
-            "TEXTURE_WRAP_S": "CLAMP_TO_EDGE",
-            "TEXTURE_WRAP_T": "CLAMP_TO_EDGE"
-        });
-
         var image = new Image();
         image.onload = function () {
 
             // 绘制图片
-            texture.use(image, 0);
+            texture.use(image);
             core.setUniform1i('u_sampler', 0);
             painter.stripTriangles(0, 2);
 

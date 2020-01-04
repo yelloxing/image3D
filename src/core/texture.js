@@ -24,12 +24,20 @@ export let configTexture = function (gl, type, config) {
         /**
          *
          * 可配置项有四个：
-         *  1. gl.TEXTURE_MAX_FILTER：放大方法
-         *  2. gl.TEXTURE_MIN_FILTER：缩小方法
-         *  3. gl.TEXTURE_WRAP_S：水平填充方法
-         *  4. gl.TEXTURE_WRAP_T：垂直填充方法
+         *  1. gl.TEXTURE_MAX_FILTER：纹理放大滤波器
+         *      [gl.LINEAR (默认值), gl.NEAREST]
+         *
+         *  2. gl.TEXTURE_MIN_FILTER：纹理缩小滤波器
+         *      [gl.LINEAR, gl.NEAREST, gl.NEAREST_MIPMAP_NEAREST, gl.LINEAR_MIPMAP_NEAREST, gl.NEAREST_MIPMAP_LINEAR (默认值), gl.LINEAR_MIPMAP_LINEAR]
+         *
+         *  3. gl.TEXTURE_WRAP_S：纹理坐标水平填充 s
+         *      [gl.REPEAT (默认值),gl.CLAMP_TO_EDGE, gl.MIRRORED_REPEAT]
+         *
+         *  4. gl.TEXTURE_WRAP_T：纹理坐标垂直填充 t
+         *      [gl.REPEAT (默认值),gl.CLAMP_TO_EDGE, gl.MIRRORED_REPEAT]
          *
          */
+        // 涉及到webgl2的时候：texParameterf，目前不支持
         gl.texParameteri(type, gl[key], gl[config[key]]);
     }
 };
@@ -54,7 +62,9 @@ export let linkImage = function (gl, type, level, format, textureType, image) {
         "alpha": gl.ALPHA
     }[format] || gl.RGB;
 
-    gl.texImage2D(type, level, format, format, {
-        // todo
+    gl.texImage2D(type, level || 0, format, format, {
+
+        // 目前一律采用默认值，先不对外提供修改权限
+
     }[textureType] || gl.UNSIGNED_BYTE, image);
 };

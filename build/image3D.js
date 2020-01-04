@@ -11,7 +11,7 @@
 * Copyright yelloxing
 * Released under the MIT license
 *
-* Date:Sat Jan 04 2020 04:15:35 GMT+0800 (GMT+08:00)
+* Date:Sat Jan 04 2020 16:16:25 GMT+0800 (GMT+08:00)
 */
 
 'use strict';
@@ -139,12 +139,20 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
             /**
              *
              * 可配置项有四个：
-             *  1. gl.TEXTURE_MAX_FILTER：放大方法
-             *  2. gl.TEXTURE_MIN_FILTER：缩小方法
-             *  3. gl.TEXTURE_WRAP_S：水平填充方法
-             *  4. gl.TEXTURE_WRAP_T：垂直填充方法
+             *  1. gl.TEXTURE_MAX_FILTER：纹理放大滤波器
+             *      [gl.LINEAR (默认值), gl.NEAREST]
+             *
+             *  2. gl.TEXTURE_MIN_FILTER：纹理缩小滤波器
+             *      [gl.LINEAR, gl.NEAREST, gl.NEAREST_MIPMAP_NEAREST, gl.LINEAR_MIPMAP_NEAREST, gl.NEAREST_MIPMAP_LINEAR (默认值), gl.LINEAR_MIPMAP_LINEAR]
+             *
+             *  3. gl.TEXTURE_WRAP_S：纹理坐标水平填充 s
+             *      [gl.REPEAT (默认值),gl.CLAMP_TO_EDGE, gl.MIRRORED_REPEAT]
+             *
+             *  4. gl.TEXTURE_WRAP_T：纹理坐标垂直填充 t
+             *      [gl.REPEAT (默认值),gl.CLAMP_TO_EDGE, gl.MIRRORED_REPEAT]
              *
              */
+            // 涉及到webgl2的时候：texParameterf，目前不支持
             gl.texParameteri(type, gl[key], gl[config[key]]);
         }
     };
@@ -169,8 +177,10 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
             "alpha": gl.ALPHA
         }[format] || gl.RGB;
 
-        gl.texImage2D(type, level, format, format, {
-            // todo
+        gl.texImage2D(type, level || 0, format, format, {
+
+            // 目前一律采用默认值，先不对外提供修改权限
+
         }[textureType] || gl.UNSIGNED_BYTE, image);
     };
 
@@ -374,18 +384,32 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
             // 纹理
             "texture": function texture(unit, type) {
                 type = {
-                    "2d": gl.TEXTURE_2D,
-                    "3d": gl.TEXTURE_3D,
-                    "cube": gl.TEXTURE_CUBE_MAP
+                    "2d": gl.TEXTURE_2D, /*二维纹理(默认值)*/
+
+                    // "2ds": gl.TEXTURE_2D_ARRAY,/*二维纹理数组 webgl2支持*/
+                    // "3d": gl.TEXTURE_3D,/*三维纹理 webgl2支持*/
+
+                    "cube": gl.TEXTURE_CUBE_MAP /*立方体纹理*/
                 }[type] || gl.TEXTURE_2D;
+
                 // 创建纹理
                 initTexture(gl, unit, type);
+
+                // 配置纹理（默认配置）
+                configTexture(gl, type, {
+                    "TEXTURE_MAX_FILTER": "NEAREST",
+                    "TEXTURE_MIN_FILTER": "NEAREST",
+                    "TEXTURE_WRAP_S": "CLAMP_TO_EDGE",
+                    "TEXTURE_WRAP_T": "CLAMP_TO_EDGE"
+                });
+
                 var textureObj = {
                     // 配置纹理对象
-                    "config": function config(_config) {
-                        configTexture(gl, type, _config);
-                        return textureObj;
-                    },
+                    // 此方法目前先不对外保留
+                    // "config": function (config) {
+                    //     configTexture(gl, type, config);
+                    //     return textureObj;
+                    // },
                     // 链接图片资源
                     "use": function use(image, level, format, textureType) {
                         linkImage(gl, type, level, format, textureType, image);
