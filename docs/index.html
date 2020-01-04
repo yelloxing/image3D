@@ -6,11 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="./libs/normalize.css">
+    <link rel="stylesheet" href="./libs/prettify.css">
+    <script src="./libs/prettify.js"></script>
     <link rel="shortcut icon" href="./image3D.png">
     <title>image3D</title>
 </head>
 
-<body>
+<body onload='prettyPrint();'>
     <header>
         <a class="title">
             image3D
@@ -63,6 +65,33 @@
             <div>高度的可扩展性，你可以根据需要安装或开发自己的插件来扩展功能。</div>
         </li>
     </ul>
+    <div class="import">
+        <h2>如何引入</h2>
+        <h4>
+            CDN方式
+        </h4>
+        <div>
+            请直接在页面中加入下面这行代码，然后通过image3D即可调用（查看<a href='https://github.com/yelloxing/image3D/blob/master/CHANGELOG'
+                target='_blank'>更新日志</a>选择版本）：
+        </div>
+        <pre
+            class='prettyprint lang-html'>&lt;script src="https://cdn.jsdelivr.net/npm/image3d@1.0.2/build/image3D.min.js"&gt;&lt;/script&gt;</pre>
+        <h4>
+            NPM方式
+        </h4>
+        <div>
+            首先，需要安装image3D，就像这样：
+        </div>
+        <pre class='prettyprint lang-bash'>npm install --save image3d</pre>
+        <div>
+            安装好了以后，在需要的地方引入即可：
+        </div>
+        <pre class='prettyprint lang-js'>import image3D from 'image3d';</pre>
+        <div>
+            或者
+        </div>
+        <pre class='prettyprint lang-js'>const image3D = require("image3d");</pre>
+    </div>
     <div class="footer">
         <span>遵循 MIT 开源协议</span>
         <span>Copyright &copy; 2019-2020 走一步 再走一步</span>
@@ -70,12 +99,49 @@
 </body>
 
 <style>
+    body>.import {
+        margin-top: .4rem;
+    }
+
+    body>.import>div {
+        padding-bottom: .1rem;
+        line-height: 2em;
+        font-size: .14rem;
+    }
+
+    body>.import>h4 {
+        color: #bc6036;
+        font-size: .16rem;
+        padding: .2rem 0 .1rem 0;
+    }
+
+    body>.import>h2 {
+        font-weight: 800;
+        font-size: .16rem;
+    }
+
+    body>.import>:not(h2) {
+        width: 6rem;
+        display: block;
+        text-align: left;
+        margin: auto;
+    }
+
+    body>.import>pre {
+        font-size: .13rem;
+        width: 6rem;
+        margin: auto;
+        background-color: whitesmoke;
+        text-align: left;
+    }
+
     body>.footer {
-        margin-top: .2rem;
+        margin-top: .4rem;
         text-align: center;
         background-color: #616666;
         color: white;
         padding: .5rem;
+        min-width: 6rem;
     }
 
     body>.footer>span {
