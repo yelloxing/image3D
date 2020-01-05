@@ -75,12 +75,12 @@
 
             <h4>2.varying</h4>
 
-            <pre class='prettyprint lang-js'>core.setUniform[1,2,3,4](location, v0, v1, v2, v3);</pre>
+            <pre class='prettyprint lang-js'>core.setUniform[1,2,3,4][f,i](location, v0, v1, v2, v3);</pre>
 
             <p>
                 此外，如果设置的数据是矩阵：
             </p>
-            <pre class='prettyprint lang-js'>core.setUniformMatrix[2,3,4][f,i](location, value);</pre>
+            <pre class='prettyprint lang-js'>core.setUniformMatrix[2,3,4]fv(location, value);</pre>
 
             <h2 id='buffer'>缓冲区</h2>
 
@@ -131,40 +131,30 @@
 
             <h2 id="painter">绘图方法</h2>
             <pre class='prettyprint lang-js'>var painter=core.painter();</pre>
-            <p>
-                绘制方法可以划分为二类：顶点绘制方法和顶点索引绘制方法。
-            </p>
-
-            <h4>
-                1.顶点绘制
-            </h4>
 
             <p>点：</p>
-            <pre class='prettyprint lang-js'>painter.points(first, count);</pre>
+            <pre class='prettyprint lang-js'>painter.points(first, count[, type]);</pre>
 
             <p>直线：</p>
-            <pre class='prettyprint lang-js'>painter.lines(first, count);</pre>
+            <pre class='prettyprint lang-js'>painter.lines(first, count[, type]);</pre>
 
             <p>连续直线：</p>
-            <pre class='prettyprint lang-js'>painter.stripLines(first, count);</pre>
+            <pre class='prettyprint lang-js'>painter.stripLines(first, count[, type]);</pre>
 
             <p>闭合直线：</p>
-            <pre class='prettyprint lang-js'>painter.loopLines(first, count);</pre>
+            <pre class='prettyprint lang-js'>painter.loopLines(first, count[, type]);</pre>
 
             <p>三角形：</p>
-            <pre class='prettyprint lang-js'>painter.triangles(first, count);</pre>
+            <pre class='prettyprint lang-js'>painter.triangles(first, count[, type]);</pre>
 
             <p>共边三角形：</p>
-            <pre class='prettyprint lang-js'>painter.stripTriangles(first, count);</pre>
+            <pre class='prettyprint lang-js'>painter.stripTriangles(first, count[, type]);</pre>
 
             <p>旋转围绕三角形：</p>
-            <pre class='prettyprint lang-js'>painter.fanTriangles(first, count);</pre>
+            <pre class='prettyprint lang-js'>painter.fanTriangles(first, count[, type]);</pre>
 
-            <h4>
-                2.顶点索引绘制
-            </h4>
             <p>
-                待整理！
+                我们注意到每个方法最后都有一个可选参数type，表示索引值类型（"byte"或"short"），如果你希望借助顶点索引来绘制，请传递这个参数。
             </p>
 
         </div>

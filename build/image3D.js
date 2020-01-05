@@ -4,14 +4,14 @@
 *
 * author 心叶
 *
-* version 2.0.1-alpha
+* version 2.0.2-alpha
 *
 * build Thu Apr 11 2019
 *
 * Copyright yelloxing
 * Released under the MIT license
 *
-* Date:Sat Jan 04 2020 16:16:25 GMT+0800 (GMT+08:00)
+* Date:Sun Jan 05 2020 14:17:42 GMT+0800 (GMT+08:00)
 */
 
 'use strict';
@@ -274,52 +274,108 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
             setUniform4i: function setUniform4i(name, v0, v1, v2, v3) {
                 var location = gl.getUniformLocation(gl.program, name);
                 gl.uniform4i(location, v0, v1, v2, v3);
+            },
+
+
+            // 矩阵
+            setUnifromMatrix2fv: function setUnifromMatrix2fv(name, value) {
+                var location = gl.getUniformLocation(gl.program, name);
+                gl.uniformMatrix2fv(location, false, value);
+            },
+            setUnifromMatrix3fv: function setUnifromMatrix3fv(name, value) {
+                var location = gl.getUniformLocation(gl.program, name);
+                gl.uniformMatrix3fv(location, false, value);
+            },
+            setUnifromMatrix4fv: function setUnifromMatrix4fv(name, value) {
+                var location = gl.getUniformLocation(gl.program, name);
+                gl.uniformMatrix4fv(location, false, value);
             }
         };
     }
 
     function _painter(gl) {
+
+        var typeMap = {
+            "byte": gl.UNSIGNED_BYTE,
+            "short": gl.UNSIGNED_SHORT
+        };
+
         return {
 
             // 绘制点
-            points: function points(first, count) {
-                gl.drawArrays(gl.POINTS, first, count);
+            points: function points(first, count, type) {
+                if (type) {
+                    gl.drawElements(gl.POINTS, count, typeMap[type], first);
+                } else {
+                    gl.drawArrays(gl.POINTS, first, count);
+                }
+                return this;
             },
 
 
             // 绘制直线
-            lines: function lines(first, count) {
-                gl.drawArrays(gl.LINES, first, count * 2);
+            lines: function lines(first, count, type) {
+                if (type) {
+                    gl.drawElements(gl.LINES, count, typeMap[type], first);
+                } else {
+                    gl.drawArrays(gl.LINES, first, count);
+                }
+                return this;
             },
 
 
             // 绘制连续直线
-            stripLines: function stripLines(first, count) {
-                gl.drawArrays(gl.LINE_STRIP, first, count + 1);
+            stripLines: function stripLines(first, count, type) {
+                if (type) {
+                    gl.drawElements(gl.LINE_STRIP, count, typeMap[type], first);
+                } else {
+                    gl.drawArrays(gl.LINE_STRIP, first, count);
+                }
+                return this;
             },
 
 
             // 绘制闭合直线
-            loopLines: function loopLines(first, count) {
-                gl.drawArrays(gl.LINE_LOOP, first, count);
+            loopLines: function loopLines(first, count, type) {
+                if (type) {
+                    gl.drawElements(gl.LINE_LOOP, count, typeMap[type], first);
+                } else {
+                    gl.drawArrays(gl.LINE_LOOP, first, count);
+                }
+                return this;
             },
 
 
             // 绘制三角形
-            triangles: function triangles(first, count) {
-                gl.drawArrays(gl.TRIANGLES, first, count * 3);
+            triangles: function triangles(first, count, type) {
+                if (type) {
+                    gl.drawElements(gl.TRIANGLES, count, typeMap[type], first);
+                } else {
+                    gl.drawArrays(gl.TRIANGLES, first, count);
+                }
+                return this;
             },
 
 
             // 绘制共有边三角形
-            stripTriangles: function stripTriangles(first, count) {
-                gl.drawArrays(gl.TRIANGLE_STRIP, first, count + 2);
+            stripTriangles: function stripTriangles(first, count, type) {
+                if (type) {
+                    gl.drawElements(gl.TRIANGLE_STRIP, count, typeMap[type], first);
+                } else {
+                    gl.drawArrays(gl.TRIANGLE_STRIP, first, count);
+                }
+                return this;
             },
 
 
             // 绘制旋转围绕三角形
-            fanTriangles: function fanTriangles(first, count) {
-                gl.drawArrays(gl.TRIANGLE_FAN, first, count + 2);
+            fanTriangles: function fanTriangles(first, count, type) {
+                if (type) {
+                    gl.drawElements(gl.TRIANGLE_FAN, count, typeMap[type], first);
+                } else {
+                    gl.drawArrays(gl.TRIANGLE_FAN, first, count);
+                }
+                return this;
             }
         };
     }

@@ -88,15 +88,15 @@ export default function (gl) {
         },
 
         // 矩阵
-        setUnifromMatrix2(name, value) {
+        setUnifromMatrix2fv(name, value) {
             let location = gl.getUniformLocation(gl.program, name);
             gl.uniformMatrix2fv(location, false, value);
         },
-        setUnifromMatrix3(name, value) {
+        setUnifromMatrix3fv(name, value) {
             let location = gl.getUniformLocation(gl.program, name);
             gl.uniformMatrix3fv(location, false, value);
         },
-        setUnifromMatrix4(name, value) {
+        setUnifromMatrix4fv(name, value) {
             let location = gl.getUniformLocation(gl.program, name);
             gl.uniformMatrix4fv(location, false, value);
         },
