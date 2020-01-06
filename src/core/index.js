@@ -1,6 +1,6 @@
 import { useShader } from './shader';
 import { newBuffer, writeBuffer, useBuffer } from './buffer';
-import { initTexture, configTexture, linkImage } from './texture';
+import { initTexture, linkImage, linkCube } from './texture';
 import value from './value';
 import painter from './painter';
 
@@ -61,38 +61,29 @@ export default function (node, opts) {
             },
 
             // 纹理
-            "texture": function (unit, type) {
+            "texture": function (type, unit) {
                 type = {
-                    "2d": gl.TEXTURE_2D,/*二维纹理(默认值)*/
-
-                    // "2ds": gl.TEXTURE_2D_ARRAY,/*二维纹理数组 webgl2支持*/
-                    // "3d": gl.TEXTURE_3D,/*三维纹理 webgl2支持*/
-
+                    "2d": gl.TEXTURE_2D,/*二维纹理*/
                     "cube": gl.TEXTURE_CUBE_MAP/*立方体纹理*/
-                }[type] || gl.TEXTURE_2D;
+                }[type];
 
                 // 创建纹理
-                initTexture(gl, unit, type);
+                let texture = initTexture(gl, type, unit);
 
                 // 配置纹理（默认配置）
-                configTexture(gl, type, {
-                    "TEXTURE_MAX_FILTER": "NEAREST",
-                    "TEXTURE_MIN_FILTER": "NEAREST",
-                    "TEXTURE_WRAP_S": "CLAMP_TO_EDGE",
-                    "TEXTURE_WRAP_T": "CLAMP_TO_EDGE"
-                });
+                gl.texParameteri(type, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+                gl.texParameteri(type, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+                gl.texParameteri(type, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
 
                 let textureObj = {
-                    // 配置纹理对象
-                    // 此方法目前先不对外保留
-                    // "config": function (config) {
-                    //     configTexture(gl, type, config);
-                    //     return textureObj;
-                    // },
                     // 链接图片资源
-                    "use": function (image, level, format, textureType) {
+                    "useImage": function (image, level, format, textureType) {
                         linkImage(gl, type, level, format, textureType, image);
                         return textureObj;
+                    },
+                    // 链接多张图片
+                    "useCube": function (images, width, height, level, format, textureType) {
+                        linkCube(gl, type, level, format, textureType, images, width, height, texture);
                     }
                 };
                 return textureObj;

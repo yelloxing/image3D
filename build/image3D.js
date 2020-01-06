@@ -4,14 +4,14 @@
 *
 * author 心叶
 *
-* version 2.0.2-alpha
+* version 2.0.3-alpha
 *
 * build Thu Apr 11 2019
 *
 * Copyright yelloxing
 * Released under the MIT license
 *
-* Date:Sun Jan 05 2020 14:17:42 GMT+0800 (GMT+08:00)
+* Date:Tue Jan 07 2020 00:38:50 GMT+0800 (GMT+08:00)
 */
 
 'use strict';
@@ -122,39 +122,18 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
     // 初始化一个纹理对象
     // type有gl.TEXTURE_2D代表二维纹理，gl.TEXTURE_CUBE_MAP 立方体纹理等
-    var initTexture = function initTexture(gl, unit, type) {
+    var initTexture = function initTexture(gl, type, unit) {
         // 创建纹理对象
         var texture = gl.createTexture();
-        // 开启纹理单元，unit表示开启的编号
-        gl.activeTexture(gl['TEXTURE' + unit]);
+
+        if (typeof unit == 'number') {
+            // 开启纹理单元，unit表示开启的编号
+            gl.activeTexture(gl['TEXTURE' + unit]);
+        }
+
         // 绑定纹理对象到目标上
         gl.bindTexture(type, texture);
         return texture;
-    };
-
-    // 配置纹理
-    var configTexture = function configTexture(gl, type, config) {
-        var key = void 0;
-        for (key in config) {
-            /**
-             *
-             * 可配置项有四个：
-             *  1. gl.TEXTURE_MAX_FILTER：纹理放大滤波器
-             *      [gl.LINEAR (默认值), gl.NEAREST]
-             *
-             *  2. gl.TEXTURE_MIN_FILTER：纹理缩小滤波器
-             *      [gl.LINEAR, gl.NEAREST, gl.NEAREST_MIPMAP_NEAREST, gl.LINEAR_MIPMAP_NEAREST, gl.NEAREST_MIPMAP_LINEAR (默认值), gl.LINEAR_MIPMAP_LINEAR]
-             *
-             *  3. gl.TEXTURE_WRAP_S：纹理坐标水平填充 s
-             *      [gl.REPEAT (默认值),gl.CLAMP_TO_EDGE, gl.MIRRORED_REPEAT]
-             *
-             *  4. gl.TEXTURE_WRAP_T：纹理坐标垂直填充 t
-             *      [gl.REPEAT (默认值),gl.CLAMP_TO_EDGE, gl.MIRRORED_REPEAT]
-             *
-             */
-            // 涉及到webgl2的时候：texParameterf，目前不支持
-            gl.texParameteri(type, gl[key], gl[config[key]]);
-        }
     };
 
     // 链接资源图片
@@ -175,13 +154,47 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
             "rgb": gl.RGB,
             "rgba": gl.RGBA,
             "alpha": gl.ALPHA
-        }[format] || gl.RGB;
+        }[format] || gl.RGBA;
 
         gl.texImage2D(type, level || 0, format, format, {
 
             // 目前一律采用默认值，先不对外提供修改权限
 
         }[textureType] || gl.UNSIGNED_BYTE, image);
+    };
+
+    var linkCube = function linkCube(gl, type, level, format, textureType, images, width, height, texture) {
+        format = {
+            "rgb": gl.RGB,
+            "rgba": gl.RGBA,
+            "alpha": gl.ALPHA
+        }[format] || gl.RGBA;
+
+        level = level || 0;
+
+        textureType = {
+
+            // 目前一律采用默认值，先不对外提供修改权限
+
+        }[textureType] || gl.UNSIGNED_BYTE;
+
+        var types = [gl.TEXTURE_CUBE_MAP_POSITIVE_X, //右
+        gl.TEXTURE_CUBE_MAP_NEGATIVE_X, //左
+        gl.TEXTURE_CUBE_MAP_POSITIVE_Y, //上
+        gl.TEXTURE_CUBE_MAP_NEGATIVE_Y, //下
+        gl.TEXTURE_CUBE_MAP_POSITIVE_Z, //后
+        gl.TEXTURE_CUBE_MAP_NEGATIVE_Z //前
+        ],
+            i = void 0,
+            target = void 0;
+
+        for (i = 0; i < types.length; i++) {
+            target = types[i];
+            gl.texImage2D(target, level, format, width, height, 0, format, textureType, null);
+            gl.bindTexture(type, texture);
+            gl.texImage2D(target, level, format, format, textureType, images[i]);
+            gl.generateMipmap(type);
+        }
     };
 
     function value(gl) {
@@ -438,38 +451,29 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
             },
 
             // 纹理
-            "texture": function texture(unit, type) {
+            "texture": function texture(type, unit) {
                 type = {
-                    "2d": gl.TEXTURE_2D, /*二维纹理(默认值)*/
-
-                    // "2ds": gl.TEXTURE_2D_ARRAY,/*二维纹理数组 webgl2支持*/
-                    // "3d": gl.TEXTURE_3D,/*三维纹理 webgl2支持*/
-
+                    "2d": gl.TEXTURE_2D, /*二维纹理*/
                     "cube": gl.TEXTURE_CUBE_MAP /*立方体纹理*/
-                }[type] || gl.TEXTURE_2D;
+                }[type];
 
                 // 创建纹理
-                initTexture(gl, unit, type);
+                var texture = initTexture(gl, type, unit);
 
                 // 配置纹理（默认配置）
-                configTexture(gl, type, {
-                    "TEXTURE_MAX_FILTER": "NEAREST",
-                    "TEXTURE_MIN_FILTER": "NEAREST",
-                    "TEXTURE_WRAP_S": "CLAMP_TO_EDGE",
-                    "TEXTURE_WRAP_T": "CLAMP_TO_EDGE"
-                });
+                gl.texParameteri(type, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+                gl.texParameteri(type, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+                gl.texParameteri(type, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
 
                 var textureObj = {
-                    // 配置纹理对象
-                    // 此方法目前先不对外保留
-                    // "config": function (config) {
-                    //     configTexture(gl, type, config);
-                    //     return textureObj;
-                    // },
                     // 链接图片资源
-                    "use": function use(image, level, format, textureType) {
+                    "useImage": function useImage(image, level, format, textureType) {
                         linkImage(gl, type, level, format, textureType, image);
                         return textureObj;
+                    },
+                    // 链接多张图片
+                    "useCube": function useCube(images, width, height, level, format, textureType) {
+                        linkCube(gl, type, level, format, textureType, images, width, height, texture);
                     }
                 };
                 return textureObj;

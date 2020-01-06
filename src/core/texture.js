@@ -7,39 +7,18 @@
 
 // 初始化一个纹理对象
 // type有gl.TEXTURE_2D代表二维纹理，gl.TEXTURE_CUBE_MAP 立方体纹理等
-export let initTexture = function (gl, unit, type) {
+export let initTexture = function (gl, type, unit) {
     // 创建纹理对象
     let texture = gl.createTexture();
-    // 开启纹理单元，unit表示开启的编号
-    gl.activeTexture(gl['TEXTURE' + unit]);
+
+    if (typeof unit == 'number') {
+        // 开启纹理单元，unit表示开启的编号
+        gl.activeTexture(gl['TEXTURE' + unit]);
+    }
+
     // 绑定纹理对象到目标上
     gl.bindTexture(type, texture);
     return texture;
-};
-
-// 配置纹理
-export let configTexture = function (gl, type, config) {
-    let key;
-    for (key in config) {
-        /**
-         *
-         * 可配置项有四个：
-         *  1. gl.TEXTURE_MAX_FILTER：纹理放大滤波器
-         *      [gl.LINEAR (默认值), gl.NEAREST]
-         *
-         *  2. gl.TEXTURE_MIN_FILTER：纹理缩小滤波器
-         *      [gl.LINEAR, gl.NEAREST, gl.NEAREST_MIPMAP_NEAREST, gl.LINEAR_MIPMAP_NEAREST, gl.NEAREST_MIPMAP_LINEAR (默认值), gl.LINEAR_MIPMAP_LINEAR]
-         *
-         *  3. gl.TEXTURE_WRAP_S：纹理坐标水平填充 s
-         *      [gl.REPEAT (默认值),gl.CLAMP_TO_EDGE, gl.MIRRORED_REPEAT]
-         *
-         *  4. gl.TEXTURE_WRAP_T：纹理坐标垂直填充 t
-         *      [gl.REPEAT (默认值),gl.CLAMP_TO_EDGE, gl.MIRRORED_REPEAT]
-         *
-         */
-        // 涉及到webgl2的时候：texParameterf，目前不支持
-        gl.texParameteri(type, gl[key], gl[config[key]]);
-    }
 };
 
 // 链接资源图片
@@ -60,11 +39,45 @@ export let linkImage = function (gl, type, level, format, textureType, image) {
         "rgb": gl.RGB,
         "rgba": gl.RGBA,
         "alpha": gl.ALPHA
-    }[format] || gl.RGB;
+    }[format] || gl.RGBA;
 
     gl.texImage2D(type, level || 0, format, format, {
 
         // 目前一律采用默认值，先不对外提供修改权限
 
     }[textureType] || gl.UNSIGNED_BYTE, image);
+};
+
+export let linkCube = function (gl, type, level, format, textureType, images, width, height, texture) {
+    format = {
+        "rgb": gl.RGB,
+        "rgba": gl.RGBA,
+        "alpha": gl.ALPHA
+    }[format] || gl.RGBA;
+
+    level = level || 0;
+
+    textureType = {
+
+        // 目前一律采用默认值，先不对外提供修改权限
+
+    }[textureType] || gl.UNSIGNED_BYTE;
+
+    let types = [
+        gl.TEXTURE_CUBE_MAP_POSITIVE_X,//右
+        gl.TEXTURE_CUBE_MAP_NEGATIVE_X,//左
+        gl.TEXTURE_CUBE_MAP_POSITIVE_Y,//上
+        gl.TEXTURE_CUBE_MAP_NEGATIVE_Y,//下
+        gl.TEXTURE_CUBE_MAP_POSITIVE_Z,//后
+        gl.TEXTURE_CUBE_MAP_NEGATIVE_Z//前
+    ], i, target;
+
+    for (i = 0; i < types.length; i++) {
+        target = types[i];
+        gl.texImage2D(target, level, format, width, height, 0, format, textureType, null);
+        gl.bindTexture(type, texture);
+        gl.texImage2D(target, level, format, format, textureType, images[i]);
+        gl.generateMipmap(type);
+    }
+
 };

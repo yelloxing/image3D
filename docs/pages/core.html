@@ -112,19 +112,26 @@
             <p>
                 纹理是片元着色器在逐片元过程中使用的，类似贴图，使用的第一步也是创建一个纹理：
             </p>
-            <pre class='prettyprint lang-js'>var texture = core.texture(unit, type)</pre>
+            <pre class='prettyprint lang-js'>var texture = core.texture(type[, unit])</pre>
             <p>
                 其中unit表示使用哪个纹理单元（开启的编号）；type表示纹理的类型，因为纹理有很多种，下面列出目前支持的类型：
             </p>
             <ul>
-                <li>1."2d"：二维纹理(默认值)；</li>
+                <li>1."2d"：二维纹理(unit只有在这种纹理类型下才应该传递)；</li>
                 <li>2."cube"：立方体纹理。</li>
             </ul>
 
             <p>
-                纹理创建好了以后，你需要把材料（比如图片等）和纹理绑定（假如我们这里已经准备好了一张图片img）：
+                纹理创建好了以后，你需要把材料（比如图片等）和纹理绑定。
             </p>
-            <pre class='prettyprint lang-js'>texture.use(img);</pre>
+            <p>
+                如果你使用的是2d纹理，你应该这样绑定（假如我们这里已经准备好了一张图片img）：
+            </p>
+            <pre class='prettyprint lang-js'>texture.useImage(img);</pre>
+            <p>
+                而如果你使用的是cube纹理，你应该这样绑定（假如我们这里已经准备好了六张图片img1~img6）：
+            </p>
+            <pre class='prettyprint lang-js'>texture.useCube([img1,img2,img3,img4,img5,img6], width, height);</pre>
             <p>
                 到这一步，纹理准备工作已经完成了，后面的就是在片元着色器中去使用这个纹理了。
             </p>

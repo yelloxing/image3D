@@ -70,13 +70,13 @@
             .use('a_textcoord', 2, 4, 2);
 
         // 创建纹理对象
-        var texture = core.texture(0);
+        var texture = core.texture('2d', 0);
 
         var image = new Image();
         image.onload = function () {
 
             // 绘制图片
-            texture.use(image);
+            texture.useImage(image);
             core.setUniform1i('u_sampler', 0);
             painter.stripTriangles(0, 4);
 
