@@ -11,7 +11,7 @@
 * Copyright yelloxing
 * Released under the MIT license
 *
-* Date:Wed Jan 08 2020 17:18:18 GMT+0800 (GMT+08:00)
+* Date:Thu Jan 09 2020 01:33:16 GMT+0800 (GMT+08:00)
 */
 
 'use strict';
@@ -499,14 +499,13 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
         return glObj;
     }
 
-    /**
-     * 3D绘制对象
-     * -------------------------
-     */
+    // 3D绘图对象
+    // let image3d = new image3d(config);
+    function image3D(config) {
+        console.log(config);
+    }
 
-    function image3D() {}
-
-    // 挂载3D核心启动器
+    // 挂载核心方法（不推荐绘制的时候直接使用）
     image3D.core = core;
 
     if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === "object" && _typeof(module.exports) === "object") {
