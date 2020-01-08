@@ -33,7 +33,7 @@
                 <a href="#texture">纹理</a>
             </li>
             <li>
-                <a href="#painter">绘图方法</a>
+                <a href="#painter">基础画笔</a>
             </li>
         </ul>
         <div>
@@ -114,10 +114,13 @@
             </p>
             <pre class='prettyprint lang-js'>var texture = core.texture(type[, unit])</pre>
             <p>
-                其中unit表示使用哪个纹理单元（开启的编号）；type表示纹理的类型，因为纹理有很多种，下面列出目前支持的类型：
+                type表示纹理的类型，unit表示使用哪个纹理单元（开启的编号，可选，默认0）。
+            </p>
+            <p>
+                因为纹理有很多种，下面列出目前支持的类型：
             </p>
             <ul>
-                <li>1."2d"：二维纹理(unit只有在这种纹理类型下才应该传递)；</li>
+                <li>1."2d"：二维纹理(unit只有在这种纹理类型下才需要传递)；</li>
                 <li>2."cube"：立方体纹理。</li>
             </ul>
 
@@ -136,7 +139,9 @@
                 到这一步，纹理准备工作已经完成了，后面的就是在片元着色器中去使用这个纹理了。
             </p>
 
-            <h2 id="painter">绘图方法</h2>
+            <h2 id="painter">基础画笔</h2>
+
+            <h4>绘图方法</h4>
             <pre class='prettyprint lang-js'>var painter=core.painter();</pre>
 
             <p>点：</p>

@@ -61,14 +61,14 @@ export default function (node, opts) {
             },
 
             // 纹理
-            "texture": function (type, unit) {
-                type = {
+            "texture": function (_type_, unit) {
+                let type = {
                     "2d": gl.TEXTURE_2D,/*二维纹理*/
                     "cube": gl.TEXTURE_CUBE_MAP/*立方体纹理*/
-                }[type];
+                }[_type_];
 
                 // 创建纹理
-                let texture = initTexture(gl, type, unit);
+                let texture = initTexture(gl, type, unit, _type_);
 
                 // 配置纹理（默认配置）
                 gl.texParameteri(type, gl.TEXTURE_MIN_FILTER, gl.NEAREST);

@@ -4,14 +4,14 @@
 *
 * author 心叶
 *
-* version 2.0.3-alpha
+* version 2.0.5-alpha
 *
 * build Thu Apr 11 2019
 *
 * Copyright yelloxing
 * Released under the MIT license
 *
-* Date:Wed Jan 08 2020 14:27:22 GMT+0800 (GMT+08:00)
+* Date:Wed Jan 08 2020 17:18:18 GMT+0800 (GMT+08:00)
 */
 
 'use strict';
@@ -122,11 +122,12 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
     // 初始化一个纹理对象
     // type有gl.TEXTURE_2D代表二维纹理，gl.TEXTURE_CUBE_MAP 立方体纹理等
-    var initTexture = function initTexture(gl, type, unit) {
+    var initTexture = function initTexture(gl, type, unit, _type_) {
         // 创建纹理对象
         var texture = gl.createTexture();
 
-        if (typeof unit == 'number') {
+        if (_type_ == '2d') {
+            unit = unit || 0;
             // 开启纹理单元，unit表示开启的编号
             gl.activeTexture(gl['TEXTURE' + unit]);
         }
@@ -193,8 +194,9 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
             gl.texImage2D(target, level, format, width, height, 0, format, textureType, null);
             gl.bindTexture(type, texture);
             gl.texImage2D(target, level, format, format, textureType, images[i]);
-            gl.generateMipmap(type);
         }
+
+        gl.generateMipmap(type);
     };
 
     function value(gl) {
@@ -458,14 +460,14 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
             },
 
             // 纹理
-            "texture": function texture(type, unit) {
-                type = {
+            "texture": function texture(_type_, unit) {
+                var type = {
                     "2d": gl.TEXTURE_2D, /*二维纹理*/
                     "cube": gl.TEXTURE_CUBE_MAP /*立方体纹理*/
-                }[type];
+                }[_type_];
 
                 // 创建纹理
-                var texture = initTexture(gl, type, unit);
+                var texture = initTexture(gl, type, unit, _type_);
 
                 // 配置纹理（默认配置）
                 gl.texParameteri(type, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
@@ -497,7 +499,12 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
         return glObj;
     }
 
-    var image3D = function image3D() {};
+    /**
+     * 3D绘制对象
+     * -------------------------
+     */
+
+    function image3D() {}
 
     // 挂载3D核心启动器
     image3D.core = core;

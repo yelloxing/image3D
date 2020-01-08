@@ -7,11 +7,12 @@
 
 // 初始化一个纹理对象
 // type有gl.TEXTURE_2D代表二维纹理，gl.TEXTURE_CUBE_MAP 立方体纹理等
-export let initTexture = function (gl, type, unit) {
+export let initTexture = function (gl, type, unit, _type_) {
     // 创建纹理对象
     let texture = gl.createTexture();
 
-    if (typeof unit == 'number') {
+    if (_type_ == '2d') {
+        unit = unit || 0;
         // 开启纹理单元，unit表示开启的编号
         gl.activeTexture(gl['TEXTURE' + unit]);
     }
@@ -77,7 +78,8 @@ export let linkCube = function (gl, type, level, format, textureType, images, wi
         gl.texImage2D(target, level, format, width, height, 0, format, textureType, null);
         gl.bindTexture(type, texture);
         gl.texImage2D(target, level, format, format, textureType, images[i]);
-        gl.generateMipmap(type);
     }
+
+    gl.generateMipmap(type);
 
 };

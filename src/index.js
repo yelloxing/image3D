@@ -1,4 +1,8 @@
-import image3D from './image3D';
+import core from './core/index';
+import image3D from './Object/index';
+
+// 挂载3D核心启动器
+image3D.core = core;
 
 if (typeof module === "object" && typeof module.exports === "object") {
     module.exports = image3D;
