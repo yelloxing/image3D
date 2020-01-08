@@ -7,6 +7,12 @@ export default function (gl) {
 
     return {
 
+        // 开启深度计算
+        openDeep() {
+            gl.enable(gl.DEPTH_TEST);
+            return this;
+        },
+
         // 绘制点
         points(first, count, type) {
             if (type) {

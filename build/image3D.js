@@ -11,7 +11,7 @@
 * Copyright yelloxing
 * Released under the MIT license
 *
-* Date:Tue Jan 07 2020 00:38:50 GMT+0800 (GMT+08:00)
+* Date:Wed Jan 08 2020 14:27:22 GMT+0800 (GMT+08:00)
 */
 
 'use strict';
@@ -314,6 +314,13 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
         };
 
         return {
+
+            // 开启深度计算
+            openDeep: function openDeep() {
+                gl.enable(gl.DEPTH_TEST);
+                return this;
+            },
+
 
             // 绘制点
             points: function points(first, count, type) {
