@@ -2,6 +2,6 @@
  * 纹理
  * -------------------------
  */
-export default function () {
+export default function (CORE, CONFIG) {
 
 };

@@ -2,6 +2,6 @@
  * 照相机
  * -------------------------
  */
-export default function () {
+export default function (CORE, CONFIG) {
 
 };

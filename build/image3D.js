@@ -11,7 +11,7 @@
 * Copyright yelloxing
 * Released under the MIT license
 *
-* Date:Thu Jan 09 2020 01:33:16 GMT+0800 (GMT+08:00)
+* Date:Thu Jan 09 2020 19:43:19 GMT+0800 (GMT+08:00)
 */
 
 'use strict';
@@ -499,11 +499,115 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
         return glObj;
     }
 
-    // 3D绘图对象
-    // let image3d = new image3d(config);
-    function image3D(config) {
-        console.log(config);
+    /**
+     * 合并配置文件
+     * --------------------------------------
+     * @param {JSON} config1 默认值
+     * @param {JSON} config2
+     * @return {JSON}
+     *
+     * 只能做一层合并
+     *
+     */
+    function _extend(config1, config2) {
+        for (var key in config2) {
+            try {
+                config1[key] = config2[key];
+            } catch (e) {
+                // 部分特殊的属性不允许修改，会抛错
+                throw new Error("Illegal property key : " + key);
+            }
+        }
+        return config1;
     }
+
+    /**
+     * 缓冲区
+     * -------------------------
+     */
+    function $Buffer(CORE, CONFIG) {}
+
+    /**
+     * 照相机
+     * -------------------------
+     */
+    function $Camera(CORE, CONFIG) {}
+
+    /**
+     * 常见的图形数据计算
+     * -------------------------
+     */
+    function $Graphic(CORE, CONFIG) {}
+
+    /**
+     * 画笔
+     * -------------------------
+     */
+    function $Painter(CORE, CONFIG) {}
+
+    /**
+     * 着色器
+     * -------------------------
+     */
+    function $Shader(CORE, CONFIG) {}
+
+    /**
+     * 纹理
+     * -------------------------
+     */
+    function $Texture(CORE, CONFIG) {}
+
+    /**
+     * 核心方法
+     */
+
+    // 3D绘图对象
+    // let image3d = new image3d(canvas, config);
+    var image3D = function image3D(canvas, config) {
+
+        // 配置
+        var CONFIG = _extend({}, config || {});
+
+        // 启动
+        var CORE = core(canvas);
+
+        image3D.fn = image3D.prototype;
+
+        // 挂载主要方法
+        image3D.fn.Buffer = $Buffer();
+        image3D.fn.Camera = $Camera();
+        image3D.fn.Graphic = $Graphic();
+        image3D.fn.Painter = $Painter();
+        image3D.fn.Shader = $Shader();
+        image3D.fn.Texture = $Texture();
+
+        // 挂载基础方法
+        image3D.fn.setAttributeFloat = function (location, v0, v1, v2, v3) {
+            CORE['setAttribute' + (arguments.length - 1) + "f"](location, v0, v1, v2, v3);
+            return this;
+        };
+        image3D.fn.setAttributeInt = function (location, v0, v1, v2, v3) {
+            CORE['setAttribute' + (arguments.length - 1) + "i"](location, v0, v1, v2, v3);
+            return this;
+        };
+        image3D.fn.setUniformFloat = function (location, v0, v1, v2, v3) {
+            CORE['setUniform' + (arguments.length - 1) + "f"](location, v0, v1, v2, v3);
+            return this;
+        };
+        image3D.fn.setUniformInt = function (location, v0, v1, v2, v3) {
+            CORE['setUniform' + (arguments.length - 1) + "i"](location, v0, v1, v2, v3);
+            return this;
+        };
+        image3D.fn.setUniformMatrix = function (location, value) {
+            var size = {
+                6: 2,
+                9: 3,
+                16: 4
+            }[value.length];
+            CORE['setUniformMatrix' + size + "fv"](location, value);
+            return this;
+        };
+    };
 
     // 挂载核心方法（不推荐绘制的时候直接使用）
     image3D.core = core;

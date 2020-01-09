@@ -2,6 +2,6 @@
  * 缓冲区
  * -------------------------
  */
-export default function () {
+export default function (CORE, CONFIG) {
 
 };
