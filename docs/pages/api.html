@@ -8,10 +8,219 @@
     <link rel="stylesheet" href="../libs/normalize.css">
     <link rel="shortcut icon" href="../image3D.png">
     <title>接口文档 | image3D.js</title>
+    <script>
+
+        function loadpage(url) {
+
+            // 修改页面
+            document.getElementsByTagName('iframe')[0].src = "./apis/" + url + ".html";
+            window.location.href = "#/" + url;
+
+            // 修改选中
+            var lis = (function () {
+                var temp = document.getElementsByTagName('li'), result = [];
+                for (var i = 0; i < temp.length; i++) {
+                    if (temp[i].getAttribute('onclick')) {
+                        result.push(temp[i]);
+                    }
+                }
+                return result;
+            })(), flag;
+            for (flag = 0; flag < lis.length; flag++) {
+                if (lis[flag].getAttribute('onclick') == "loadpage(\"" + url + "\")") {
+                    lis[flag].setAttribute('statue', 'selected');
+                } else {
+                    lis[flag].setAttribute('statue', 'none');
+                }
+            }
+
+        }
+
+    </script>
 </head>
 
-<body>
-
+<body onresize="changeSize()">
+    <div class="menu-frame" id='menu-frame'>
+        <header>
+            image3D / API
+        </header>
+        <input type="text" placeholder="Type to filter" onkeyup='doSearch(this.value)'>
+        <span>接口文档</span>
+        <ul>
+            <li onclick='loadpage("Object")'>创建对象</li>
+            <li onclick='loadpage("Painter")'>画笔</li>
+            <li onclick='loadpage("setData")'>数据传递</li>
+            <li onclick='loadpage("Buffer")'>缓冲区</li>
+            <li onclick='loadpage("Texture")'>纹理</li>
+        </ul>
+        <span>相关链接</span>
+        <ul>
+            <li onclick='window.location.href="../index.html"'>官方首页</li>
+        </ul>
+        <footer onclick='window.location.href="https://github.com/yelloxing/image3D"'>
+            Fork Me On GitHub
+        </footer>
+    </div>
+    <iframe frameborder="0"></iframe>
 </body>
+
+
+<script>
+
+    window.setTimeout(function () {
+        loadpage(window.location.href.replace(/[^#]*(#\/){0,1}/, '') || "Object");
+    }, 200);
+
+    var lis = document.getElementsByTagName('li'), i;
+    function doSearch(key) {
+        for (i = 0; i < lis.length; i++) {
+            if (new RegExp(key).test(lis[i].innerText)) {
+                lis[i].style.display = 'block';
+            } else {
+                lis[i].style.display = 'none';
+            }
+        }
+    }
+
+</script>
+
+<script>
+
+    // 适配不同大小屏幕
+    function changeSize() {
+        var body = document.getElementsByTagName('body')[0],
+            menu = document.getElementById('menu-frame'),
+            iframe = document.getElementsByTagName('iframe')[0],
+            scale,
+            width = body.offsetWidth;
+        if (width >= 1200) return;
+        scale = width / 1200;
+
+        // 缩放
+        body.style.transform = "scale(" + scale + ")";
+
+        // 恢复
+        menu.style.height = (100 / scale) + "vh";
+        iframe.style.height = (100 / scale) + "vh";
+        iframe.style.width = "calc(" + (100 / scale) + "vw - 2.6rem)";
+    }
+    changeSize();
+
+</script>
+
+<style>
+    /* 整体 */
+
+    html {
+        height: 100vh !important;
+        font-size: 100px;
+    }
+
+    body {
+        font-size: 0;
+        color: #555;
+        font-family: inconsolata;
+        line-height: .18rem;
+        font-weight: normal;
+        white-space: nowrap;
+        transform-origin: 0 0;
+    }
+
+    .menu-frame,
+    iframe {
+        display: inline-block;
+        font-size: .15rem;
+        height: 100vh;
+        vertical-align: top;
+        overflow: hidden;
+        white-space: normal;
+    }
+
+    .menu-frame {
+        width: 2.6rem;
+        padding: 0 .2rem .2rem .2rem;
+        background: #fafafa;
+        overflow-y: auto;
+        user-select: none;
+    }
+
+    iframe {
+        width: calc(100vw - 2.6rem);
+    }
+
+    /* 菜单 */
+
+    header {
+        margin-top: .3rem;
+        margin-bottom: .4rem;
+        font-size: .25rem;
+        text-align: center;
+        color: #bd6136;
+        padding-top: 1.2rem;
+        background-image: url("../image3D.png");
+        background-repeat: no-repeat;
+        background-position: center top;
+        cursor: pointer;
+        background-size: 40% auto;
+    }
+
+    input {
+        width: 100%;
+        padding: .05rem;
+        font-size: .15rem;
+        outline: none;
+        border: 1px solid #dedede;
+    }
+
+    span {
+        color: #454545;
+        font-size: .18rem;
+        margin-top: .2rem;
+        display: block;
+    }
+
+    label {
+        color: #666;
+        font-size: .16rem;
+        margin-top: .2rem;
+        display: block;
+    }
+
+    ul {
+        margin-top: .2rem;
+    }
+
+    ul>li {
+        color: #60781c;
+        text-decoration: none;
+        line-height: 1.8em;
+        cursor: pointer;
+        position: relative;
+    }
+
+    ul>li[statue='selected'] {
+        color: #bd6136;
+    }
+
+    footer {
+        background-color: #bd6136;
+        color: white;
+        text-align: center;
+        line-height: 0.3rem;
+        margin-top: .3rem;
+        cursor: pointer;
+    }
+
+    ul>li.beta::after {
+        content: "beta";
+        display: inline-block;
+        position: absolute;
+        top: -.1em;
+        color: red;
+        font-size: 12px;
+        padding: 0;
+        line-height: 1em;
+    }
+</style>
 
 </html>
