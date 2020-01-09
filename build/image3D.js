@@ -11,7 +11,7 @@
 * Copyright yelloxing
 * Released under the MIT license
 *
-* Date:Thu Jan 09 2020 19:43:19 GMT+0800 (GMT+08:00)
+* Date:Thu Jan 09 2020 22:40:26 GMT+0800 (GMT+08:00)
 */
 
 'use strict';
@@ -539,17 +539,114 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
      */
     function $Graphic(CORE, CONFIG) {}
 
+    function drawArrays(painter, _this) {
+
+        _this.drawPoint = function (first, count) {
+            painter.points(first, count);
+            return _this;
+        };
+
+        _this.drawLine = function (first, count) {
+            painter.lines(first, count);
+            return _this;
+        };
+
+        _this.drawStripLine = function (first, count) {
+            painter.stripLines(first, count);
+            return _this;
+        };
+
+        _this.drawLoopLine = function (first, count) {
+            painter.loopLines(first, count);
+            return _this;
+        };
+
+        _this.drawTriangle = function (first, count) {
+            painter.triangles(first, count);
+            return _this;
+        };
+
+        _this.drawStripTriangle = function (first, count) {
+            painter.stripTriangles(first, count);
+            return _this;
+        };
+
+        _this.drawFanTriangle = function (first, count) {
+            painter.fanTriangles(first, count);
+            return _this;
+        };
+    }
+
+    function drawElements(painter, _this) {
+
+        _this.elemPoint = function (first, count, type) {
+            type = type || "byte";
+            painter.points(first, count, type);
+            return _this;
+        };
+
+        _this.elemLine = function (first, count, type) {
+            type = type || "byte";
+            painter.lines(first, count, type);
+            return _this;
+        };
+
+        _this.elemStripLine = function (first, count, type) {
+            type = type || "byte";
+            painter.stripLines(first, count, type);
+            return _this;
+        };
+
+        _this.elemLoopLine = function (first, count, type) {
+            type = type || "byte";
+            painter.loopLines(first, count, type);
+            return _this;
+        };
+
+        _this.elemTriangle = function (first, count, type) {
+            type = type || "byte";
+            painter.triangles(first, count, type);
+            return _this;
+        };
+
+        _this.elemStripTriangle = function (first, count, type) {
+            type = type || "byte";
+            painter.stripTriangles(first, count, type);
+            return _this;
+        };
+
+        _this.elemFanTriangle = function (first, count, type) {
+            type = type || "byte";
+            painter.fanTriangles(first, count, type);
+            return _this;
+        };
+    }
+
     /**
      * 画笔
      * -------------------------
      */
-    function $Painter(CORE, CONFIG) {}
+    function $Painter(CORE, CONFIG) {
 
-    /**
-     * 着色器
-     * -------------------------
-     */
-    function $Shader(CORE, CONFIG) {}
+        var painter = CORE.painter();
+
+        // 判断是否需要开启深度计算
+        if (CONFIG.depth) {
+            painter.openDeep();
+        }
+
+        return function () {
+
+            return new function Painter() {
+
+                // 第一种：点坐标绘制
+                drawArrays(painter, this);
+
+                // 第二种：顶点索引绘制
+                drawElements(painter, this);
+            }();
+        };
+    }
 
     /**
      * 纹理
@@ -566,10 +663,17 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
     var image3D = function image3D(canvas, config) {
 
         // 配置
-        var CONFIG = _extend({}, config || {});
+        var CONFIG = _extend({
+
+            depth: false // 默认不开启深度计算
+
+        }, config || {});
 
         // 启动
         var CORE = core(canvas);
+
+        // 让着色器生效
+        CORE.shader(config["vertex-shader"], config["fragment-shader"]);
 
         image3D.fn = image3D.prototype;
 
@@ -577,8 +681,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
         image3D.fn.Buffer = $Buffer();
         image3D.fn.Camera = $Camera();
         image3D.fn.Graphic = $Graphic();
-        image3D.fn.Painter = $Painter();
-        image3D.fn.Shader = $Shader();
+        image3D.fn.Painter = $Painter(CORE, CONFIG);
         image3D.fn.Texture = $Texture();
 
         // 挂载基础方法

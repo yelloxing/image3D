@@ -8,6 +8,20 @@
     <link rel="shortcut icon" href="../docs/image3D.png">
     <script src="../build/image3D.js"></script>
     <title>3D对象 | 测试</title>
+    <!-- 顶点着色器 -->
+    <script type='x-shader/x-vertex' id='vs'>
+        void main(){
+            gl_Position=vec4(0.0,0.0,0.0,1.0);
+            gl_PointSize=100.0;
+        }
+    </script>
+
+    <!-- 片段着色器 -->
+    <script type='x-shader/x-fragment' id='fs'>
+        void main(){
+            gl_FragColor=vec4(0.0,0.0,1.0,1.0);
+        }
+    </script>
 </head>
 
 <body>
@@ -16,9 +30,23 @@
 
     <script>
 
-        var image3d = new image3D(document.getElementsByTagName('canvas')[0]);
+        // 创建3D对象并配置好画布和着色器
+        var image3d = new image3D(document.getElementsByTagName('canvas')[0], {
+
+            // 着色器是必须传递的
+            "vertex-shader": document.getElementById("vs").innerText,
+            "fragment-shader": document.getElementById("fs").innerText,
+
+            // 是否开启深度计算（可选）
+            "depth": true
+
+        });
 
         console.log(image3d);
+
+        var painter = image3d.Painter();
+
+        console.log(painter.drawPoint(0, 1));
 
     </script>
 

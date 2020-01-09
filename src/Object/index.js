@@ -15,7 +15,6 @@ import $Buffer from './Buffer/index';// 缓冲区
 import $Camera from './Camera/index';// 照相机
 import $Graphic from './Graphic/index';// 3D图形数据
 import $Painter from './Painter/index';// 画笔
-import $Shader from './Shader/index';// 着色器
 import $Texture from './Texture/index';// 纹理
 
 // 3D绘图对象
@@ -25,10 +24,15 @@ let image3D = function (canvas, config) {
     // 配置
     let CONFIG = _extend({
 
+        depth: false// 默认不开启深度计算
+
     }, config || {});
 
     // 启动
     let CORE = render3D(canvas);
+
+    // 让着色器生效
+    CORE.shader(config["vertex-shader"], config["fragment-shader"]);
 
     image3D.fn = image3D.prototype;
 
@@ -37,7 +41,6 @@ let image3D = function (canvas, config) {
     image3D.fn.Camera = $Camera(CORE, CONFIG);
     image3D.fn.Graphic = $Graphic(CORE, CONFIG);
     image3D.fn.Painter = $Painter(CORE, CONFIG);
-    image3D.fn.Shader = $Shader(CORE, CONFIG);
     image3D.fn.Texture = $Texture(CORE, CONFIG);
 
     // 挂载基础方法

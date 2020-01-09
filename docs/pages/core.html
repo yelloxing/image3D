@@ -14,6 +14,12 @@
 
 <body onload='prettyPrint();'>
 
+    <p class="tips">
+        <span>
+            温馨提示：请勿直接在项目中使用这里的接口，仅供学习交流和内部研发查阅，如果想使用image3D绘图，请移步<a href="./api.html">接口文档</a>查阅，谢谢！
+        </span>
+    </p>
+
     <header>
         <span>image3D</span>
         <a href="../index.html">返回首页</a>
@@ -180,6 +186,30 @@
 </body>
 
 <style>
+    body>.tips>span>a {
+        color: #000;
+        text-decoration: underline;
+        font-weight: 800;
+        margin: 0 .1rem;
+    }
+
+    body>.tips>span {
+        background-color: #b46233;
+        color: #fff;
+        padding: .05rem;
+        display: inline-block;
+        opacity: .7;
+        font-size: .12rem;
+    }
+
+    body>.tips {
+        position: fixed;
+        width: 100vw;
+        left: 0;
+        top: 0;
+        text-align: center;
+    }
+
     body>div>div>ul>li {
         font-size: .14rem;
         line-height: 1.4em;
