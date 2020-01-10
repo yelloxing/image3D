@@ -26,10 +26,16 @@ p {
 }
 
 h2 {
-    color: #9e6cea;
+    color: #526a17;
     font-size: .18rem;
     margin-top: .40rem;
     font-weight: normal;
+}
+
+h4 {
+    color: rgb(189, 97, 54);
+    font-weight: 500;
+    font-size: .15rem;
 }
 
 img {
@@ -45,6 +51,7 @@ pre.prettyprint {
     padding-left: 2em;
     padding-right: 2em;
     line-height: 1.6em;
+    background-color: #fafafa;
 }
 
 a {
