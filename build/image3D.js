@@ -11,7 +11,7 @@
 * Copyright yelloxing
 * Released under the MIT license
 *
-* Date:Thu Jan 09 2020 22:40:26 GMT+0800 (GMT+08:00)
+* Date:Sat Jan 11 2020 20:29:14 GMT+0800 (GMT+08:00)
 */
 
 'use strict';
@@ -525,7 +525,32 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
      * 缓冲区
      * -------------------------
      */
-    function $Buffer(CORE, CONFIG) {}
+    function $Buffer(CORE, CONFIG) {
+
+        return function (isElement) {
+
+            return new function Buffer() {
+                var _this2 = this;
+
+                // 创建缓冲区
+                var buffer = CORE.buffer(isElement);
+
+                // 写入数据的方法
+                this.write = function (data) {
+                    buffer.write(data);
+                    return _this2;
+                };
+
+                // 如果是非顶点索引，需要添加数据分配方法
+                if (!isElement) {
+                    this.use = function (location, size, stride, offset) {
+                        buffer.use(location, size, stride, offset);
+                    };
+                    return this;
+                }
+            }();
+        };
+    }
 
     /**
      * 照相机
@@ -649,10 +674,50 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
     }
 
     /**
-     * 纹理
+     * 2D纹理
      * -------------------------
      */
-    function $Texture(CORE, CONFIG) {}
+    function $Texture_2d(CORE, CONFIG) {
+
+        return function (unit) {
+
+            return new function Texture2D() {
+                var _this3 = this;
+
+                // 创建纹理
+                var texture = CORE.texture('2d', unit);
+
+                // 绑定图片
+                this.white = function (img) {
+                    texture.useImage(img);
+                    return _this3;
+                };
+            }();
+        };
+    }
+
+    /**
+     * 立方体纹理
+     * -------------------------
+     */
+    function $Texture_cube(CORE, CONFIG) {
+
+        return function (width, height) {
+
+            return new function TextureCube() {
+                var _this4 = this;
+
+                // 创建纹理
+                var texture = CORE.texture('cube');
+
+                // 绑定图片
+                this.white = function (img1, img2, img3, img4, img5, img6) {
+                    texture.useCube([img1, img2, img3, img4, img5, img6], width, height);
+                    return _this4;
+                };
+            }();
+        };
+    }
 
     /**
      * 核心方法
@@ -678,11 +743,12 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
         image3D.fn = image3D.prototype;
 
         // 挂载主要方法
-        image3D.fn.Buffer = $Buffer();
+        image3D.fn.Buffer = $Buffer(CORE);
         image3D.fn.Camera = $Camera();
         image3D.fn.Graphic = $Graphic();
         image3D.fn.Painter = $Painter(CORE, CONFIG);
-        image3D.fn.Texture = $Texture();
+        image3D.fn.Texture2D = $Texture_2d(CORE);
+        image3D.fn.TextureCube = $Texture_cube(CORE);
 
         // 挂载基础方法
         image3D.fn.setAttributeFloat = function (location, v0, v1, v2, v3) {

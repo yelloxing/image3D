@@ -15,7 +15,8 @@ import $Buffer from './Buffer/index';// 缓冲区
 import $Camera from './Camera/index';// 照相机
 import $Graphic from './Graphic/index';// 3D图形数据
 import $Painter from './Painter/index';// 画笔
-import $Texture from './Texture/index';// 纹理
+import $Texture_2d from './Texture/2d';// 纹理
+import $Texture_cube from './Texture/cube';// 纹理
 
 // 3D绘图对象
 // let image3d = new image3d(canvas, config);
@@ -41,7 +42,8 @@ let image3D = function (canvas, config) {
     image3D.fn.Camera = $Camera(CORE, CONFIG);
     image3D.fn.Graphic = $Graphic(CORE, CONFIG);
     image3D.fn.Painter = $Painter(CORE, CONFIG);
-    image3D.fn.Texture = $Texture(CORE, CONFIG);
+    image3D.fn.Texture2D = $Texture_2d(CORE, CONFIG);
+    image3D.fn.TextureCube = $Texture_cube(CORE, CONFIG);
 
     // 挂载基础方法
     image3D.fn.setAttributeFloat = function (location, v0, v1, v2, v3) {

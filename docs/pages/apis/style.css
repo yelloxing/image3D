@@ -70,7 +70,8 @@ a.list {
 
 li {
     line-height: 1.6em;
-    padding-left: 2em;
+    margin-left: 2em;
+    list-style-type: disc;
 }
 
 .bingo,

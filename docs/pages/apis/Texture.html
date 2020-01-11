@@ -15,6 +15,28 @@
     <header>
         纹理
     </header>
+    <h2>
+        1.二维纹理
+    </h2>
+    <pre class='prettyprint lang-js'>var texture=image3d.Texture2D(unit);</pre>
+    <p>
+        创建二维纹理的时候需要传递一个数字，用于表示纹理对应的纹理单元（比如0、1、2等）。
+    </p>
+    <pre class='prettyprint lang-js'>texture.write(image);</pre>
+    <p>
+        二维纹理其实是用一张图片贴图，因此需要写入用作纹理的图片。
+    </p>
+    <h2>
+        2.立方纹理
+    </h2>
+    <pre class='prettyprint lang-js'>var texture=image3d.TextureCube(width, height);</pre>
+    <p>
+        此纹理创建的时候需要传递图片的宽和高。
+    </p>
+    <pre class='prettyprint lang-js'>texture.write(img1, img2, img3, img4, img5, img6);</pre>
+    <p>
+        类似一个长方体，有六个面，因此我们需要写入六张图片。
+    </p>
 </body>
 
 </html>
