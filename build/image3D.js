@@ -4,14 +4,14 @@
 *
 * author 心叶
 *
-* version 2.0.5-alpha
+* version 2.0.5-beta
 *
 * build Thu Apr 11 2019
 *
 * Copyright yelloxing
 * Released under the MIT license
 *
-* Date:Sat Jan 11 2020 20:29:14 GMT+0800 (GMT+08:00)
+* Date:Sat Jan 11 2020 20:46:45 GMT+0800 (GMT+08:00)
 */
 
 'use strict';
@@ -688,7 +688,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
                 var texture = CORE.texture('2d', unit);
 
                 // 绑定图片
-                this.white = function (img) {
+                this.write = function (img) {
                     texture.useImage(img);
                     return _this3;
                 };
@@ -711,7 +711,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
                 var texture = CORE.texture('cube');
 
                 // 绑定图片
-                this.white = function (img1, img2, img3, img4, img5, img6) {
+                this.write = function (img1, img2, img3, img4, img5, img6) {
                     texture.useCube([img1, img2, img3, img4, img5, img6], width, height);
                     return _this4;
                 };
