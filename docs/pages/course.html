@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="../libs/normalize.css">
+    <link rel="shortcut icon" href="../image3D.png">
+    <title>教程 | image3D.js</title>
+</head>
+
+<body>
+
+    <header>
+        <ul>
+            教程
+            <li onclick='window.location.href="#/simple-demo"'>一个简单的例子</li>
+            <li onclick='window.location.href="#/use-buffer"'>使用缓冲区</li>
+            <li onclick='window.location.href="#/use-texture"'>使用纹理</li>
+        </ul>
+    </header>
+
+    <div>
+
+
+    </div>
+
+    <div>
+        <h2 id='simple-demo'>一个简单的例子</h2>
+
+
+    </div>
+
+    <div>
+        <h2 id='use-buffer'>使用缓冲区</h2>
+
+
+    </div>
+
+    <div>
+        <h2 id='use-texture'>使用纹理</h2>
+
+
+    </div>
+
+    <footer>
+        <ul>
+            <li>
+                <a href="../index.html" target="_blank">首页</a>
+            </li>
+            <li>
+                <a href="./api.html" target="_blank">接口文档</a>
+            </li>
+            <li>
+                <a href="https://github.com/yelloxing/image3D" target="_blank">项目</a>
+            </li>
+            <li>
+                <a href="https://github.com/yelloxing/image3D/issues" target="_blank">帮助</a>
+            </li>
+        </ul>
+        <a href="https://github.com/yelloxing/image3D/blob/dev/LICENSE">Copyright &copy; 2019 - 2020</a>
+        <a href="https://yelloxing.github.io/notebook/">走一步 再走一步</a>
+        <a href="javascriot:void(0)" onclick="document.documentElement.scrollTop = 0;">回到顶部</a>
+    </footer>
+
+</body>
+
+<style>
+    html {
+        height: 100vh !important;
+        font-size: 100px;
+    }
+
+    body {
+        font-size: .18rem;
+        background: #e4e0e0;
+        padding-top: .6rem;
+        font-family: -apple-system, "Helvetica Neue", Helvetica, Arial, "PingFang SC", "Hiragino Sans GB", "WenQuanYi Micro Hei", "Microsoft Yahei", sans-serif;
+    }
+
+    body>header {
+        line-height: .5rem;
+        background-color: #43515a;
+        border-color: #43515a;
+        color: #fff;
+        user-select: none;
+        position: fixed;
+        width: 100%;
+        top: 0;
+        box-shadow: 0px 4px 5px 0px #f6f6f6;
+    }
+
+    body>header>ul {
+        width: 10rem;
+        margin: auto;
+        background-image: url('../image3D.png');
+        background-size: auto 70%;
+        background-repeat: no-repeat;
+        background-position: .2rem center;
+        padding-left: .7rem;
+        font-size: .2rem;
+    }
+
+    body>header>ul>li:first-child {
+        margin-left: .2rem;
+    }
+
+    body>header>ul>li {
+        display: inline-block;
+        padding: 0 15px;
+        font-size: .12rem;
+        cursor: pointer;
+    }
+
+    body>div {
+        width: 10rem;
+        margin: auto;
+        background-color: #fff;
+        padding: 15px;
+        margin-top: 10px;
+        border-radius: 4px;
+    }
+
+    body>div>h2 {
+        padding-bottom: 9px;
+        border-bottom: 1px solid #eee;
+        display: block;
+        font-weight: 800;
+        font-size: .16rem;
+    }
+
+    body>footer {
+        padding: 0.4rem 0.1rem;
+        text-align: center;
+        font-size: 0.12rem;
+    }
+
+    body>footer>ul {
+        padding-bottom: 0.2rem;
+    }
+
+    body>footer>ul>li {
+        display: inline-block;
+        padding: 0 0.2rem;
+        line-height: 1.2em;
+    }
+
+    body>footer>ul>li:not(:last-child) {
+        border-right: 1px solid #000;
+    }
+
+    body>footer a {
+        font-weight: bold;
+        color: #000;
+    }
+</style>
+
+</html>
+
+<!--
+    我还惊讶地意识到， 在我生命中有很多时刻， 每当我遇到一个遥不可及、令人害怕的情境，
+    并感到惊慌失措时， 我都能够应付——因为我回想起了很久以前自己上过的那一课。
+    我提醒自己不要看下面遥远的岩石， 而是注意相对轻松、容易的第一小步， 迈出一小步、再一小步，
+    就这样体会每一步带来的成就感， 直到完成了自己想要完成的， 达到了自己的目标，
+    然后再回头看时， 不禁对自己走过的这段漫漫长路感到惊讶和自豪。
+                                            ———— 摘自 莫顿·亨特《走一步，再走一步》
+-->
