@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="../../libs/normalize.css">
+    <link rel="stylesheet" href="../../libs/prettify.css">
+    <link rel="stylesheet" href="./style.css">
+    <script src="../../libs/prettify.js"></script>
+</head>
+
+<body onload="prettyPrint()">
+    <header>
+        画笔
+    </header>
+    <pre class='prettyprint lang-js'>var painter = image3d.Painter();</pre>
+    <p>
+        画笔主要分为二类：普通画笔和基于顶点索引的画笔。
+    </p>
+    <h2>
+        1.普通画笔
+    </h2>
+    <p>
+        1.点：
+    </p>
+    <pre class='prettyprint lang-js'>painter.drawPoint(first, count);</pre>
+    <p>
+        2.直线：
+    </p>
+    <pre class='prettyprint lang-js'>painter.drawLine(first, count);</pre>
+    <p>
+        3.连续直线：
+    </p>
+    <pre class='prettyprint lang-js'>painter.drawStripLine(first, count);</pre>
+    <p>
+        4.闭合直线：
+    </p>
+    <pre class='prettyprint lang-js'>painter.drawLoopLine(first, count);</pre>
+    <p>
+        5.三角形：
+    </p>
+    <pre class='prettyprint lang-js'>painter.drawTriangle(first, count);</pre>
+    <p>
+        6.共边三角形：
+    </p>
+    <pre class='prettyprint lang-js'>painter.drawStripTriangle(first, count);</pre>
+    <p>
+        7.旋转围绕三角形：
+    </p>
+    <pre class='prettyprint lang-js'>painter.drawFanTriangle(first, count);</pre>
+    <h2>
+        2.索引画笔
+    </h2>
+    <p>
+        1.点：
+    </p>
+    <pre class='prettyprint lang-js'>painter.elemPoint(first, count, type);</pre>
+    <p>
+        2.直线：
+    </p>
+    <pre class='prettyprint lang-js'>painter.elemLine(first, count, type);</pre>
+    <p>
+        3.连续直线：
+    </p>
+    <pre class='prettyprint lang-js'>painter.elemStripLine(first, count, type);</pre>
+    <p>
+        4.闭合直线：
+    </p>
+    <pre class='prettyprint lang-js'>painter.elemLoopLine(first, count, type);</pre>
+    <p>
+        5.三角形：
+    </p>
+    <pre class='prettyprint lang-js'>painter.elemTriangle(first, count, type);</pre>
+    <p>
+        6.共边三角形：
+    </p>
+    <pre class='prettyprint lang-js'>painter.elemStripTriangle(first, count, type);</pre>
+    <p>
+        7.旋转围绕三角形：
+    </p>
+    <pre class='prettyprint lang-js'>painter.elemFanTriangle(first, count, type);</pre>
+</body>
+
+</html>

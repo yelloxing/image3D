@@ -6,32 +6,20 @@
  */
 
 // 初始化一个纹理对象
-// type有两个选择gl.TEXTURE_2D代表二维纹理，gl.TEXTURE_CUBE_MAP 立方体纹理
-export let initTexture = function (gl, unit, type) {
+// type有gl.TEXTURE_2D代表二维纹理，gl.TEXTURE_CUBE_MAP 立方体纹理等
+export let initTexture = function (gl, type, unit, _type_) {
     // 创建纹理对象
     let texture = gl.createTexture();
-    // 开启纹理单元，unit表示开启的编号
-    gl.activeTexture(gl['TEXTURE' + unit]);
+
+    if (_type_ == '2d') {
+        unit = unit || 0;
+        // 开启纹理单元，unit表示开启的编号
+        gl.activeTexture(gl['TEXTURE' + unit]);
+    }
+
     // 绑定纹理对象到目标上
     gl.bindTexture(type, texture);
     return texture;
-};
-
-// 配置纹理
-export let configTexture = function (gl, type, config) {
-    let key;
-    for (key in config) {
-        /**
-         *
-         * 可配置项有四个：
-         *  1. gl.TEXTURE_MAX_FILTER：放大方法
-         *  2. gl.TEXTURE_MIN_FILTER：缩小方法
-         *  3. gl.TEXTURE_WRAP_S：水平填充方法
-         *  4. gl.TEXTURE_WRAP_T：垂直填充方法
-         *
-         */
-        gl.texParameteri(type, gl[key], gl[config[key]]);
-    }
 };
 
 // 链接资源图片
@@ -48,5 +36,50 @@ export let configTexture = function (gl, type, config) {
 //      gl.UNSIGNED_SHORT_4_4_4_4: 表示RGBA，每一个分量分别占据占据4, 4, 4, 4比特
 //      gl.UNSIGNED_SHORT_5_5_5_1: 表示RGBA，每一个分量分别占据占据5比特，A分量占据1比特
 export let linkImage = function (gl, type, level, format, textureType, image) {
-    gl.texImage2D(type, level, format, format, textureType, image);
+    format = {
+        "rgb": gl.RGB,
+        "rgba": gl.RGBA,
+        "alpha": gl.ALPHA
+    }[format] || gl.RGBA;
+
+    gl.texImage2D(type, level || 0, format, format, {
+
+        // 目前一律采用默认值，先不对外提供修改权限
+
+    }[textureType] || gl.UNSIGNED_BYTE, image);
+};
+
+export let linkCube = function (gl, type, level, format, textureType, images, width, height, texture) {
+    format = {
+        "rgb": gl.RGB,
+        "rgba": gl.RGBA,
+        "alpha": gl.ALPHA
+    }[format] || gl.RGBA;
+
+    level = level || 0;
+
+    textureType = {
+
+        // 目前一律采用默认值，先不对外提供修改权限
+
+    }[textureType] || gl.UNSIGNED_BYTE;
+
+    let types = [
+        gl.TEXTURE_CUBE_MAP_POSITIVE_X,//右
+        gl.TEXTURE_CUBE_MAP_NEGATIVE_X,//左
+        gl.TEXTURE_CUBE_MAP_POSITIVE_Y,//上
+        gl.TEXTURE_CUBE_MAP_NEGATIVE_Y,//下
+        gl.TEXTURE_CUBE_MAP_POSITIVE_Z,//后
+        gl.TEXTURE_CUBE_MAP_NEGATIVE_Z//前
+    ], i, target;
+
+    for (i = 0; i < types.length; i++) {
+        target = types[i];
+        gl.texImage2D(target, level, format, width, height, 0, format, textureType, null);
+        gl.bindTexture(type, texture);
+        gl.texImage2D(target, level, format, format, textureType, images[i]);
+    }
+
+    gl.generateMipmap(type);
+
 };

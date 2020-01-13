@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="shortcut icon" href="../../docs/image3D.png">
+    <script src="../../build/image3D.js"></script>
+    <title>缓冲区 - 索引 | 测试</title>
+
+    <!-- 顶点着色器 -->
+    <script type='x-shader/x-vertex' id='vs'>
+        attribute vec4 a_position;
+        void main(){
+            gl_Position=a_position;
+        }
+    </script>
+
+    <!-- 片段着色器 -->
+    <script type='x-shader/x-fragment' id='fs'>
+        void main(){
+            gl_FragColor=vec4(0.0,0.0,1.0,1.0);
+        }
+    </script>
+
+</head>
+
+<body>
+
+    <h2>
+        Tips:你应该看见一大一小二个正方形，并且二个正方形四个点对应连接起来！
+    </h2>
+
+    <canvas width=500 height=500>非常抱歉，您的浏览器不支持canvas!</canvas>
+
+    <script>
+
+        var core = image3D.core(document.getElementsByTagName('canvas')[0]);
+
+        // 启用着色器
+        core.shader(
+            document.getElementById('vs').innerHTML,
+            document.getElementById('fs').innerHTML
+        );
+
+        // 点的坐标
+        var data = new Float32Array([
+
+            // 大正方形四个点
+            -0.7, 0.7,
+            0.7, 0.7,
+            0.7, -0.7,
+            -0.7, -0.7,
+
+            // 小正方形四个点
+            -0.2, 0.2,
+            0.2, 0.2,
+            0.2, -0.2,
+            -0.2, -0.2
+        ]);
+
+        // 顶点索引数组
+        var indexes = new Uint8Array([
+
+            // 大正方形
+            0, 1, 2, 3,
+            // 小正方形
+            4, 5, 6, 7,
+            // 四个连线
+            0, 4, 1, 5, 2, 6, 3, 7
+
+        ]);
+
+        // 点的坐标写入缓冲区并分配
+        core.buffer().write(data).use('a_position', 2, 2, 0);
+
+        // 索引写入第二类Element缓冲区
+        core.buffer(true).write(indexes);
+
+        // 绘制
+        core.painter().loopLines(0, 4, "byte").loopLines(4, 4, "byte").lines(8, 8, "byte");
+
+    </script>
+
+</body>
+
+</html>

@@ -4,14 +4,14 @@
 *
 * author 心叶
 *
-* version 1.0.2-alpha
+* version 2.0.5-beta
 *
 * build Thu Apr 11 2019
 *
 * Copyright yelloxing
 * Released under the MIT license
 *
-* Date:Sun Dec 01 2019 12:19:19 GMT+0800 (GMT+08:00)
+* Date:Sat Jan 11 2020 20:46:45 GMT+0800 (GMT+08:00)
 */
 
 'use strict';
@@ -121,32 +121,20 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
      */
 
     // 初始化一个纹理对象
-    // type有两个选择gl.TEXTURE_2D代表二维纹理，gl.TEXTURE_CUBE_MAP 立方体纹理
-    var initTexture = function initTexture(gl, unit, type) {
+    // type有gl.TEXTURE_2D代表二维纹理，gl.TEXTURE_CUBE_MAP 立方体纹理等
+    var initTexture = function initTexture(gl, type, unit, _type_) {
         // 创建纹理对象
         var texture = gl.createTexture();
-        // 开启纹理单元，unit表示开启的编号
-        gl.activeTexture(gl['TEXTURE' + unit]);
+
+        if (_type_ == '2d') {
+            unit = unit || 0;
+            // 开启纹理单元，unit表示开启的编号
+            gl.activeTexture(gl['TEXTURE' + unit]);
+        }
+
         // 绑定纹理对象到目标上
         gl.bindTexture(type, texture);
         return texture;
-    };
-
-    // 配置纹理
-    var configTexture = function configTexture(gl, type, config) {
-        var key = void 0;
-        for (key in config) {
-            /**
-             *
-             * 可配置项有四个：
-             *  1. gl.TEXTURE_MAX_FILTER：放大方法
-             *  2. gl.TEXTURE_MIN_FILTER：缩小方法
-             *  3. gl.TEXTURE_WRAP_S：水平填充方法
-             *  4. gl.TEXTURE_WRAP_T：垂直填充方法
-             *
-             */
-            gl.texParameteri(type, gl[key], gl[config[key]]);
-        }
     };
 
     // 链接资源图片
@@ -163,20 +151,255 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
     //      gl.UNSIGNED_SHORT_4_4_4_4: 表示RGBA，每一个分量分别占据占据4, 4, 4, 4比特
     //      gl.UNSIGNED_SHORT_5_5_5_1: 表示RGBA，每一个分量分别占据占据5比特，A分量占据1比特
     var linkImage = function linkImage(gl, type, level, format, textureType, image) {
-        gl.texImage2D(type, level, format, format, textureType, image);
+        format = {
+            "rgb": gl.RGB,
+            "rgba": gl.RGBA,
+            "alpha": gl.ALPHA
+        }[format] || gl.RGBA;
+
+        gl.texImage2D(type, level || 0, format, format, {
+
+            // 目前一律采用默认值，先不对外提供修改权限
+
+        }[textureType] || gl.UNSIGNED_BYTE, image);
     };
 
-    /**
-     * 判断一个值是不是Object。
-     *
-     * @since V0.1.2
-     * @public
-     * @param {*} value 需要判断类型的值
-     * @returns {boolean} 如果是Object返回true，否则返回false
-     */
-    function isObject(value) {
-        var type = typeof value === 'undefined' ? 'undefined' : _typeof(value);
-        return value != null && (type === 'object' || type === 'function');
+    var linkCube = function linkCube(gl, type, level, format, textureType, images, width, height, texture) {
+        format = {
+            "rgb": gl.RGB,
+            "rgba": gl.RGBA,
+            "alpha": gl.ALPHA
+        }[format] || gl.RGBA;
+
+        level = level || 0;
+
+        textureType = {
+
+            // 目前一律采用默认值，先不对外提供修改权限
+
+        }[textureType] || gl.UNSIGNED_BYTE;
+
+        var types = [gl.TEXTURE_CUBE_MAP_POSITIVE_X, //右
+        gl.TEXTURE_CUBE_MAP_NEGATIVE_X, //左
+        gl.TEXTURE_CUBE_MAP_POSITIVE_Y, //上
+        gl.TEXTURE_CUBE_MAP_NEGATIVE_Y, //下
+        gl.TEXTURE_CUBE_MAP_POSITIVE_Z, //后
+        gl.TEXTURE_CUBE_MAP_NEGATIVE_Z //前
+        ],
+            i = void 0,
+            target = void 0;
+
+        for (i = 0; i < types.length; i++) {
+            target = types[i];
+            gl.texImage2D(target, level, format, width, height, 0, format, textureType, null);
+            gl.bindTexture(type, texture);
+            gl.texImage2D(target, level, format, format, textureType, images[i]);
+        }
+
+        gl.generateMipmap(type);
+    };
+
+    function value(gl) {
+        return {
+
+            /**
+             * attribue
+             * ----------------------------------------
+             */
+
+            // 浮点数
+            setAttribute1f: function setAttribute1f(name, v0) {
+                // 获取存储位置
+                var location = gl.getAttribLocation(gl.program, name);
+                // 传递数据给变量
+                gl.vertexAttrib1f(location, v0);
+            },
+            setAttribute2f: function setAttribute2f(name, v0, v1) {
+                var location = gl.getAttribLocation(gl.program, name);
+                gl.vertexAttrib2f(location, v0, v1);
+            },
+            setAttribute3f: function setAttribute3f(name, v0, v1, v2) {
+                var location = gl.getAttribLocation(gl.program, name);
+                gl.vertexAttrib3f(location, v0, v1, v2);
+            },
+            setAttribute4f: function setAttribute4f(name, v0, v1, v2, v3) {
+                var location = gl.getAttribLocation(gl.program, name);
+                gl.vertexAttrib4f(location, v0, v1, v2, v3);
+            },
+
+
+            // 整数
+            setAttribute1i: function setAttribute1i(name, v0) {
+                // 获取存储位置
+                var location = gl.getAttribLocation(gl.program, name);
+                // 传递数据给变量
+                gl.vertexAttrib1i(location, v0);
+            },
+            setAttribute2i: function setAttribute2i(name, v0, v1) {
+                var location = gl.getAttribLocation(gl.program, name);
+                gl.vertexAttrib2i(location, v0, v1);
+            },
+            setAttribute3i: function setAttribute3i(name, v0, v1, v2) {
+                var location = gl.getAttribLocation(gl.program, name);
+                gl.vertexAttrib3i(location, v0, v1, v2);
+            },
+            setAttribute4i: function setAttribute4i(name, v0, v1, v2, v3) {
+                var location = gl.getAttribLocation(gl.program, name);
+                gl.vertexAttrib4i(location, v0, v1, v2, v3);
+            },
+
+
+            /**
+            * uniform
+            * ----------------------------------------
+            */
+
+            // 浮点数
+            setUniform1f: function setUniform1f(name, v0) {
+                var location = gl.getUniformLocation(gl.program, name);
+                gl.uniform1f(location, v0);
+            },
+            setUniform2f: function setUniform2f(name, v0, v1) {
+                var location = gl.getUniformLocation(gl.program, name);
+                gl.uniform2f(location, v0, v1);
+            },
+            setUniform3f: function setUniform3f(name, v0, v1, v2) {
+                var location = gl.getUniformLocation(gl.program, name);
+                gl.uniform3f(location, v0, v1, v2);
+            },
+            setUniform4f: function setUniform4f(name, v0, v1, v2, v3) {
+                var location = gl.getUniformLocation(gl.program, name);
+                gl.uniform4f(location, v0, v1, v2, v3);
+            },
+
+
+            // 整数
+            setUniform1i: function setUniform1i(name, v0) {
+                var location = gl.getUniformLocation(gl.program, name);
+                gl.uniform1i(location, v0);
+            },
+            setUniform2i: function setUniform2i(name, v0, v1) {
+                var location = gl.getUniformLocation(gl.program, name);
+                gl.uniform2i(location, v0, v1);
+            },
+            setUniform3i: function setUniform3i(name, v0, v1, v2) {
+                var location = gl.getUniformLocation(gl.program, name);
+                gl.uniform3i(location, v0, v1, v2);
+            },
+            setUniform4i: function setUniform4i(name, v0, v1, v2, v3) {
+                var location = gl.getUniformLocation(gl.program, name);
+                gl.uniform4i(location, v0, v1, v2, v3);
+            },
+
+
+            // 矩阵
+            setUnifromMatrix2fv: function setUnifromMatrix2fv(name, value) {
+                var location = gl.getUniformLocation(gl.program, name);
+                gl.uniformMatrix2fv(location, false, value);
+            },
+            setUnifromMatrix3fv: function setUnifromMatrix3fv(name, value) {
+                var location = gl.getUniformLocation(gl.program, name);
+                gl.uniformMatrix3fv(location, false, value);
+            },
+            setUnifromMatrix4fv: function setUnifromMatrix4fv(name, value) {
+                var location = gl.getUniformLocation(gl.program, name);
+                gl.uniformMatrix4fv(location, false, value);
+            }
+        };
+    }
+
+    function _painter(gl) {
+
+        var typeMap = {
+            "byte": gl.UNSIGNED_BYTE,
+            "short": gl.UNSIGNED_SHORT
+        };
+
+        return {
+
+            // 开启深度计算
+            openDeep: function openDeep() {
+                gl.enable(gl.DEPTH_TEST);
+                return this;
+            },
+
+
+            // 绘制点
+            points: function points(first, count, type) {
+                if (type) {
+                    gl.drawElements(gl.POINTS, count, typeMap[type], first);
+                } else {
+                    gl.drawArrays(gl.POINTS, first, count);
+                }
+                return this;
+            },
+
+
+            // 绘制直线
+            lines: function lines(first, count, type) {
+                if (type) {
+                    gl.drawElements(gl.LINES, count, typeMap[type], first);
+                } else {
+                    gl.drawArrays(gl.LINES, first, count);
+                }
+                return this;
+            },
+
+
+            // 绘制连续直线
+            stripLines: function stripLines(first, count, type) {
+                if (type) {
+                    gl.drawElements(gl.LINE_STRIP, count, typeMap[type], first);
+                } else {
+                    gl.drawArrays(gl.LINE_STRIP, first, count);
+                }
+                return this;
+            },
+
+
+            // 绘制闭合直线
+            loopLines: function loopLines(first, count, type) {
+                if (type) {
+                    gl.drawElements(gl.LINE_LOOP, count, typeMap[type], first);
+                } else {
+                    gl.drawArrays(gl.LINE_LOOP, first, count);
+                }
+                return this;
+            },
+
+
+            // 绘制三角形
+            triangles: function triangles(first, count, type) {
+                if (type) {
+                    gl.drawElements(gl.TRIANGLES, count, typeMap[type], first);
+                } else {
+                    gl.drawArrays(gl.TRIANGLES, first, count);
+                }
+                return this;
+            },
+
+
+            // 绘制共有边三角形
+            stripTriangles: function stripTriangles(first, count, type) {
+                if (type) {
+                    gl.drawElements(gl.TRIANGLE_STRIP, count, typeMap[type], first);
+                } else {
+                    gl.drawArrays(gl.TRIANGLE_STRIP, first, count);
+                }
+                return this;
+            },
+
+
+            // 绘制旋转围绕三角形
+            fanTriangles: function fanTriangles(first, count, type) {
+                if (type) {
+                    gl.drawElements(gl.TRIANGLE_FAN, count, typeMap[type], first);
+                } else {
+                    gl.drawArrays(gl.TRIANGLE_FAN, first, count);
+                }
+                return this;
+            }
+        };
     }
 
     // 获取webgl上下文
@@ -193,63 +416,14 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
         return context;
     };
 
-    var image3D = function image3D(node) {
-        return new image3D.prototype.init(node);
-    };
-
-    image3D.prototype.init = function (node) {
-        this[0] = node;
-        return this;
-    };
-
-    // 扩展方法
-    // 在image3D和image3D.prototype上分别调用extend方法就可以在类和对象上扩展方法了
-    image3D.prototype.extend = image3D.extend = function () {
-
-        var target = arguments[0] || {};
-        var source = arguments[1] || {};
-        var length = arguments.length;
-
-        /*
-         * 确定复制目标和源
-         */
-        if (length === 1) {
-            //如果只有一个参数，目标对象是自己
-            source = target;
-            target = this;
-        }
-        if (!isObject(target)) {
-            //如果目标不是对象或函数，则初始化为空对象
-            target = {};
-        }
-
-        /*
-         * 复制属性到对象上面
-         */
-        for (var key in source) {
-            try {
-                target[key] = source[key];
-            } catch (e) {
-
-                // 为什么需要try{}catch(e){}？
-                // 一些对象的特殊属性不允许覆盖，比如name
-                // 执行：image3D.extend({'name':'新名称'})
-                // 会抛出TypeError
-                throw new Error("Illegal property value！");
-            }
-        }
-
-        return target;
-    };
-
-    image3D.prototype.init.prototype = image3D.prototype;
-
-    // 启动webgl绘图
-    image3D.prototype.render3D = function (opts) {
-        var gl = getCanvasWebgl(this[0], opts),
+    // 绘图核心对象
+    function core(node, opts) {
+        var gl = getCanvasWebgl(node, opts),
             glObj = {
+
+            // 画笔
             "painter": function painter() {
-                return gl;
+                return _painter(gl);
             },
 
             // 启用着色器
@@ -261,8 +435,8 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
             // 缓冲区
             "buffer": function buffer(isElement) {
                 // 创建缓冲区
-                var buffer = newBuffer(gl, isElement),
-                    bufferData = void 0,
+                newBuffer(gl, isElement);
+                var bufferData = void 0,
                     bufferObj = {
                     // 写入数据
                     "write": function write(data, usage) {
@@ -286,20 +460,29 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
             },
 
             // 纹理
-            "texture": function texture(unit, type) {
-                type = type || gl.TEXTURE_2D;
+            "texture": function texture(_type_, unit) {
+                var type = {
+                    "2d": gl.TEXTURE_2D, /*二维纹理*/
+                    "cube": gl.TEXTURE_CUBE_MAP /*立方体纹理*/
+                }[_type_];
+
                 // 创建纹理
-                var texture = initTexture(gl, unit, type);
+                var texture = initTexture(gl, type, unit, _type_);
+
+                // 配置纹理（默认配置）
+                gl.texParameteri(type, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+                gl.texParameteri(type, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+                gl.texParameteri(type, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+
                 var textureObj = {
-                    // 配置纹理对象
-                    "config": function config(_config) {
-                        configTexture(gl, type, _config);
-                        return textureObj;
-                    },
                     // 链接图片资源
-                    "use": function use(level, format, textureType, image) {
+                    "useImage": function useImage(image, level, format, textureType) {
                         linkImage(gl, type, level, format, textureType, image);
                         return textureObj;
+                    },
+                    // 链接多张图片
+                    "useCube": function useCube(images, width, height, level, format, textureType) {
+                        linkCube(gl, type, level, format, textureType, images, width, height, texture);
                     }
                 };
                 return textureObj;
@@ -307,220 +490,309 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
         };
 
-        return glObj;
-    };
-
-    /**
-     * 在(a,b,c)方向位移d
-     * @private
-     */
-    function _move(d, a, b, c) {
-        c = c || 0;
-        var sqrt = Math.sqrt(a * a + b * b + c * c);
-        return [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, a * d / sqrt, b * d / sqrt, c * d / sqrt, 1];
-    }
-
-    /**
-     * 围绕0Z轴旋转
-     * 其它的旋转可以借助transform实现
-     * 旋转角度单位采用弧度制
-     * 
-     * @private
-     */
-    function _rotate(deg) {
-        var sin = Math.sin(deg),
-            cos = Math.cos(deg);
-        return [cos, sin, 0, 0, -sin, cos, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
-    }
-
-    /**
-     * 围绕圆心x、y和z分别缩放xTimes, yTimes和zTimes倍
-     * 
-     * @private
-     */
-    function _scale(xTimes, yTimes, zTimes, cx, cy, cz) {
-        cx = cx || 0;cy = cy || 0;cz = cz || 0;
-        return [xTimes, 0, 0, 0, 0, yTimes, 0, 0, 0, 0, zTimes, 0, cx - cx * xTimes, cy - cy * yTimes, cz - cz * zTimes, 1];
-    }
-
-    /**
-     * 针对任意射线(a1,b1,c1)->(a2,b2,c2)
-     * 计算出二个变换矩阵
-     * 分别为：任意射线变成OZ轴变换矩阵 + OZ轴变回原来的射线的变换矩阵
-     * 
-     * @private
-     */
-    function _transform(a1, b1, c1, a2, b2, c2) {
-
-        if (typeof a1 === 'number' && typeof b1 === 'number') {
-
-            // 如果设置二个点
-            // 表示二维上围绕某个点旋转
-            if (typeof c1 !== 'number') {
-                c1 = 0;a2 = a1;b2 = b1;c2 = 1;
-            }
-            // 只设置三个点(设置不足六个点都认为只设置了三个点)
-            // 表示围绕从原点出发的射线旋转
-            else if (typeof a2 !== 'number' || typeof b2 !== 'number' || typeof c2 !== 'number') {
-                    a2 = a1;b2 = b1;c2 = c1;a1 = 0;b1 = 0;c1 = 0;
-                }
-
-            if (a1 == a2 && b1 == b2 && c1 == c2) throw new Error('It\'s not a legitimate ray!');
-
-            var sqrt1 = Math.sqrt((a2 - a1) * (a2 - a1) + (b2 - b1) * (b2 - b1)),
-                cos1 = sqrt1 != 0 ? (b2 - b1) / sqrt1 : 1,
-                sin1 = sqrt1 != 0 ? (a2 - a1) / sqrt1 : 0,
-                b = (a2 - a1) * sin1 + (b2 - b1) * cos1,
-                c = c2 - c1,
-                sqrt2 = Math.sqrt(b * b + c * c),
-                cos2 = sqrt2 != 0 ? c / sqrt2 : 1,
-                sin2 = sqrt2 != 0 ? b / sqrt2 : 0;
-
-            return [
-
-            // 任意射线变成OZ轴变换矩阵
-            [cos1, cos2 * sin1, sin1 * sin2, 0, -sin1, cos1 * cos2, cos1 * sin2, 0, 0, -sin2, cos2, 0, b1 * sin1 - a1 * cos1, c1 * sin2 - a1 * sin1 * cos2 - b1 * cos1 * cos2, -a1 * sin1 * sin2 - b1 * cos1 * sin2 - c1 * cos2, 1],
-
-            // OZ轴变回原来的射线的变换矩阵
-            [cos1, -sin1, 0, 0, cos2 * sin1, cos2 * cos1, -sin2, 0, sin1 * sin2, cos1 * sin2, cos2, 0, a1, b1, c1, 1]];
-        } else {
-            throw new Error('a1 and b1 is required!');
+        // attribue和uniform数据设置
+        var valueMethods = value(gl);
+        for (var key in valueMethods) {
+            glObj[key] = valueMethods[key];
         }
+
+        return glObj;
     }
 
-    // 二个4x4矩阵相乘
-    // 或矩阵和齐次坐标相乘
-    var _multiply = function _multiply(matrix4, param) {
-        var newParam = [];
-        for (var i = 0; i < 4; i++) {
-            for (var j = 0; j < param.length / 4; j++) {
-                newParam[j * 4 + i] = matrix4[i] * param[j * 4] + matrix4[i + 4] * param[j * 4 + 1] + matrix4[i + 8] * param[j * 4 + 2] + matrix4[i + 12] * param[j * 4 + 3];
+    /**
+     * 合并配置文件
+     * --------------------------------------
+     * @param {JSON} config1 默认值
+     * @param {JSON} config2
+     * @return {JSON}
+     *
+     * 只能做一层合并
+     *
+     */
+    function _extend(config1, config2) {
+        for (var key in config2) {
+            try {
+                config1[key] = config2[key];
+            } catch (e) {
+                // 部分特殊的属性不允许修改，会抛错
+                throw new Error("Illegal property key : " + key);
             }
-        }return newParam;
+        }
+        return config1;
+    }
+
+    /**
+     * 缓冲区
+     * -------------------------
+     */
+    function $Buffer(CORE, CONFIG) {
+
+        return function (isElement) {
+
+            return new function Buffer() {
+                var _this2 = this;
+
+                // 创建缓冲区
+                var buffer = CORE.buffer(isElement);
+
+                // 写入数据的方法
+                this.write = function (data) {
+                    buffer.write(data);
+                    return _this2;
+                };
+
+                // 如果是非顶点索引，需要添加数据分配方法
+                if (!isElement) {
+                    this.use = function (location, size, stride, offset) {
+                        buffer.use(location, size, stride, offset);
+                    };
+                    return this;
+                }
+            }();
+        };
+    }
+
+    /**
+     * 照相机
+     * -------------------------
+     */
+    function $Camera(CORE, CONFIG) {}
+
+    /**
+     * 常见的图形数据计算
+     * -------------------------
+     */
+    function $Graphic(CORE, CONFIG) {}
+
+    function drawArrays(painter, _this) {
+
+        _this.drawPoint = function (first, count) {
+            painter.points(first, count);
+            return _this;
+        };
+
+        _this.drawLine = function (first, count) {
+            painter.lines(first, count);
+            return _this;
+        };
+
+        _this.drawStripLine = function (first, count) {
+            painter.stripLines(first, count);
+            return _this;
+        };
+
+        _this.drawLoopLine = function (first, count) {
+            painter.loopLines(first, count);
+            return _this;
+        };
+
+        _this.drawTriangle = function (first, count) {
+            painter.triangles(first, count);
+            return _this;
+        };
+
+        _this.drawStripTriangle = function (first, count) {
+            painter.stripTriangles(first, count);
+            return _this;
+        };
+
+        _this.drawFanTriangle = function (first, count) {
+            painter.fanTriangles(first, count);
+            return _this;
+        };
+    }
+
+    function drawElements(painter, _this) {
+
+        _this.elemPoint = function (first, count, type) {
+            type = type || "byte";
+            painter.points(first, count, type);
+            return _this;
+        };
+
+        _this.elemLine = function (first, count, type) {
+            type = type || "byte";
+            painter.lines(first, count, type);
+            return _this;
+        };
+
+        _this.elemStripLine = function (first, count, type) {
+            type = type || "byte";
+            painter.stripLines(first, count, type);
+            return _this;
+        };
+
+        _this.elemLoopLine = function (first, count, type) {
+            type = type || "byte";
+            painter.loopLines(first, count, type);
+            return _this;
+        };
+
+        _this.elemTriangle = function (first, count, type) {
+            type = type || "byte";
+            painter.triangles(first, count, type);
+            return _this;
+        };
+
+        _this.elemStripTriangle = function (first, count, type) {
+            type = type || "byte";
+            painter.stripTriangles(first, count, type);
+            return _this;
+        };
+
+        _this.elemFanTriangle = function (first, count, type) {
+            type = type || "byte";
+            painter.fanTriangles(first, count, type);
+            return _this;
+        };
+    }
+
+    /**
+     * 画笔
+     * -------------------------
+     */
+    function $Painter(CORE, CONFIG) {
+
+        var painter = CORE.painter();
+
+        // 判断是否需要开启深度计算
+        if (CONFIG.depth) {
+            painter.openDeep();
+        }
+
+        return function () {
+
+            return new function Painter() {
+
+                // 第一种：点坐标绘制
+                drawArrays(painter, this);
+
+                // 第二种：顶点索引绘制
+                drawElements(painter, this);
+            }();
+        };
+    }
+
+    /**
+     * 2D纹理
+     * -------------------------
+     */
+    function $Texture_2d(CORE, CONFIG) {
+
+        return function (unit) {
+
+            return new function Texture2D() {
+                var _this3 = this;
+
+                // 创建纹理
+                var texture = CORE.texture('2d', unit);
+
+                // 绑定图片
+                this.write = function (img) {
+                    texture.useImage(img);
+                    return _this3;
+                };
+            }();
+        };
+    }
+
+    /**
+     * 立方体纹理
+     * -------------------------
+     */
+    function $Texture_cube(CORE, CONFIG) {
+
+        return function (width, height) {
+
+            return new function TextureCube() {
+                var _this4 = this;
+
+                // 创建纹理
+                var texture = CORE.texture('cube');
+
+                // 绑定图片
+                this.write = function (img1, img2, img3, img4, img5, img6) {
+                    texture.useCube([img1, img2, img3, img4, img5, img6], width, height);
+                    return _this4;
+                };
+            }();
+        };
+    }
+
+    /**
+     * 核心方法
+     */
+
+    // 3D绘图对象
+    // let image3d = new image3d(canvas, config);
+    var image3D = function image3D(canvas, config) {
+
+        // 配置
+        var CONFIG = _extend({
+
+            depth: false // 默认不开启深度计算
+
+        }, config || {});
+
+        // 启动
+        var CORE = core(canvas);
+
+        // 让着色器生效
+        CORE.shader(config["vertex-shader"], config["fragment-shader"]);
+
+        image3D.fn = image3D.prototype;
+
+        // 挂载主要方法
+        image3D.fn.Buffer = $Buffer(CORE);
+        image3D.fn.Camera = $Camera();
+        image3D.fn.Graphic = $Graphic();
+        image3D.fn.Painter = $Painter(CORE, CONFIG);
+        image3D.fn.Texture2D = $Texture_2d(CORE);
+        image3D.fn.TextureCube = $Texture_cube(CORE);
+
+        // 挂载基础方法
+        image3D.fn.setAttributeFloat = function (location, v0, v1, v2, v3) {
+            CORE['setAttribute' + (arguments.length - 1) + "f"](location, v0, v1, v2, v3);
+            return this;
+        };
+        image3D.fn.setAttributeInt = function (location, v0, v1, v2, v3) {
+            CORE['setAttribute' + (arguments.length - 1) + "i"](location, v0, v1, v2, v3);
+            return this;
+        };
+        image3D.fn.setUniformFloat = function (location, v0, v1, v2, v3) {
+            CORE['setUniform' + (arguments.length - 1) + "f"](location, v0, v1, v2, v3);
+            return this;
+        };
+        image3D.fn.setUniformInt = function (location, v0, v1, v2, v3) {
+            CORE['setUniform' + (arguments.length - 1) + "i"](location, v0, v1, v2, v3);
+            return this;
+        };
+        image3D.fn.setUniformMatrix = function (location, value) {
+            var size = {
+                6: 2,
+                9: 3,
+                16: 4
+            }[value.length];
+            CORE['setUniformMatrix' + size + "fv"](location, value);
+            return this;
+        };
     };
 
-    /**
-     * 4x4矩阵
-     * 列主序存储
-     * @since V0.2.0
-     * @public
-     */
-    function Matrix4(initMatrix4) {
-
-        var matrix4 = initMatrix4 || [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
-
-        var matrix4Obj = {
-
-            // 移动
-            "move": function move(dis, a, b, c) {
-                matrix4 = _multiply(_move(dis, a, b, c), matrix4);
-                return matrix4Obj;
-            },
-
-            // 旋转
-            "rotate": function rotate(deg, a1, b1, c1, a2, b2, c2) {
-                var matrix4s = _transform(a1, b1, c1, a2, b2, c2);
-                matrix4 = _multiply(_multiply(_multiply(matrix4s[1], _rotate(deg)), matrix4s[0]), matrix4);
-                return matrix4Obj;
-            },
-
-            // 缩放
-            "scale": function scale(xTimes, yTimes, zTimes, cx, cy, cz) {
-                matrix4 = _multiply(_scale(xTimes, yTimes, zTimes, cx, cy, cz), matrix4);
-                return matrix4Obj;
-            },
-
-            // 乘法
-            // 可以传入一个矩阵(matrix4,flag)
-            "multiply": function multiply(newMatrix4, flag) {
-                matrix4 = flag ? _multiply(matrix4, newMatrix4) : _multiply(newMatrix4, matrix4);
-                return matrix4Obj;
-            },
-
-            // 对一个坐标应用变换
-            // 齐次坐标(x,y,z,w)
-            "use": function use(x, y, z, w) {
-                // w为0表示点位于无穷远处，忽略
-                z = z || 0;w = w || 1;
-                var temp = _multiply(matrix4, [x, y, z, w]);
-                temp[0] = +temp[0].toFixed(7);
-                temp[1] = +temp[1].toFixed(7);
-                temp[2] = +temp[2].toFixed(7);
-                temp[3] = +temp[3].toFixed(7);
-                return temp;
-            },
-
-            // 矩阵的值
-            "value": function value() {
-                return matrix4;
-            }
-
-        };
-
-        return matrix4Obj;
-    }
-
-    function transform(initMatrix4) {
-
-        var matrix4 = Matrix4(initMatrix4);
-
-        return {
-            "value": matrix4.value,
-
-            /**
-             * 基本变换
-             * --------------
-             * 旋转、缩放和移动
-             */
-            "rotate": matrix4.rotate,
-            "scale": matrix4.scale,
-            "move": matrix4.move
-        };
-    }
-
-    /**
-     * 挂载静态方法
-     * -------------------
-     * 这里挂载的方法可以通过image3D.XXX()形式直接调用
-     * 主要是一个辅助方法
-     */
-    image3D.extend({
-        transform: transform
-    });
-
-    /**
-     * 挂载对象方法
-     * -------------------
-     * 这里挂载的方法可以通过image3D().XXX()形式直接调用
-     * 和画笔直接相关的方法
-     */
-    image3D.prototype.extend({});
-
-    image3D.fn = image3D.prototype;
+    // 挂载核心方法（不推荐绘制的时候直接使用）
+    image3D.core = core;
 
     if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === "object" && _typeof(module.exports) === "object") {
         module.exports = image3D;
     } else {
         var
         // 保存之前的image3D，防止直接覆盖
-        _image3D = window.image3D,
+        _image3D = window.image3D;
 
-
-        // 保存之前的$$，防止直接覆盖
-        _$$ = window.$$;
-
-        image3D.noConflict = function (deep) {
+        image3D.noConflict = function () {
 
             // 如果当前的$$是被最新的image3D覆盖的
             // 恢复之前的
-            if (window.$$ === image3D) {
-                window.$$ = _$$;
-            }
-
-            // 如果当前的image3D是被最新的image3D覆盖的
-            // 且标记需要恢复
-            // 恢复之前的
-            if (deep && window.image3D === image3D) {
+            if (window.image3D === image3D) {
                 window.image3D = _image3D;
             }
 
@@ -531,7 +803,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
             return image3D;
         };
 
-        // 挂载库对象到根
-        window.image3D = window.$$ = image3D;
+        // 挂载对象到根
+        window.image3D = image3D;
     }
 })();

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="../../libs/normalize.css">
+    <link rel="stylesheet" href="../../libs/prettify.css">
+    <link rel="stylesheet" href="./style.css">
+    <script src="../../libs/prettify.js"></script>
+</head>
+
+<body onload="prettyPrint()">
+    <header>
+        3D对象
+    </header>
+    <pre class='prettyprint lang-js'>var image3d = new image3D(canvas, config)</pre>
+    <p>
+        通过new的方式可以创建一个3D对象，记作image3d(注意和image3D区分，前者表示3D对象，后者表示3D类，后面不再赘述)，所有的3D绘图操作接口都由此提供。
+    </p>
+    <h2>
+        配置 config
+    </h2>
+    <p>
+        上面的canvas表示一个canvas结点，下面主要来说说config可配置项。
+    </p>
+    <h4>
+        1.着色器 [必输]
+    </h4>
+    <p>
+        "vertex-shader"和"fragment-shader"分别用于配置顶点着色器和片段着色器，值是二段着色器字符串。
+    </p>
+    <h4>
+        2.深度计算 [可选]
+    </h4>
+    <p>
+        "depth"用于配置是否开启深度计算，默认false关闭，如果配置true表示开启，开启意味着渲染的时候根据z值进行计算。
+    </p>
+</body>
+
+</html>
