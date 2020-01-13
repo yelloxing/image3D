@@ -6,11 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="../libs/normalize.css">
+    <link rel="stylesheet" href="../../libs/prettify.css">
+    <script src="../../libs/prettify.js"></script>
     <link rel="shortcut icon" href="../image3D.png">
     <title>教程 | image3D.js</title>
 </head>
 
-<body>
+<body onload="prettyPrint()">
 
     <header>
         <ul>
@@ -21,28 +23,40 @@
         </ul>
     </header>
 
-    <div>
+    <section>
+        <div>
+            这里主要是帮助你借助image3D绘制有趣的三维图，你可能需要在阅读的过程中翻阅
+            <a href="./api.html" target="_blank">接口文档</a>
+            查询一些方法或对象的使用细节，当然，更多需要了解的，你可以直接提
+            <a href="https://github.com/yelloxing/image3D/issues" target="_blank">issue</a>
+            来向我们提问。
+        </div>
+        <div>
+            此外，我们欢迎任何人加入我们，帮助我们改进项目或编辑文档，如果想加入我们，请在
+            <a href="https://github.com/yelloxing/image3D/blob/master/.mailmap">作者邮箱</a>
+            和
+            <a href="https://github.com/yelloxing/image3D/blob/master/AUTHORS.txt">作者列表</a>
+            里面添加你的消息，前者用于联系，后者是github上注册的账号和邮箱，如果我们同意了pull requests表示你初步加入了我们。
+        </div>
+    </section>
 
-
-    </div>
-
-    <div>
+    <section>
         <h2 id='simple-demo'>一个简单的例子</h2>
 
 
-    </div>
+    </section>
 
-    <div>
+    <section>
         <h2 id='use-buffer'>使用缓冲区</h2>
 
 
-    </div>
+    </section>
 
-    <div>
+    <section>
         <h2 id='use-texture'>使用纹理</h2>
 
 
-    </div>
+    </section>
 
     <footer>
         <ul>
@@ -54,6 +68,9 @@
             </li>
             <li>
                 <a href="https://github.com/yelloxing/image3D" target="_blank">项目</a>
+            </li>
+            <li>
+                <a href="https://github.com/yelloxing/image3D/blob/master/CHANGELOG" target="_blank">更新日志</a>
             </li>
             <li>
                 <a href="https://github.com/yelloxing/image3D/issues" target="_blank">帮助</a>
@@ -113,21 +130,35 @@
         cursor: pointer;
     }
 
-    body>div {
+    body>section {
         width: 10rem;
         margin: auto;
         background-color: #fff;
         padding: 15px;
         margin-top: 10px;
         border-radius: 4px;
+        font-size: .14rem;
+        font-weight: 600;
+        font-family: cursive;
+        letter-spacing: .1em;
     }
 
-    body>div>h2 {
+    body>section>h2 {
         padding-bottom: 9px;
         border-bottom: 1px solid #eee;
         display: block;
         font-weight: 800;
-        font-size: .16rem;
+        font-size: .22rem;
+    }
+
+    body>section>div {
+        text-indent: 2em;
+        line-height: 1.8em;
+    }
+
+    body>section>div>a {
+        color: #bd6136;
+        text-decoration: underline;
     }
 
     body>footer {
