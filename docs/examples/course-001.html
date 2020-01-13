@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>教例#001 | image3D.js</title>
+    <script src="./image3D.examples.js"></script>
+    <link rel="shortcut icon" href="../image3D.png">
+
+    <!-- 顶点着色器 -->
+    <script type='x-shader/x-vertex' id='vs'>
+        attribute vec4 a_position;
+        attribute float a_size;
+        attribute vec4 a_color;
+        varying vec4 v_color;
+        void main(){
+            gl_Position=a_position;
+            gl_PointSize=a_size;
+            v_color=a_color;
+        }
+    </script>
+
+    <!-- 片段着色器 -->
+    <script type='x-shader/x-fragment' id='fs'>
+        precision mediump float;
+        varying vec4 v_color;
+        void main(){
+            gl_FragColor=v_color;
+        }
+    </script>
+
+</head>
+
+<body>
+
+    <canvas width=200 height=200>非常抱歉，您的浏览器不支持canvas!</canvas>
+
+    <script>
+
+        // 创建3D对象并配置好画布和着色器
+        var image3d = new image3D(document.getElementsByTagName('canvas')[0], {
+
+            // 传递着色器
+            "vertex-shader": document.getElementById("vs").innerText,
+            "fragment-shader": document.getElementById("fs").innerText
+
+        });
+
+        // 获取画笔
+        var painter = image3d.Painter();
+
+        var datas = [{
+            color: [1.0, 0.0, 0.0],
+            position: [0.5, 0.5]
+        }, {
+            color: [0.0, 1.0, 0.0],
+            position: [0.5, -0.5]
+        }, {
+            color: [0.0, 0.0, 1.0],
+            position: [-0.5, 0.5]
+        }], flag = 0;
+
+        function doit() {
+
+            image3d
+                // 设置点的位置
+                .setAttributeFloat("a_position", datas[flag].position[0], datas[flag].position[1])
+                // 设置点的大小
+                .setAttributeFloat("a_size", (Math.random() * 90).toFixed(1) + 10)
+                // 设置点的颜色
+                .setAttributeFloat("a_color", datas[flag].color[0], datas[flag].color[1], datas[flag].color[2]);
+
+            // 绘制点
+            painter.drawPoint(0, 1);
+
+            flag += 1;
+
+            // 回到开头
+            if (flag == 3) flag = 0;
+
+        }
+
+        doit();
+
+        setInterval(doit, 200);
+
+    </script>
+
+</body>
+
+</html>

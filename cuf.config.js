@@ -50,6 +50,9 @@ module.exports = {
 
         end(cuf) {
 
+            // 准备一份用于文档中的例子
+            cuf.copySync('./build/image3D.min.js', './docs/examples/image3D.examples.js');
+
             cuf.log("\n-----------------------\n打包完毕！\n-----------------------");
             cuf.print("Date : " + new Date() + "\n");
 

@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="../libs/normalize.css">
+    <link rel="stylesheet" href="../libs/prettify.css">
+    <script src="../libs/prettify.js"></script>
+    <link rel="shortcut icon" href="../image3D.png">
+    <title>教程 | image3D.js</title>
+</head>
+
+<body onload="prettyPrint()">
+
+    <header>
+        <ul>
+            教程
+            <li onclick='window.location.href="#simple-demo"'>一个简单的例子</li>
+            <li onclick='window.location.href="#use-buffer"'>使用缓冲区</li>
+            <li onclick='window.location.href="#use-texture"'>使用纹理</li>
+        </ul>
+    </header>
+
+    <section>
+        <div>
+            这里主要是帮助你借助image3D绘制有趣的三维图，你可能需要在阅读的过程中翻阅
+            <a href="./api.html" target="_blank">接口文档</a>
+            查询一些方法或对象的使用细节，当然，更多需要了解的，你可以直接提
+            <a href="https://github.com/yelloxing/image3D/issues" target="_blank">issue</a>
+            来向我们提问。
+        </div>
+        <div>
+            此外，我们欢迎任何人加入我们，帮助我们改进项目或编辑文档，如果想加入我们，请在
+            <a href="https://github.com/yelloxing/image3D/blob/master/.mailmap">作者邮箱</a>
+            和
+            <a href="https://github.com/yelloxing/image3D/blob/master/AUTHORS.txt">作者列表</a>
+            里面添加你的消息，前者用于联系，后者是github上注册的账号和邮箱，如果我们同意了
+            <span>pull requests</span>
+            表示你初步加入了我们。
+        </div>
+    </section>
+
+    <section>
+        <h2 id='simple-demo'>一个简单的例子</h2>
+        <div>
+            首先，我们不得不说明一下绘图的基本流程：
+            <span>
+                编辑着色器
+            </span>
+            →
+            <span>
+                创建3D对象
+            </span>
+            →
+            <span>
+                准备好数据
+            </span>
+            →
+            <span>
+                绘制
+            </span>
+        </div>
+        <div>
+            我们接下来准备绘制一个点，点的颜色、大小和位置不停改变。
+        </div>
+        <h4 id='shader' onclick='window.location.href="#shader"'>
+            着色器
+        </h4>
+        <div>
+            绘图的时候，本质上我们都是需要通过着色器来和GPU进行数据交互，因此，需要传递的数据都需要在这里提前定义好，看看本例子的着色器：
+        </div>
+        <pre class='prettyprint lang-html'>
+    &lt;!-- 顶点着色器 --&gt;
+    &lt;script type='x-shader/x-vertex' id='vs'&gt;
+        attribute vec4 a_position;
+        attribute float a_size;
+        attribute vec4 a_color;
+        varying vec4 v_color;
+        void main(){
+            gl_Position=a_position;
+            gl_PointSize=a_size;
+            v_color=a_color;
+        }
+    &lt;script&gt;
+
+    &lt;!-- 片段着色器 --&gt;
+    &lt;script type='x-shader/x-fragment' id='fs'&gt;
+        precision mediump float;
+        varying vec4 v_color;
+        void main(){
+            gl_FragColor=v_color;
+        }
+    &lt;script&gt;
+        </pre>
+        <div>
+            着色器分二类：顶点着色器和片段着色器，前者用于传递点的位置和大小，后者用于传递点的颜色。
+        </div>
+        <div>
+            本质上来讲，着色器其实就是二个字符串，用script标签包裹是为了在html文本中方便编辑，在后面的过程就可以看出来了。
+        </div>
+        <div>
+            着色器的代码有点像C语言，我们目前需要了解这三点：
+            <ul>
+                <li>
+                    gl开头的有三个，分别对应点的位置、大小和颜色（从上到下），这是着色器内置的变量，分别隶属于二个着色器，我们所谓的传值，从这个层次看，就是最终给这三个变量赋值。
+                </li>
+                <li>
+                    然后再看看attribute修饰的三个变量，被这个修饰符修饰的变量等于暴露了一个入口，image3D提供了传值的方法，所谓的传值，也就是通过这个入口实现的（第二个修饰符，vec4和float是变量的数据类型，类似别的语言）。
+                </li>
+                <li>
+                    前一条说的入口由attribute修饰实现，是针对每个点提供的，片段着色器是针对全部的点，因此attribute不可以直接出现在第二类着色器中，我们需要使用varying修饰符来标记一个桥梁，实现二个着色器之间的数据传递。
+                </li>
+            </ul>
+        </div>
+        <h4 id='object' onclick='window.location.href="#object"'>
+            3D对象
+        </h4>
+        <div>
+            着色器准备好了以后，我们就可以使用这二个着色器创建3D对象了，同样的，看看本例中的代码：
+        </div>
+        <pre class='prettyprint lang-js'>
+    var image3d = new image3D(document.getElementsByTagName('canvas')[0], {
+
+        // 传递着色器
+        "vertex-shader": document.getElementById("vs").innerText,
+        "fragment-shader": document.getElementById("fs").innerText
+
+    });
+        </pre>
+        <div>
+            从这里是不是可以看出来，着色器只不过是二段字符串。
+        </div>
+        <h4 id='data' onclick='window.location.href="#data"'>
+            传递数据
+        </h4>
+        <div>
+            实际的例子是不停的改变，我们为了方便说明，这里假设某个瞬间的操作：
+        </div>
+        <pre class='prettyprint lang-js'>
+    image3d
+        // 设置点的位置
+        .setAttributeFloat("a_position", 0.5, 0.5, 0.0)
+        // 设置点的大小
+        .setAttributeFloat("a_size", 50.0)
+        // 设置点的颜色
+        .setAttributeFloat("a_color", 1.0, 0.0, 0.0);
+        </pre>
+        <div>
+            比如点的位置，“a_position”是和着色器中attribute修饰的变量对应的。大部分根据感觉应该就可以看出来，下面稍微提二点：
+        </div>
+        <ul>
+            <li>
+                image3D选择的是右手坐标系，记作uvz（对应数学中的坐标系就是xyz）,每个轴的有效可视范围是-1.0~1.0，因此这里的坐标(0.5, 0.5,
+                0.0)页面上看上去就是位于第一象限中心（右上角），请注意和浏览器的坐标区分。
+            </li>
+            <li>
+                点的颜色需要传递三个值，范围是0.0~1.0，分别对应RGB（当然还可以有一个alpha透明度，这里没有传递）。
+            </li>
+        </ul>
+        <h4 id='draw' onclick='window.location.href="#draw"'>
+            绘制
+        </h4>
+        <div>
+            一切准备完毕，获取画笔绘制即可：
+        </div>
+        <pre class='prettyprint lang-js'>
+    image3d.Painter().drawPoint(0, 1);
+        </pre>
+        <div>
+            这里缩减版的例子最终会绘制一个大小是50px，位于第一象限中心的红色正方形。完整的例子请
+            <a href="../examples/course-001.html" target="_blank">点击此处</a>
+            查看运行效果。
+        </div>
+
+    </section>
+
+    <section>
+        <h2 id='use-buffer'>使用缓冲区</h2>
+
+    </section>
+
+    <section>
+        <h2 id='use-texture'>使用纹理</h2>
+
+    </section>
+
+    <footer>
+        <ul>
+            <li>
+                <a href="../index.html" target="_blank">首页</a>
+            </li>
+            <li>
+                <a href="./api.html" target="_blank">接口文档</a>
+            </li>
+            <li>
+                <a href="https://github.com/yelloxing/image3D" target="_blank">项目</a>
+            </li>
+            <li>
+                <a href="https://github.com/yelloxing/image3D/blob/master/CHANGELOG" target="_blank">更新日志</a>
+            </li>
+            <li>
+                <a href="https://github.com/yelloxing/image3D/issues" target="_blank">帮助</a>
+            </li>
+        </ul>
+        <a href="https://github.com/yelloxing/image3D/blob/dev/LICENSE">Copyright &copy; 2019 - 2020</a>
+        <a href="https://yelloxing.github.io/notebook/">走一步 再走一步</a>
+        <a href="javascriot:void(0)" onclick="document.documentElement.scrollTop = 0;">回到顶部</a>
+    </footer>
+
+</body>
+
+<style>
+    html {
+        height: 100vh !important;
+        font-size: 100px;
+    }
+
+    body {
+        font-size: .18rem;
+        background: #e4e0e0;
+        padding-top: .6rem;
+        font-family: -apple-system, "Helvetica Neue", Helvetica, Arial, "PingFang SC", "Hiragino Sans GB", "WenQuanYi Micro Hei", "Microsoft Yahei", sans-serif;
+    }
+
+    body>header {
+        line-height: .5rem;
+        background-color: #43515a;
+        border-color: #43515a;
+        color: #fff;
+        user-select: none;
+        position: fixed;
+        width: 100%;
+        top: 0;
+        box-shadow: 0px 4px 5px 0px #f6f6f6;
+    }
+
+    body>header>ul {
+        width: 10rem;
+        margin: auto;
+        background-image: url('../image3D.png');
+        background-size: auto 70%;
+        background-repeat: no-repeat;
+        background-position: .2rem center;
+        padding-left: .7rem;
+        font-size: .2rem;
+    }
+
+    body>header>ul>li:first-child {
+        margin-left: .2rem;
+    }
+
+    body>header>ul>li {
+        display: inline-block;
+        padding: 0 15px;
+        font-size: .12rem;
+        cursor: pointer;
+    }
+
+    body>section {
+        width: 10rem;
+        margin: auto;
+        background-color: #fff;
+        padding: 15px;
+        margin-top: 10px;
+        border-radius: 4px;
+        font-size: .14rem;
+        font-weight: 600;
+        font-family: cursive;
+        letter-spacing: .1em;
+    }
+
+    body>section>h2 {
+        padding-bottom: 9px;
+        border-bottom: 1px solid #eee;
+        display: block;
+        font-weight: 800;
+        font-size: .22rem;
+    }
+
+    body>section>h4 {
+        display: block;
+        font-weight: 800;
+        font-size: .17rem;
+        color: #bd6136;
+        margin-top: .1rem;
+    }
+
+    body>section>div {
+        text-indent: 2em;
+        line-height: 1.8em;
+    }
+
+    body>section>div>span {
+        color: #ff5101;
+        font-weight: 300;
+    }
+
+    body>section>div>a {
+        color: #bd6136;
+        text-decoration: underline;
+    }
+
+    body>footer {
+        padding: 0.4rem 0.1rem;
+        text-align: center;
+        font-size: 0.12rem;
+    }
+
+    body>footer>ul {
+        padding-bottom: 0.2rem;
+    }
+
+    body>footer>ul>li {
+        display: inline-block;
+        padding: 0 0.2rem;
+        line-height: 1.2em;
+    }
+
+    body>footer>ul>li:not(:last-child) {
+        border-right: 1px solid #000;
+    }
+
+    body>footer a {
+        font-weight: bold;
+        color: #000;
+    }
+
+    pre {
+        font-size: .12rem;
+        font-family: cursive;
+    }
+
+    li {
+        line-height: 1.6em;
+        margin-left: 2em;
+        list-style-type: disc;
+    }
+</style>
+
+</html>
+
+<!--
+    我还惊讶地意识到， 在我生命中有很多时刻， 每当我遇到一个遥不可及、令人害怕的情境，
+    并感到惊慌失措时， 我都能够应付——因为我回想起了很久以前自己上过的那一课。
+    我提醒自己不要看下面遥远的岩石， 而是注意相对轻松、容易的第一小步， 迈出一小步、再一小步，
+    就这样体会每一步带来的成就感， 直到完成了自己想要完成的， 达到了自己的目标，
+    然后再回头看时， 不禁对自己走过的这段漫漫长路感到惊讶和自豪。
+                                            ———— 摘自 莫顿·亨特《走一步，再走一步》
+-->
