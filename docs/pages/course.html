@@ -318,7 +318,7 @@
         <div>
             我们先来简单的说明一下二维纹理。我们会绘制一个长方形，之前是传递一个颜色来确定绘制的长方形色彩，现在，我们会传递一个纹理给片元着色器（简单的理解就是一张图片），看看着色器代码：
         </div>
-        <pre class='prettyprint lang-js'>
+        <pre class='prettyprint lang-html'>
     &lt;!-- 顶点着色器 --&gt;
     &lt;script type='x-shader/x-vertex' id='vs'&gt;
         attribute vec4 a_position;
@@ -384,6 +384,56 @@
         <h4 id='texture-cube' onclick='window.location.href="#texture-cube"'>
             立方纹理
         </h4>
+        <div>
+            立方纹理顾名思义就是用一个矩形盒子去贴图，有点像盒子慢慢变小，直到碰到物体，最后好像物体表面有了一层膜的感觉，比较简单的比喻就是皮肤。
+        </div>
+        <div>
+            我们准备绘制一个二十四面体，同样的，先从着色器开始：
+        </div>
+        <pre class='prettyprint lang-html'>
+    &lt;!-- 顶点着色器 --&gt;
+    &lt;script type='x-shader/x-vertex' id='vs'&gt;
+        attribute vec4 a_position;
+        varying vec3 v_normal;
+        uniform mat4 u_matrix;
+        void main(){
+            gl_Position=u_matrix * a_position;
+            // 因为位置是以几何中心为原点的,可以用顶点坐标作为法向量
+            v_normal=normalize(a_position.xyz);
+        }
+    &lt;script&gt;
+
+    &lt;!-- 片段着色器 --&gt;
+    &lt;script type='x-shader/x-fragment' id='fs'&gt;
+        precision mediump float;
+        varying vec3 v_normal;
+        uniform samplerCube u_texture;
+        void main(){
+            gl_FragColor=textureCube(u_texture,normalize(v_normal));
+        }
+    &lt;script&gt;
+        </pre>
+        <div>
+            类似的，只不过我们这里使用
+            <span>textureCube</span>
+            来计算颜色。
+        </div>
+        <div>
+            前面说了，矩形盒子，因此需要六张图片：
+        </div>
+        <pre class='prettyprint lang-js'>
+    // 创建纹理对象
+    var texture = image3d.TextureCube(500, 500);
+    // 写入图片
+    texture.write(image1, image2, image3, image4, image5, image6);
+    // 纹理传递给着色器
+    image3d.setUniformInt('u_texture', texture);
+        </pre>
+        <div>
+            一切准备好了以后，就可以直接绘图了，这和以前一样，就不再赘述了。完整的例子请
+            <a href="../examples/course-005.html" target="_blank">点击此处</a>
+            查看。
+        </div>
     </section>
 
     <footer>
