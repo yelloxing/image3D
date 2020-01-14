@@ -11,7 +11,7 @@
 * Copyright yelloxing
 * Released under the MIT license
 *
-* Date:Tue Jan 14 2020 13:08:04 GMT+0800 (GMT+08:00)
+* Date:Tue Jan 14 2020 14:44:49 GMT+0800 (GMT+08:00)
 */
 
 'use strict';
@@ -293,15 +293,15 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 
             // 矩阵
-            setUnifromMatrix2fv: function setUnifromMatrix2fv(name, value) {
+            setUniformMatrix2fv: function setUniformMatrix2fv(name, value) {
                 var location = gl.getUniformLocation(gl.program, name);
                 gl.uniformMatrix2fv(location, false, value);
             },
-            setUnifromMatrix3fv: function setUnifromMatrix3fv(name, value) {
+            setUniformMatrix3fv: function setUniformMatrix3fv(name, value) {
                 var location = gl.getUniformLocation(gl.program, name);
                 gl.uniformMatrix3fv(location, false, value);
             },
-            setUnifromMatrix4fv: function setUnifromMatrix4fv(name, value) {
+            setUniformMatrix4fv: function setUniformMatrix4fv(name, value) {
                 var location = gl.getUniformLocation(gl.program, name);
                 gl.uniformMatrix4fv(location, false, value);
             }
@@ -973,7 +973,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
         };
         image3D.fn.setUniformMatrix = function (location, value) {
             var size = {
-                6: 2,
+                4: 2,
                 9: 3,
                 16: 4
             }[value.length];

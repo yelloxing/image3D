@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>教例#002 | image3D.js</title>
+    <script src="./image3D.examples.js"></script>
+    <link rel="shortcut icon" href="../image3D.png">
+
+    <!-- 顶点着色器 -->
+    <script type='x-shader/x-vertex' id='vs'>
+        attribute vec4 a_position;
+        attribute vec4 a_color;
+        uniform mat4 u_matrix;
+        varying vec4 v_color;
+        void main(){
+            gl_Position=u_matrix * a_position;
+            v_color=a_color;
+        }
+    </script>
+
+    <!-- 片段着色器 -->
+    <script type='x-shader/x-fragment' id='fs'>
+        precision mediump float;
+        varying vec4 v_color;
+        void main(){
+            gl_FragColor=v_color;
+        }
+    </script>
+
+</head>
+
+<body>
+
+    <canvas width=200 height=200>非常抱歉，您的浏览器不支持canvas!</canvas>
+
+    <script>
+
+        // 创建3D对象并配置好画布和着色器
+        var image3d = new image3D(document.getElementsByTagName('canvas')[0], {
+
+            // 传递着色器
+            "vertex-shader": document.getElementById("vs").innerText,
+            "fragment-shader": document.getElementById("fs").innerText,
+
+            // 开启深度计算
+            "depth": true
+
+        });
+
+        // 准备数据
+        var datas = new Float32Array([
+
+            // 前
+            0.5, 0.5, 0.5, 0.5, -0.5, 0.5, -0.5, -0.5, 0.5, -0.5, 0.5, 0.5,
+
+            // 后
+            0.5, 0.5, -0.5, 0.5, -0.5, -0.5, -0.5, -0.5, -0.5, -0.5, 0.5, -0.5,
+
+            // 左
+            - 0.5, -0.5, 0.5, -0.5, 0.5, 0.5, -0.5, 0.5, -0.5, -0.5, -0.5, -0.5,
+
+            // 右
+            0.5, -0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, 0.5, -0.5, -0.5,
+
+            // 上
+            0.5, 0.5, 0.5, -0.5, 0.5, 0.5, -0.5, 0.5, -0.5, 0.5, 0.5, -0.5,
+
+            // 下
+            0.5, -0.5, 0.5, -0.5, -0.5, 0.5, -0.5, - 0.5, -0.5, 0.5, -0.5, -0.5
+
+        ]);
+
+        // 获取缓冲区
+        var buffer = image3d.Buffer();
+
+        // 数据写入缓冲区
+        buffer.write(datas);
+
+        // 分配缓冲区中的数据
+        buffer.use("a_position", 3, 3, 0);
+
+        // 获取画笔
+        var painter = image3d.Painter();
+
+        // 六个面颜色
+        var colors = [
+            [1.0, 0.0, 0.0], [0.0, 1.0, 0.0],
+            [0.0, 0.0, 1.0], [0.0, 0.5, 0.5],
+            [0.1, 0.0, 0.5], [0.5, 0.5, 0.0]
+        ];
+
+        // 获取照相机
+        var camera = image3d.Camera();
+
+        function doit() {
+
+            camera.rotateBody(Math.PI / 16, -1, -1, 1, 1, 1, -1);
+
+            // 设置矩阵
+            image3d.setUniformMatrix("u_matrix", camera.value());
+
+            var index = 0;
+            for (; index < colors.length; index++) {
+
+                // 设置颜色
+                image3d.setAttributeFloat("a_color", colors[index][0], colors[index][1], colors[index][2]);
+
+                // 绘制
+                painter.drawFanTriangle(index * 4, 4);
+            }
+
+        }
+
+        doit();
+
+        setInterval(doit, 200);
+
+
+
+    </script>
+
+</body>
+
+</html>

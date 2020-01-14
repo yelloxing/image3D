@@ -64,7 +64,7 @@ let image3D = function (canvas, config) {
     };
     image3D.fn.setUniformMatrix = function (location, value) {
         let size = {
-            6: 2,
+            4: 2,
             9: 3,
             16: 4
         }[value.length];
