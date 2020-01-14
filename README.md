@@ -19,7 +19,7 @@
 请直接在页面中加入下面这行代码，然后通过image3D即可调用（查看[更新日志](https://github.com/yelloxing/image3D/blob/master/CHANGELOG)选择版本）：
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/image3d@1.0.2/build/image3D.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/image3d@2.0.6/build/image3D.min.js"></script>
 ```
 
 如果你想通过npm方式管理，首先你需要通过命令行安装image3D，就像这样：
