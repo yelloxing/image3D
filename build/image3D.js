@@ -11,7 +11,7 @@
 * Copyright yelloxing
 * Released under the MIT license
 *
-* Date:Tue Jan 14 2020 14:44:49 GMT+0800 (GMT+08:00)
+* Date:Tue Jan 14 2020 17:13:54 GMT+0800 (GMT+08:00)
 */
 
 'use strict';
@@ -545,8 +545,8 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
                 if (!isElement) {
                     this.use = function (location, size, stride, offset) {
                         buffer.use(location, size, stride, offset);
+                        return _this2;
                     };
-                    return this;
                 }
             }();
         };

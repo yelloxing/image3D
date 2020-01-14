@@ -187,7 +187,7 @@
             什么是缓冲区？简单的理解就是：一个和GPU交换大量数据的快速通道！
         </div>
         <h4 id='buffer-normal' onclick='window.location.href="#buffer-normal"'>
-            第一类：顶点缓冲区
+            顶点缓冲区
         </h4>
         <div>
             我们先来演示一下比较简单的第一种缓冲区的使用方法。其实相比于绘制一个点，不同的地方只有点的个数和绘制方法，别的都类似。
@@ -243,7 +243,7 @@
             查看最终效果。
         </div>
         <h4 id='buffer-element' onclick='window.location.href="#buffer-element"'>
-            第二类：索引缓冲区
+            索引缓冲区
         </h4>
         <div>
             你应该注意到了，一个立方体我们传递了二十四个点，其实只有六个点，如果是更复杂的图形更浪费资源，因此，
@@ -304,7 +304,86 @@
 
     <section>
         <h2 id='use-texture'>使用纹理</h2>
+        <div>
+            到目前为止，理论上我们已经可以绘制任何形状的3D图形，但是，为了让绘制的图形看上去更丰富，下面来说明一下纹理。
+        </div>
+        <div>
+            纹理有很多种，目前
+            <span>image3D</span>
+            提供了两种纹理：二维纹理和立方纹理。
+        </div>
+        <h4 id='texture-2d' onclick='window.location.href="#texture-2d"'>
+            二维纹理
+        </h4>
+        <div>
+            我们先来简单的说明一下二维纹理。我们会绘制一个长方形，之前是传递一个颜色来确定绘制的长方形色彩，现在，我们会传递一个纹理给片元着色器（简单的理解就是一张图片），看看着色器代码：
+        </div>
+        <pre class='prettyprint lang-js'>
+    &lt;!-- 顶点着色器 --&gt;
+    &lt;script type='x-shader/x-vertex' id='vs'&gt;
+        attribute vec4 a_position;
+        attribute vec2 a_textcoord;
+        varying vec2 v_textcoord;
+        void main(){
+            gl_Position=a_position;
+            v_textcoord=a_textcoord;
+        }
+    &lt;script&gt;
 
+    &lt;!-- 片段着色器 --&gt;
+    &lt;script type='x-shader/x-fragment' id='fs'&gt;
+        precision mediump float;
+        uniform sampler2D u_sampler;
+        varying vec2 v_textcoord;
+        void main(){
+            gl_FragColor=texture2D(u_sampler,v_textcoord);
+        }
+    &lt;script&gt;
+        </pre>
+        <div>
+            我们在片元着色器中使用了着色器内置方法
+            <span>texture2D</span>
+            来计算当前点应该是什么颜色（当然是根据传递的图片进行计算）：
+        </div>
+        <ul>
+            <li>
+                u_sampler表示纹理单元，可以理解为你把图片写入的地址。
+            </li>
+            <li>
+                v_textcoord表示图片和绘制的图形坐标的对应关系，也就是确定图片贴上去的位置。
+            </li>
+        </ul>
+        <div>
+            相信有了前面代码的铺垫，最终代码大部分都可以看懂了，我们直接跳过通过缓冲区设置数据部分，看看和纹理相关的代码：
+        </div>
+        <pre class='prettyprint lang-js'>
+    // 创建纹理对象
+    var texture = image3d.Texture2D(1);
+
+    var image = new Image();
+    image.onload = function () {
+
+        // 绘制图片
+        texture.write(image);
+        image3d.setUniformInt('u_sampler', 1);
+        painter.drawStripTriangle(0, 4);
+
+    };
+    image.src = '../images/cat.jpeg';
+        </pre>
+        <div>
+            可以看见，我们在创建纹理对象的时候传递了整数1，表示这个纹理对象操作1号纹理（其实编号可以从0开始），然后通过write方法把图片写入该纹理单元。
+        </div>
+        <div>
+            相信看到这里应该基本理解了，其实二维纹理就是相比普通的绘图多了片元着色器中的计算。你可以
+            <a href="../examples/course-004.html" target="_blank">点击此处</a>
+            查看运行结果，可以看见一只猫（是的，是我的猫~），当然，因为请求本地图片资源了，本地查看的话需要使用
+            <span>npm run server</span>
+            启动服务器查看。
+        </div>
+        <h4 id='texture-cube' onclick='window.location.href="#texture-cube"'>
+            立方纹理
+        </h4>
     </section>
 
     <footer>
