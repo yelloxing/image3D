@@ -1,0 +1,5 @@
+v2.0.5:
+    date:2020-01-14
+    changes:
+      -  初始化版本
+      -  ESMAScript6+规范引入（import / export，编译时加载）和script标签全局引入方式
