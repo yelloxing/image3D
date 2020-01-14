@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>教例#003 | image3D.js</title>
+    <script src="./image3D.examples.js"></script>
+    <link rel="shortcut icon" href="../image3D.png">
+
+    <!-- 顶点着色器 -->
+    <script type='x-shader/x-vertex' id='vs'>
+        attribute vec4 a_position;
+        attribute vec4 a_color;
+        uniform mat4 u_matrix;
+        varying vec4 v_color;
+        void main(){
+            gl_Position=u_matrix * a_position;
+            v_color=a_color;
+        }
+    </script>
+
+    <!-- 片段着色器 -->
+    <script type='x-shader/x-fragment' id='fs'>
+        precision mediump float;
+        varying vec4 v_color;
+        void main(){
+            gl_FragColor=v_color;
+        }
+    </script>
+
+</head>
+
+<body>
+
+    <canvas width=200 height=200>非常抱歉，您的浏览器不支持canvas!</canvas>
+
+    <script>
+
+        // 创建3D对象并配置好画布和着色器
+        var image3d = new image3D(document.getElementsByTagName('canvas')[0], {
+
+            // 传递着色器
+            "vertex-shader": document.getElementById("vs").innerText,
+            "fragment-shader": document.getElementById("fs").innerText,
+
+            // 开启深度计算
+            "depth": true
+
+        });
+
+        // 点的坐标
+        var datas = new Float32Array([
+
+            0.5, 0.5, 0.5,
+            0.5, -0.5, 0.5,
+            -0.5, -0.5, 0.5,
+            -0.5, 0.5, 0.5,
+            0.5, 0.5, -0.5,
+            0.5, -0.5, -0.5,
+            -0.5, -0.5, -0.5,
+            -0.5, 0.5, -0.5
+        ]);
+
+        // 顶点索引数组
+        var indexes = new Uint8Array([
+
+            0, 1, 2, 3,
+            4, 5, 6, 7,
+            0, 4, 7, 3,
+            1, 5, 6, 2,
+            0, 1, 5, 4,
+            2, 6, 7, 3
+
+        ]);
+
+        // 顶点写入
+        image3d.Buffer().write(datas).use("a_position", 3, 3, 0);
+        // 索引写入
+        image3d.Buffer(true).write(indexes);
+
+        // 获取画笔
+        var painter = image3d.Painter();
+
+        // 六个面颜色
+        var colors = [
+            [1.0, 0.0, 0.0], [0.0, 1.0, 0.0],
+            [0.0, 0.0, 1.0], [0.0, 0.5, 0.5],
+            [0.1, 0.0, 0.5], [0.5, 0.5, 0.0]
+        ];
+
+        // 获取照相机
+        var camera = image3d.Camera();
+
+        function doit() {
+
+            camera.rotateBody(Math.PI / 16, -1, -1, 1, 1, 1, -1);
+
+            // 设置矩阵
+            image3d.setUniformMatrix("u_matrix", camera.value());
+
+            var index = 0;
+            for (; index < colors.length; index++) {
+
+                // 设置颜色
+                image3d.setAttributeFloat("a_color", colors[index][0], colors[index][1], colors[index][2]);
+
+                // 绘制
+                painter.elemFanTriangle(index * 4, 4);
+            }
+
+        }
+
+        doit();
+
+        setInterval(doit, 200);
+
+
+
+    </script>
+
+</body>
+
+</html>

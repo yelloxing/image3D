@@ -178,12 +178,262 @@
 
     <section>
         <h2 id='use-buffer'>使用缓冲区</h2>
+        <div>
+            上一个例子我们是绘制了一个点，现在，我们准备绘制一个正立方体，由于使用
+            <span>setAttributeFloat</span>
+            方法一次只能传递一个点的坐标，就不得不提一下缓冲区了。
+        </div>
+        <div>
+            什么是缓冲区？简单的理解就是：一个和GPU交换大量数据的快速通道！
+        </div>
+        <h4 id='buffer-normal' onclick='window.location.href="#buffer-normal"'>
+            顶点缓冲区
+        </h4>
+        <div>
+            我们先来演示一下比较简单的第一种缓冲区的使用方法。其实相比于绘制一个点，不同的地方只有点的个数和绘制方法，别的都类似。
+        </div>
+        <div>
+            先来简单提一下绘制方法（更多绘制方法可以查阅
+            <a href="./api.html#/Painter" target="_blank">画笔</a>
+            文档），这里采用的是
+            <span>drawFanTriangle</span>
+            用于绘制三角形的，立方体的每个面是一个正方形，绘制的时候是通过绘制二个三角形拼接实现的。
+        </div>
+        <div>
+            然后说说数据传递部分。这里需要通过缓冲区把六个面，每个面四个点，一共二十四个点一次性传递给顶点着色器：
+        </div>
+        <pre class='prettyprint lang-js'>
+    // 准备数据
+    var datas = new Float32Array([
 
+        // 前
+        0.5, 0.5, 0.5, 0.5, -0.5, 0.5, -0.5, -0.5, 0.5, -0.5, 0.5, 0.5,
+
+        // 后
+        0.5, 0.5, -0.5, 0.5, -0.5, -0.5, -0.5, -0.5, -0.5, -0.5, 0.5, -0.5,
+
+        // 左
+        - 0.5, -0.5, 0.5, -0.5, 0.5, 0.5, -0.5, 0.5, -0.5, -0.5, -0.5, -0.5,
+
+        // 右
+        0.5, -0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, 0.5, -0.5, -0.5,
+
+        // 上
+        0.5, 0.5, 0.5, -0.5, 0.5, 0.5, -0.5, 0.5, -0.5, 0.5, 0.5, -0.5,
+
+        // 下
+        0.5, -0.5, 0.5, -0.5, -0.5, 0.5, -0.5, - 0.5, -0.5, 0.5, -0.5, -0.5
+
+    ]);
+
+    // 获取缓冲区
+    var buffer = image3d.Buffer();
+
+    // 数据写入缓冲区
+    buffer.write(datas);
+
+    // 分配缓冲区中的数据
+    buffer.use("a_position", 3, 3, 0);
+        </pre>
+        <div>
+            点传递好了以后，使用上面的绘制三角形的方法绘制每个面即可（绘制每个面的时候，需要提前使用
+            <span>setAttributeFloat</span>
+            修改颜色）。你可以
+            <a href="../examples/course-002.html" target="_blank">点击此处</a>
+            查看最终效果。
+        </div>
+        <h4 id='buffer-element' onclick='window.location.href="#buffer-element"'>
+            索引缓冲区
+        </h4>
+        <div>
+            你应该注意到了，一个立方体我们传递了二十四个点，其实只有六个点，如果是更复杂的图形更浪费资源，因此，
+            <span>索引缓冲区</span>
+            就出现了。
+        </div>
+        <div>
+            相比于第一种缓冲区，我们只需要传递六个点和六个点的组合关系，先看一下具体的代码：
+        </div>
+        <pre class='prettyprint lang-js'>
+    // 点的坐标
+    var datas = new Float32Array([
+
+        0.5, 0.5, 0.5,
+        0.5, -0.5, 0.5,
+        -0.5, -0.5, 0.5,
+        -0.5, 0.5, 0.5,
+        0.5, 0.5, -0.5,
+        0.5, -0.5, -0.5,
+        -0.5, -0.5, -0.5,
+        -0.5, 0.5, -0.5
+    ]);
+
+    // 顶点索引数组
+    var indexes = new Uint8Array([
+
+        // 前
+        0, 1, 2, 3,
+        // 后
+        4, 5, 6, 7,
+        // 上
+        0, 4, 7, 3,
+        // 下
+        1, 5, 6, 2,
+        // 右
+        0, 1, 5, 4,
+        // 左
+        2, 6, 7, 3
+
+    ]);
+
+    // 顶点写入
+    image3d.Buffer().write(datas).use("a_position", 3, 3, 0);
+    // 索引写入
+    image3d.Buffer(true).write(indexes);
+        </pre>
+        <div>
+            此时，顶点缓冲区中记录了六个点，索引缓冲区中记录了这六个点的一种组合，因此，绘制三角形的方法需要使用索引相关的方法
+            <span>elemFanTriangle</span>
+            来绘制。
+        </div>
+        <div>
+            运行效果和上面的一样，你可以
+            <a href="../examples/course-003.html" target="_blank">点击此处</a>
+            查看运行效果。
+        </div>
     </section>
 
     <section>
         <h2 id='use-texture'>使用纹理</h2>
+        <div>
+            到目前为止，理论上我们已经可以绘制任何形状的3D图形，但是，为了让绘制的图形看上去更丰富，下面来说明一下纹理。
+        </div>
+        <div>
+            纹理有很多种，目前
+            <span>image3D</span>
+            提供了两种纹理：二维纹理和立方纹理。
+        </div>
+        <h4 id='texture-2d' onclick='window.location.href="#texture-2d"'>
+            二维纹理
+        </h4>
+        <div>
+            我们先来简单的说明一下二维纹理。我们会绘制一个长方形，之前是传递一个颜色来确定绘制的长方形色彩，现在，我们会传递一个纹理给片元着色器（简单的理解就是一张图片），看看着色器代码：
+        </div>
+        <pre class='prettyprint lang-html'>
+    &lt;!-- 顶点着色器 --&gt;
+    &lt;script type='x-shader/x-vertex' id='vs'&gt;
+        attribute vec4 a_position;
+        attribute vec2 a_textcoord;
+        varying vec2 v_textcoord;
+        void main(){
+            gl_Position=a_position;
+            v_textcoord=a_textcoord;
+        }
+    &lt;script&gt;
 
+    &lt;!-- 片段着色器 --&gt;
+    &lt;script type='x-shader/x-fragment' id='fs'&gt;
+        precision mediump float;
+        uniform sampler2D u_sampler;
+        varying vec2 v_textcoord;
+        void main(){
+            gl_FragColor=texture2D(u_sampler,v_textcoord);
+        }
+    &lt;script&gt;
+        </pre>
+        <div>
+            我们在片元着色器中使用了着色器内置方法
+            <span>texture2D</span>
+            来计算当前点应该是什么颜色（当然是根据传递的图片进行计算）：
+        </div>
+        <ul>
+            <li>
+                u_sampler表示纹理单元，可以理解为你把图片写入的地址。
+            </li>
+            <li>
+                v_textcoord表示图片和绘制的图形坐标的对应关系，也就是确定图片贴上去的位置。
+            </li>
+        </ul>
+        <div>
+            相信有了前面代码的铺垫，最终代码大部分都可以看懂了，我们直接跳过通过缓冲区设置数据部分，看看和纹理相关的代码：
+        </div>
+        <pre class='prettyprint lang-js'>
+    // 创建纹理对象
+    var texture = image3d.Texture2D(1);
+
+    var image = new Image();
+    image.onload = function () {
+
+        // 绘制图片
+        texture.write(image);
+        image3d.setUniformInt('u_sampler', 1);
+        painter.drawStripTriangle(0, 4);
+
+    };
+    image.src = '../images/cat.jpeg';
+        </pre>
+        <div>
+            可以看见，我们在创建纹理对象的时候传递了整数1，表示这个纹理对象操作1号纹理（其实编号可以从0开始），然后通过write方法把图片写入该纹理单元。
+        </div>
+        <div>
+            相信看到这里应该基本理解了，其实二维纹理就是相比普通的绘图多了片元着色器中的计算。你可以
+            <a href="../examples/course-004.html" target="_blank">点击此处</a>
+            查看运行结果，可以看见一只猫（是的，是我的猫~），当然，因为请求本地图片资源了，本地查看的话需要使用
+            <span>npm run server</span>
+            启动服务器查看。
+        </div>
+        <h4 id='texture-cube' onclick='window.location.href="#texture-cube"'>
+            立方纹理
+        </h4>
+        <div>
+            立方纹理顾名思义就是用一个矩形盒子去贴图，有点像盒子慢慢变小，直到碰到物体，最后好像物体表面有了一层膜的感觉，比较简单的比喻就是皮肤。
+        </div>
+        <div>
+            我们准备绘制一个二十四面体，同样的，先从着色器开始：
+        </div>
+        <pre class='prettyprint lang-html'>
+    &lt;!-- 顶点着色器 --&gt;
+    &lt;script type='x-shader/x-vertex' id='vs'&gt;
+        attribute vec4 a_position;
+        varying vec3 v_normal;
+        uniform mat4 u_matrix;
+        void main(){
+            gl_Position=u_matrix * a_position;
+            // 因为位置是以几何中心为原点的,可以用顶点坐标作为法向量
+            v_normal=normalize(a_position.xyz);
+        }
+    &lt;script&gt;
+
+    &lt;!-- 片段着色器 --&gt;
+    &lt;script type='x-shader/x-fragment' id='fs'&gt;
+        precision mediump float;
+        varying vec3 v_normal;
+        uniform samplerCube u_texture;
+        void main(){
+            gl_FragColor=textureCube(u_texture,normalize(v_normal));
+        }
+    &lt;script&gt;
+        </pre>
+        <div>
+            类似的，只不过我们这里使用
+            <span>textureCube</span>
+            来计算颜色。
+        </div>
+        <div>
+            前面说了，矩形盒子，因此需要六张图片：
+        </div>
+        <pre class='prettyprint lang-js'>
+    // 创建纹理对象
+    var texture = image3d.TextureCube(500, 500);
+    // 写入图片
+    texture.write(image1, image2, image3, image4, image5, image6);
+    // 纹理传递给着色器
+    image3d.setUniformInt('u_texture', texture);
+        </pre>
+        <div>
+            一切准备好了以后，就可以直接绘图了，这和以前一样，就不再赘述了。完整的例子请
+            <a href="../examples/course-005.html" target="_blank">点击此处</a>
+            查看。
+        </div>
     </section>
 
     <footer>

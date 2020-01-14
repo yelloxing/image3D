@@ -21,8 +21,8 @@ export default function (CORE, CONFIG) {
             if (!isElement) {
                 this.use = (location, size, stride, offset) => {
                     buffer.use(location, size, stride, offset);
+                    return this;
                 };
-                return this;
             }
 
         };

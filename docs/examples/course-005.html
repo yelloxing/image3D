@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>教例#005 | image3D.js</title>
+    <script src="./image3D.examples.js"></script>
+    <link rel="shortcut icon" href="../image3D.png">
+
+    <!-- 顶点着色器 -->
+    <script type='x-shader/x-vertex' id='vs'>
+        attribute vec4 a_position;
+        varying vec3 v_normal;
+        uniform mat4 u_matrix;
+        void main(){
+            gl_Position=u_matrix * a_position;
+            // 因为位置是以几何中心为原点的,可以用顶点坐标作为法向量
+            v_normal=normalize(a_position.xyz);
+        }
+    </script>
+
+    <!-- 片段着色器 -->
+    <script type='x-shader/x-fragment' id='fs'>
+        precision mediump float;
+        varying vec3 v_normal;
+        uniform samplerCube u_texture;
+        void main(){
+            gl_FragColor=textureCube(u_texture,normalize(v_normal));
+        }
+    </script>
+
+</head>
+
+<body>
+
+    <canvas width=500 height=500>非常抱歉，您的浏览器不支持canvas!</canvas>
+
+    <script>
+
+        // 创建3D对象并配置好画布和着色器
+        var image3d = new image3D(document.getElementsByTagName('canvas')[0], {
+
+            // 传递着色器
+            "vertex-shader": document.getElementById("vs").innerText,
+            "fragment-shader": document.getElementById("fs").innerText,
+
+            // 开启深度计算
+            "depth": true
+
+        });
+
+        // 数据
+        var data = new Float32Array([
+            0.5, 0.5, 0.5,
+            0.5, -0.5, 0.5,
+            -0.5, -0.5, 0.5,
+            -0.5, 0.5, 0.5,
+            0.5, 0.5, -0.5,
+            0.5, -0.5, -0.5,
+            -0.5, -0.5, -0.5,
+            -0.5, 0.5, -0.5,
+            0.0, 0.0, 0.8,
+            0.0, 0.0, -0.8,
+            0.8, 0.0, 0.0,
+            -0.8, 0.0, 0.0,
+            0.0, 0.8, 0.0,
+            0.0, -0.8, 0.0
+        ]);
+
+        // 顶点索引数组
+        var indexes = new Uint8Array([
+
+            0, 1, 8, 1, 2, 8, 2, 3, 8, 0, 3, 8,
+            4, 5, 9, 5, 6, 9, 6, 7, 9, 4, 7, 9,
+            0, 1, 10, 1, 5, 10, 4, 5, 10, 0, 4, 10,
+            2, 6, 11, 6, 7, 11, 3, 7, 11, 2, 3, 11,
+            0, 3, 12, 3, 7, 12, 4, 7, 12, 4, 0, 12,
+            1, 2, 13, 1, 5, 13, 5, 6, 13, 2, 6, 13
+
+        ]);
+
+        image3d.Buffer().write(data).use('a_position', 3, 3, 0);
+        image3d.Buffer(true).write(indexes);
+
+        // 创建纹理对象
+        var texture = image3d.TextureCube(500, 500);
+
+        var image1 = new Image();
+        image1.onload = function () {
+            var image2 = new Image();
+            image2.onload = function () {
+                var image3 = new Image();
+                image3.onload = function () {
+                    var image4 = new Image();
+                    image4.onload = function () {
+                        var image5 = new Image();
+                        image5.onload = function () {
+                            var image6 = new Image();
+                            image6.onload = function () {
+
+                                texture.write(image1, image2, image3, image4, image5, image6);
+                                image3d.setUniformInt('u_texture', texture);
+
+                                var camera = image3d.Camera();
+                                var painter = image3d.Painter();
+
+                                setInterval(function () {
+
+                                    camera.rotateBody(Math.PI / 30, 1, -1, 0.2, -1, 1, -0.2);
+                                    image3d.setUniformMatrix("u_matrix", camera.value());
+
+                                    painter.elemTriangle(0, 72);
+
+                                }, 50);
+
+                            };
+                            image6.src = "../images/skybox/front.jpg";
+                        };
+                        image5.src = "../images/skybox/back.jpg";
+                    };
+                    image4.src = "../images/skybox/bottom.jpg";
+                };
+                image3.src = "../images/skybox/top.jpg";
+            };
+            image2.src = "../images/skybox/left.jpg";
+        };
+        image1.src = "../images/skybox/right.jpg";
+
+    </script>
+
+</body>
+
+</html>

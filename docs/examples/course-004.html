@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>教例#004 | image3D.js</title>
+    <script src="./image3D.examples.js"></script>
+    <link rel="shortcut icon" href="../image3D.png">
+
+    <!-- 顶点着色器 -->
+    <script type='x-shader/x-vertex' id='vs'>
+        attribute vec4 a_position;
+        attribute vec2 a_textcoord;
+        varying vec2 v_textcoord;
+        void main(){
+            gl_Position=a_position;
+            v_textcoord=a_textcoord;
+        }
+    </script>
+
+    <!-- 片段着色器 -->
+    <script type='x-shader/x-fragment' id='fs'>
+        precision mediump float;
+        uniform sampler2D u_sampler;
+        varying vec2 v_textcoord;
+        void main(){
+            gl_FragColor=texture2D(u_sampler,v_textcoord);
+        }
+    </script>
+
+</head>
+
+<body>
+
+    <canvas width=426 height=320>非常抱歉，您的浏览器不支持canvas!</canvas>
+
+    <script>
+
+        // 创建3D对象并配置好画布和着色器
+        var image3d = new image3D(document.getElementsByTagName('canvas')[0], {
+
+            // 传递着色器
+            "vertex-shader": document.getElementById("vs").innerText,
+            "fragment-shader": document.getElementById("fs").innerText
+
+        });
+
+        // 数据
+        var data = new Float32Array([
+            // 顶点坐标2，纹理坐标2
+            -1.0, 1.0, 0.0, 0.0,
+            -1.0, -1.0, 0.0, 1.0,
+            1.0, 1.0, 1.0, 0.0,
+            1.0, -1.0, 1.0, 1.0
+        ]);
+
+        // 顶点写入
+        image3d.Buffer()
+            // 数据写入缓冲区
+            .write(data)
+            // 写入缓冲区的数据分配
+            .use('a_position', 2, 4, 0)
+            .use('a_textcoord', 2, 4, 2);
+
+        // 获取画笔
+        var painter = image3d.Painter();
+
+        // 创建纹理对象
+        var texture = image3d.Texture2D(1);
+
+        var image = new Image();
+        image.onload = function () {
+
+            // 绘制图片
+            texture.write(image);
+            image3d.setUniformInt('u_sampler', 1);
+            painter.drawStripTriangle(0, 4);
+
+        };
+        image.src = '../images/cat.jpeg';
+
+    </script>
+
+</body>
+
+</html>
