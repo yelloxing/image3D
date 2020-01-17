@@ -13,7 +13,6 @@ import _extend from './.inner/extend';// 初始化配置文件
  */
 import $Buffer from './Buffer/index';// 缓冲区
 import $Camera from './Camera/index';// 照相机
-import $Graphic from './Graphic/index';// 3D图形数据
 import $Painter from './Painter/index';// 画笔
 import $Texture_2d from './Texture/2d';// 纹理
 import $Texture_cube from './Texture/cube';// 纹理
@@ -40,7 +39,6 @@ let image3D = function (canvas, config) {
     // 挂载主要方法
     image3D.fn.Buffer = $Buffer(CORE, CONFIG);
     image3D.fn.Camera = $Camera(CORE, CONFIG);
-    image3D.fn.Graphic = $Graphic(CORE, CONFIG);
     image3D.fn.Painter = $Painter(CORE, CONFIG);
     image3D.fn.Texture2D = $Texture_2d(CORE, CONFIG);
     image3D.fn.TextureCube = $Texture_cube(CORE, CONFIG);

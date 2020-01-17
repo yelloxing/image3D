@@ -11,7 +11,7 @@
 * Copyright yelloxing
 * Released under the MIT license
 *
-* Date:Tue Jan 14 2020 21:05:53 GMT+0800 (GMT+08:00)
+* Date:Fri Jan 17 2020 15:32:06 GMT+0800 (GMT+08:00)
 */
 
 'use strict';
@@ -762,12 +762,6 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
         };
     }
 
-    /**
-     * 常见的图形数据计算
-     * -------------------------
-     */
-    function $Graphic(CORE, CONFIG) {}
-
     function drawArrays(painter, _this) {
 
         _this.drawPoint = function (first, count) {
@@ -949,7 +943,6 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
         // 挂载主要方法
         image3D.fn.Buffer = $Buffer(CORE);
         image3D.fn.Camera = $Camera();
-        image3D.fn.Graphic = $Graphic();
         image3D.fn.Painter = $Painter(CORE, CONFIG);
         image3D.fn.Texture2D = $Texture_2d(CORE);
         image3D.fn.TextureCube = $Texture_cube(CORE);
@@ -982,8 +975,17 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
         };
     };
 
+    /**
+     * 常见的图形数据计算对象
+     * -------------------------
+     */
+    function Graphic() {
+        console.log('\n        \u8BBE\u8BA1\u4E2D\uFF0C\u9700\u8981\u8003\u8651\u7684\u95EE\u9898\u5982\u4E0B\n\n        --------------------------------------------\n\n        1.\u5982\u4F55\u8BBE\u7F6E\u4E00\u5957\u517C\u5BB9\u7684\u683C\u5F0F\u65B9\u4FBF\u6700\u7EC8\u7ED8\u5236\u7684\u65F6\u5019\u4F7F\u7528\n\n        2.\u6807\u51C6\u76843D\u6570\u636E\u683C\u5F0F\u517C\u5BB9\u95EE\u9898\n\n        3.\u5149\u7167\uFF0C\u5C42\u6B21\u6A21\u578B\u7B49\u57FA\u7840\u8BBE\u65BD\u5982\u4F55\u914D\u5408\n\n        4.\u6765\u81EA\u8FD9\u91CC\u6216\u6A21\u578B\u6570\u636E\u7684\u4E00\u4E9B\u56FE\u5F62\uFF0C\u5982\u4F55\u66F4\u5BB9\u6613\u7684\u7EC4\u5408\u6216\u8F7B\u5FAE\u6539\u9020\n\n        (\u6B22\u8FCE\u60A8\u7ED9\u51FA\u8BBE\u8BA1\u5EFA\u8BAE\uFF0C\u5982\u679C\u770B\u89C1\u4E86\u4E0A\u9762\u7684\u8BF4\u660E: https://github.com/yelloxing/image3D/issues )\n    ');
+    }
+
     // 挂载核心方法（不推荐绘制的时候直接使用）
     image3D.core = core;
+    image3D.Graphic = Graphic;
 
     if ((typeof module === 'undefined' ? 'undefined' : _typeof(module)) === "object" && _typeof(module.exports) === "object") {
         module.exports = image3D;
