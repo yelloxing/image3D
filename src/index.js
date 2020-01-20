@@ -4,13 +4,6 @@ import core from './core/index';
 // 挂载核心方法（不推荐绘制的时候直接使用）
 image3D.core = core;
 
-/**
- * 挂载一些有用的辅助对象
- */
-
-// 生成常见的几何体绘图数据
-import Graphic from './Graphic/index'; image3D.Graphic = Graphic;
-
 if (typeof module === "object" && typeof module.exports === "object") {
     module.exports = image3D;
 } else {

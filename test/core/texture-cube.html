@@ -105,7 +105,7 @@
 
                                 __.animation(function (deep) {
 
-                                    core.setUnifromMatrix4fv('u_matrix', __.Matrix4().rotate(deep * Math.PI / 4 * (1 + 8), 1 - deep, deep, 0.5 - deep / 2).value());
+                                    core.setUniformMatrix4fv('u_matrix', __.Matrix4().rotate(deep * Math.PI / 4 * (1 + 8), 1 - deep, deep, 0.5 - deep / 2).value());
 
                                     // 绘制
                                     painter.triangles(0, 36, 'byte');
@@ -116,7 +116,7 @@
 
                                     __.animation(function (deep) {
 
-                                        core.setUnifromMatrix4fv('u_matrix', __.Matrix4(preMatrix4).rotate(deep * Math.PI / 4 * (1 + 8), deep, 1 - deep, 0.5 - deep / 2).value());
+                                        core.setUniformMatrix4fv('u_matrix', __.Matrix4(preMatrix4).rotate(deep * Math.PI / 4 * (1 + 8), deep, 1 - deep, 0.5 - deep / 2).value());
 
                                         // 绘制
                                         painter.triangles(0, 36, 'byte');

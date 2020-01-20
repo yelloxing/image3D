@@ -36,6 +36,14 @@ h4 {
     color: rgb(189, 97, 54);
     font-weight: 500;
     font-size: .15rem;
+    margin-top: .2rem;
+}
+
+h6{
+    color: rgb(243, 74, 7);
+    font-weight: 600;
+    font-size: .14rem;
+    margin-top: .2rem;
 }
 
 img {

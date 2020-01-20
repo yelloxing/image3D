@@ -3,3 +3,7 @@ v2.0.6:
     changes:
       -  初始化版本
       -  ESMAScript6+规范引入（import / export，编译时加载）和script标签全局引入方式
+v2.0.7:
+    date:2020-01-20
+    changes:
+      -  添加常用的内置着色器（通过创建image3D的时候新增配置项实现）

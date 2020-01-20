@@ -16,6 +16,7 @@ import $Camera from './Camera/index';// 照相机
 import $Painter from './Painter/index';// 画笔
 import $Texture_2d from './Texture/2d';// 纹理
 import $Texture_cube from './Texture/cube';// 纹理
+import $Shader from './Shader/index';// 着色器
 
 // 3D绘图对象
 // let image3d = new image3d(canvas, config);
@@ -31,8 +32,18 @@ let image3D = function (canvas, config) {
     // 启动
     let CORE = render3D(canvas);
 
+    // 获取着色器
+    let vs = CONFIG["vertex-shader"], fs = CONFIG["fragment-shader"];
+
+    if (!vs || !fs) {
+        // 调用内置的着色器
+        let shader = $Shader(CONFIG.shader || "default");
+        vs = shader.vs;
+        fs = shader.fs;
+    }
+
     // 让着色器生效
-    CORE.shader(config["vertex-shader"], config["fragment-shader"]);
+    CORE.shader(vs, fs);
 
     image3D.fn = image3D.prototype;
 
