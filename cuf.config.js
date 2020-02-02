@@ -124,7 +124,7 @@ module.exports = {
          */
         uglifyjs(cuf, pkg) {
 
-            cuf.log("\n[3]babel转义:./build/image3D.js → ./build/image3D.min.js\n");
+            cuf.log("\n[3]压缩代码:./build/image3D.js → ./build/image3D.min.js\n");
 
             cp.exec("uglifyjs ./build/image3D.js -m -o ./build/uglifyjs.new.js", function (error) {
                 if (error) {
