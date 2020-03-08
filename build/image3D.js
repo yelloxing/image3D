@@ -11,7 +11,7 @@
 * Copyright yelloxing
 * Released under the MIT license
 *
-* Date:Sun Feb 09 2020 03:10:56 GMT+0800 (GMT+08:00)
+* Date:Mon Mar 09 2020 03:35:09 GMT+0800 (GMT+08:00)
 */
 
 'use strict';
@@ -25,7 +25,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
      * 着色器一些公共的方法
      * --------------------------------------------
      * 主要是和生成特定着色器无关的方法
-     * 着色器分为二类：顶点着色器 + 片段着色器
+     * 着色器分为两类：顶点着色器 + 片段着色器
      * 前者用于定义一个点的特性，比如位置，大小，颜色等
      * 后者用于针对每个片段（可以理解为像素）进行处理
      *
@@ -54,7 +54,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
             fragmentShader = loadShader(gl, gl.FRAGMENT_SHADER, fshaderSource);
         // 创建一个着色器程序
         var glProgram = gl.createProgram();
-        // 把前面创建的二个着色器对象添加到着色器程序中
+        // 把前面创建的两个着色器对象添加到着色器程序中
         gl.attachShader(glProgram, vertexShader);
         gl.attachShader(glProgram, fragmentShader);
         // 把着色器程序链接成一个完整的程序
@@ -69,7 +69,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
     /**
      * 缓冲区核心方法
      * --------------------------------------------
-     * 缓冲区分为二种：
+     * 缓冲区分为两种：
      *  1.缓冲区中保存了包含顶点的数据
      *  2.缓冲区保存了包含顶点的索引值
      *
@@ -103,7 +103,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
     //      gl.INT              Int32Array
     //      gl.UNSIGNED_INT     Uint32Array
     //      gl.FLOAT            Float32Array
-    // stride相邻二个数据项的字节数
+    // stride相邻两个数据项的字节数
     // offset数据的起点字节位置
     // normalized是否把非浮点型的数据归一化到[0,1]或[-1,1]区间
     var useBuffer = function useBuffer(gl, location, size, type, stride, offset, normalized) {

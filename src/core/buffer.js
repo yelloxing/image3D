@@ -1,7 +1,7 @@
 /**
  * 缓冲区核心方法
  * --------------------------------------------
- * 缓冲区分为二种：
+ * 缓冲区分为两种：
  *  1.缓冲区中保存了包含顶点的数据
  *  2.缓冲区保存了包含顶点的索引值
  *
@@ -35,7 +35,7 @@ export let writeBuffer = function (gl, data, usage, isElement) {
 //      gl.INT              Int32Array
 //      gl.UNSIGNED_INT     Uint32Array
 //      gl.FLOAT            Float32Array
-// stride相邻二个数据项的字节数
+// stride相邻两个数据项的字节数
 // offset数据的起点字节位置
 // normalized是否把非浮点型的数据归一化到[0,1]或[-1,1]区间
 export let useBuffer = function (gl, location, size, type, stride, offset, normalized) {
