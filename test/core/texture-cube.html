@@ -7,7 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="shortcut icon" href="../../docs/image3D.png">
     <script src="../../build/image3D.js"></script>
-    <script src="../../node_modules/@yelloxing/core.js/dist/core.min.js"></script>
+    <script src="../../node_modules/@hai2007/tool/dist/tool.js"></script>
     <title>纹理 - 立方体 | 测试</title>
 
     <!-- 顶点着色器 -->
@@ -103,20 +103,20 @@
                                 texture.useCube([image1, image2, image3, image4, image5, image6], 175, 175);
                                 core.setUniform1i('u_texture', texture);
 
-                                __.animation(function (deep) {
+                                tool.animation(function (deep) {
 
-                                    core.setUniformMatrix4fv('u_matrix', __.Matrix4().rotate(deep * Math.PI / 4 * (1 + 8), 1 - deep, deep, 0.5 - deep / 2).value());
+                                    core.setUniformMatrix4fv('u_matrix', tool.Matrix4().rotate(deep * Math.PI / 4 * (1 + 8), 1 - deep, deep, 0.5 - deep / 2).value());
 
                                     // 绘制
                                     painter.triangles(0, 36, 'byte');
 
                                 }, 5000, function () {
 
-                                    var preMatrix4 = __.Matrix4().rotate(Math.PI / 4 * (1 + 8), 0, 1, 0).value();
+                                    var preMatrix4 = tool.Matrix4().rotate(Math.PI / 4 * (1 + 8), 0, 1, 0).value();
 
-                                    __.animation(function (deep) {
+                                    tool.animation(function (deep) {
 
-                                        core.setUniformMatrix4fv('u_matrix', __.Matrix4(preMatrix4).rotate(deep * Math.PI / 4 * (1 + 8), deep, 1 - deep, 0.5 - deep / 2).value());
+                                        core.setUniformMatrix4fv('u_matrix', tool.Matrix4(preMatrix4).rotate(deep * Math.PI / 4 * (1 + 8), deep, 1 - deep, 0.5 - deep / 2).value());
 
                                         // 绘制
                                         painter.triangles(0, 36, 'byte');
