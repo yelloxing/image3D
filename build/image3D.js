@@ -1,17 +1,17 @@
 /*!
 * image3D - 🍊 使用webGL绘制三维图片。Drawing three-dimensional images using webGL.
-* git+https://github.com/yelloxing/image3D.git
+* git+https://github.com/hai2007/image3D.git
 *
-* author 心叶
+* author 你好2007
 *
 * version 2.0.8
 *
 * build Thu Apr 11 2019
 *
-* Copyright yelloxing
+* Copyright hai2007 < https://hai2007.gitee.io/sweethome/ >
 * Released under the MIT license
 *
-* Date:Mon Mar 09 2020 03:35:09 GMT+0800 (GMT+08:00)
+* Date:Thu Jan 07 2021 00:06:56 GMT+0800 (GMT+08:00)
 */
 
 'use strict';
@@ -554,7 +554,6 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
     /**
      * 在(a,b,c)方向位移d
-     * @private
      */
     function _move(d, a, b, c) {
         c = c || 0;
@@ -566,8 +565,6 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
      * 围绕0Z轴旋转
      * 其它的旋转可以借助transform实现
      * 旋转角度单位采用弧度制
-     * 
-     * @private
      */
     function _rotate(deg) {
         var sin = Math.sin(deg),
@@ -577,8 +574,6 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
     /**
      * 围绕圆心x、y和z分别缩放xTimes, yTimes和zTimes倍
-     * 
-     * @private
      */
     function _scale(xTimes, yTimes, zTimes, cx, cy, cz) {
         cx = cx || 0;cy = cy || 0;cz = cz || 0;
@@ -589,8 +584,6 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
      * 针对任意射线(a1,b1,c1)->(a2,b2,c2)
      * 计算出二个变换矩阵
      * 分别为：任意射线变成OZ轴变换矩阵 + OZ轴变回原来的射线的变换矩阵
-     * 
-     * @private
      */
     function _transform(a1, b1, c1, a2, b2, c2) {
 
@@ -641,12 +634,16 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
         }return newParam;
     };
 
-    /**
-     * 4x4矩阵
-     * 列主序存储
-     * @since V0.2.0
-     * @public
+    /*!
+     * 💡 - 列主序存储的4x4矩阵
+     * https://github.com/hai2007/tool.js/blob/master/Matrix4.js
+     *
+     * author hai2007 < https://hai2007.gitee.io/sweethome >
+     *
+     * Copyright (c) 2020-present hai2007 走一步，再走一步。
+     * Released under the MIT license
      */
+
     function Matrix4(initMatrix4) {
 
         var matrix4 = initMatrix4 || [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];

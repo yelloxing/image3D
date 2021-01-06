@@ -6,12 +6,12 @@
   "scripts": {
     "start": "npm install && node ./task/explain.js",
     "build": "npm run build:init && npm run build:bundle && npm run build:babel && npm run build:uglifyjs && npm run build:end",
-    "build:init": "cuf --config ./cuf.config.js init",
-    "build:end": "cuf --config ./cuf.config.js end",
-    "build:bundle": "cuf --config ./cuf.config.js bundle",
-    "build:babel": "cuf --config ./cuf.config.js babel",
-    "build:uglifyjs": "cuf --config ./cuf.config.js uglifyjs",
-    "server": "cuf --server 20000"
+    "build:init": "hai2007_nodejs --config ./hai2007_nodejs.config.js init",
+    "build:end": "hai2007_nodejs --config ./hai2007_nodejs.config.js end",
+    "build:bundle": "hai2007_nodejs --config ./hai2007_nodejs.config.js bundle",
+    "build:babel": "hai2007_nodejs --config ./hai2007_nodejs.config.js babel",
+    "build:uglifyjs": "hai2007_nodejs --config ./hai2007_nodejs.config.js uglifyjs",
+    "server": "hai2007_nodejs --server 20000"
   },
   "keywords": [
     "image",
@@ -20,21 +20,21 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/yelloxing/image3D.git"
+    "url": "git+https://github.com/hai2007/image3D.git"
   },
-  "author": "心叶",
+  "author": "你好2007",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/yelloxing/image3D/issues"
+    "url": "https://github.com/hai2007/image3D/issues"
   },
-  "homepage": "https://yelloxing.github.io/image3D",
+  "homepage": "https://hai2007.github.io/image3D",
   "devDependencies": {
-    "@yelloxing/core.js": "^0.3.7",
+    "@hai2007/nodejs": "^0.1.0",
+    "@hai2007/tool": "^0.4.0",
     "babel-core": "^6.26.0",
     "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-preset-es2015": "^6.24.1",
     "babelify": "^8.0.0",
-    "cuf": "^1.1.6",
     "rollup": "^1.17.0",
     "rollup-plugin-commonjs": "^10.1.0",
     "rollup-plugin-node-resolve": "^5.2.0",
