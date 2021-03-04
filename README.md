@@ -6,6 +6,7 @@
 [![CDN](https://data.jsdelivr.com/v1/package/npm/image3d/badge)](https://www.jsdelivr.com/package/npm/image3d)
 [![Version](https://img.shields.io/npm/v/image3d.svg)](https://www.npmjs.com/package/image3d)
 [![License](https://img.shields.io/npm/l/image3d.svg)](https://github.com/hai2007/image3D/blob/master/LICENSE)
+[![GitHub repo stars](https://img.shields.io/github/stars/hai2007/image3D?style=social)](https://github.com/hai2007/image3D)
 
 > 鉴于当前浏览器支持情况，本项目只支持webGL 1上下文，更高级版本未来会考虑支持！
 
@@ -39,11 +40,6 @@ import image3D from 'image3d';
 ```js
 const image3D = require("image3d");
 ```
-
-## 联系我们
-
-- QQ: 2501482523
-- Email: 2501482523@qq.com
 
 开源协议
 ---------------------------------------
