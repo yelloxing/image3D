@@ -1,0 +1,269 @@
+<template class='doc-view'>
+    <h2>
+        如何引入？
+    </h2>
+    <h3>
+        CDN方式
+    </h3>
+    <p>
+        请直接在页面中加入下面这行代码，然后通过image3D即可调用（查看
+        <a href="https://github.com/hai2007/image3D/blob/master/CHANGELOG" target='_blank'>更新日志</a>
+        选择版本）：
+    </p>
+    <pre q-code='html'><script src="https://cdn.jsdelivr.net/npm/image3d@3.0.0/build/image3D.min.js"></script></pre>
+    <h3>
+        NPM方式
+    </h3>
+    <p>
+        首先，需要安装image3D，就像这样：
+    </p>
+    <pre q-code>npm install --save image3d</pre>
+    <p>
+        安装好了以后，在需要的地方引入即可：
+    </p>
+    <pre q-code>import image3D from 'image3d';</pre>
+    <h2>
+        3D对象
+    </h2>
+    <pre q-code>var image3d = new image3D(canvas, config);</pre>
+    <p>
+        通过new的方式可以创建一个3D对象，记作image3d(注意和image3D区分，前者表示3D对象，后者表示3D类，后面不再赘述)，所有的3D绘图操作接口都由此提供。
+    </p>
+    <h3>
+        配置 config
+    </h3>
+    <p>
+        上面的canvas表示一个canvas结点，下面主要来说说config可配置项。
+    </p>
+    <h4>
+        1.着色器 [可选，有默认值]
+    </h4>
+    <p>
+        "vertex-shader"和"fragment-shader"分别用于配置顶点着色器和片段着色器，值是两段着色器字符串。
+    </p>
+    <p>
+        当然，如果你没有传递具体的着色器，那么你可以选择调用内置的着色器，只需要配置"shader"属性即可。
+    </p>
+    <p>
+        目前可选的着色器类型列举如下：
+    </p>
+    <ul>
+        <li>
+            <span class="important">"default"</span>
+            ：默认值，此着色器你可以控制点的位置、大小和颜色，对外暴露的变量名称分别为：a_position、a_size和a_color。
+        </li>
+        <li>
+            <span class="important">"camera"</span>
+            ：相比于默认的着色器，多了一个照相机控制接口：u_matrix，你可以使用照相机生成变换矩阵传递进来，控制观察方式。
+        </li>
+    </ul>
+    <h4>
+        2.深度计算 [可选]
+    </h4>
+    <p>
+        "depth"用于配置是否开启深度计算，默认false关闭，如果配置true表示开启，开启意味着渲染的时候根据z值进行计算。
+    </p>
+    <h2>
+        画笔
+    </h2>
+    <pre q-code>var painter = image3d.Painter();</pre>
+    <p>
+        画笔主要分为二类：普通画笔和基于顶点索引的画笔。
+    </p>
+    <h3>
+        普通画笔
+    </h3>
+    <h4>
+        点
+    </h4>
+    <pre q-code>painter.drawPoint(first, count);</pre>
+    <h4>
+        直线
+    </h4>
+    <pre q-code>painter.drawLine(first, count);</pre>
+    <h4>
+        连续直线
+    </h4>
+    <pre q-code>painter.drawStripLine(first, count);</pre>
+    <h4>
+        闭合直线
+    </h4>
+    <pre q-code>painter.drawLoopLine(first, count);</pre>
+    <h4>
+        三角形
+    </h4>
+    <pre q-code>painter.drawTriangle(first, count);</pre>
+    <h4>
+        共边三角形
+    </h4>
+    <pre q-code>painter.drawStripTriangle(first, count);</pre>
+    <h4>
+        旋转围绕三角形
+    </h4>
+    <pre q-code>painter.drawFanTriangle(first, count);</pre>
+    <h3>
+        索引画笔
+    </h3>
+    <h4>
+        点
+    </h4>
+    <pre q-code>painter.elemPoint(first, count, type);</pre>
+    <h4>
+        直线
+    </h4>
+    <pre q-code>painter.elemLine(first, count, type);</pre>
+    <h4>
+        连续直线
+    </h4>
+    <pre q-code>painter.elemStripLine(first, count, type);</pre>
+    <h4>
+        闭合直线
+    </h4>
+    <pre q-code>painter.elemLoopLine(first, count, type);</pre>
+    <h4>
+        三角形
+    </h4>
+    <pre q-code>painter.elemTriangle(first, count, type);</pre>
+    <h4>
+        共边三角形
+    </h4>
+    <pre q-code>painter.elemStripTriangle(first, count, type);</pre>
+    <h4>
+        旋转围绕三角形
+    </h4>
+    <pre q-code>painter.elemFanTriangle(first, count, type);</pre>
+    <h2>
+        数据传递
+    </h2>
+    <h3>
+        设置值或向量
+    </h3>
+    <p>
+        设置Attribute类型的Float类型值或向量（v1~v3均可选，会根据最终输入的参数长度自动判断设置的值类型或向量长度，下同）:
+    </p>
+    <pre q-code>image3d.setAttributeFloat(location, v0, v1, v2, v3);</pre>
+    <p>
+        设置Attribute类型的Int类型值或向量：
+    </p>
+    <pre q-code>image3d.setAttributeInt(location, v0, v1, v2, v3);</pre>
+    <p>
+        设置Uniform类型的Float类型值或向量：
+    </p>
+    <pre q-code>image3d.setUniformFloat(location, v0, v1, v2, v3);</pre>
+    <p>
+        设置Uniform类型的Int类型值或向量：
+    </p>
+    <pre q-code>image3d.setUniformInt(location, v0, v1, v2, v3);</pre>
+    <h3>
+        设置矩阵
+    </h3>
+    <p>
+        设置Uniform类型的矩阵，value应该是一个数组，会自动根据此数组的长度来判断是2x2、3x3还是4x4尺寸：
+    </p>
+    <pre q-code>image3d.setUniformMatrix(location, value);</pre>
+    <h2>
+        缓冲区
+    </h2>
+    <pre q-code>var buffer = image3d.Buffer(isElement);</pre>
+    <p>
+        获取缓冲区对象的时候需要传递一个boolean类型的参数isElement，用来表示是否是包含顶点的索引值类型的缓冲区。
+    </p>
+    <h3>
+        1.写入数据
+    </h3>
+    <pre q-code>buffer.write(data);</pre>
+    <h3>
+        2.分配数据
+    </h3>
+    <p>
+        如果isElement没有传递或设置为false，后续需要使用use来分配缓冲区中的数据：
+    </p>
+    <pre q-code>buffer.use(location, size, stride, offset);</pre>
+    <ol>
+        <li>
+            location：字符串类型，对应顶点着色器中定义的attribute类型的变量名
+        </li>
+        <li>
+            size：整数，表示一个完整的数据的个数
+        </li>
+        <li>
+            stride：整数，表示写入缓冲区数据一组的个数
+        </li>
+        <li>
+            offset：整数，表示读取起点
+        </li>
+    </ol>
+    <h2>
+        纹理
+    </h2>
+    <h3>
+        二维纹理
+    </h3>
+    <pre q-code>var texture=image3d.Texture2D(unit);</pre>
+    <p>
+        创建二维纹理的时候需要传递一个数字，用于表示纹理对应的纹理单元（比如0、1、2等）。
+    </p>
+    <pre q-code>texture.write(image);</pre>
+    <p>
+        二维纹理其实是用一张图片贴图，因此需要写入用作纹理的图片。
+    </p>
+    <h3>
+        立方纹理
+    </h3>
+    <pre q-code>var texture=image3d.TextureCube(width, height);</pre>
+    <p>
+        此纹理创建的时候需要传递图片的宽和高。
+    </p>
+    <pre q-code>texture.write(img1, img2, img3, img4, img5, img6);</pre>
+    <p>
+        类似一个长方体，有六个面，因此我们需要写入六张图片。
+    </p>
+    <h2>
+        照相机
+    </h2>
+    <pre q-code>var camera = image3d.Camera();</pre>
+    <p>
+        改变相机或物体的相对位置或别的和怎么看相关的一些控制方法，都由一个矩阵来定义，我们不必直接操作这个矩阵，通过照相机这个对象，你会更容易去控制这一切。
+    </p>
+    <h3>
+        物体的改变
+    </h3>
+    <pre q-code>camera.rotateBody(deg, a1, b1, c1, a2, b2, c2);</pre>
+    <p>
+        围绕射线(a1, b1, c1) → (a2, b2, c2)旋转物体deg度（方向由右手法则确定），a1、b1、c1、a2、b2和c2这6个值在设置的时候，不是一定需要全部设置，还有以下可选：
+    </p>
+    <ol>
+        <li>
+            只设置了a1和b1，表示在xoy平面围绕（a1, b1）旋转。
+        </li>
+        <li>
+            设置三个点(设置不足六个点都认为只设置了三个点)，表示围绕从原点出发的射线旋转。
+        </li>
+    </ol>
+    <pre  q-code>camera.moveBody(dis, a, b, c);</pre>
+    <p>
+        沿着向量(a, b, c)方向移动物体距离dis（其中c可以不传，默认0）。
+    </p>
+    <pre  q-code>camera.scaleBody(xTimes, yTimes, zTimes, cx, cy, cz);</pre>
+    <p>
+        以点(cx, cy, cz)为中心，分别在x、y和z方向上缩放xTimes、yTimes和zTimes倍（其中cx、cy和cz都可以不传递，默认0）物体。
+    </p>
+    <h3>
+        相机的改变
+    </h3>
+    <pre q-code>camera.rotateEye(deg, a1, b1, c1, a2, b2, c2);</pre>
+    <p>
+        和物体的改变中的旋转类似，不同的是这里旋转的是相机。
+    </p>
+    <pre q-code>camera.moveEye(dis, a, b, c);</pre>
+    <p>
+        沿着向量(a, b, c)方向移动相机距离dis（其中c可以不传，默认0）。
+    </p>
+    <h3>
+        使用
+    </h3>
+    <pre  q-code>var matrix4=camera.value();</pre>
+    <p>
+        所有的操作最终通过这个方法获取列优先4x4矩阵，后续你需要在顶点着色器中使用即可。
+    </p>
+</template>

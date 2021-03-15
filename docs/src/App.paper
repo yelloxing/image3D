@@ -1,0 +1,139 @@
+<template>
+    <header>
+        <span>
+            image3D.js
+        </span>
+    </header>
+    <ul>
+        <li @click='openPage("api")' :active='flag=="api"?"yes":"no"'>
+            接口文档
+        </li>
+        <li @click='openPage("course")' :active='flag=="course"?"yes":"no"'>
+            教程
+        </li>
+    </ul>
+    <div>
+        <component :is='page' />
+    </div>
+    <footer>
+        Copyright © 2019-2021
+        <a href="https://hai2007.gitee.io/sweethome/" target="_blank">
+            hai2007 走一步，再走一步。
+        </a>
+        All rights reserved.
+        <br>
+        本项目由“你好2007”设计、开发和维护
+        <a href="#/core" class="core" target="_blank">查看核心</a>
+    </footer>
+</template>
+<script>
+
+    let pages = {
+        api: () => import('./pages/api.paper'),
+        course: () => import('./pages/course.paper')
+    };
+
+    import QuickPaper from 'quick-paper';
+
+    export default {
+        data() {
+            return {
+                page: null,
+                flag: ""
+            };
+        },
+        mounted() {
+            let result = QuickPaper.urlFormat(window.location.href);
+            this.openPage(['api', 'course'].indexOf(result.router[0]) < 0 ? "api" : result.router[0]);
+        },
+        methods: {
+            openPage(pagename) {
+                window.location.href = "#/" + pagename;
+                this.flag = pagename;
+                pages[pagename]().then(data => {
+                    this.page = data.default;
+                });
+            }
+        }
+    };
+</script>
+<style>
+    [quickpaper]>header {
+        display: inline-block;
+        border-style: solid;
+        border-width: 200px;
+        border-color: rgba(201, 208, 159, 0.4) transparent transparent rgba(201, 208, 159, 0.4);
+        font-size: 0;
+        width: 0;
+        height: 0;
+        position: fixed;
+        left: 0;
+        top: 0;
+        pointer-events: none;
+    }
+
+    [quickpaper]>header>span {
+        background-image: url('./assets/image3D.png');
+        background-position: left top;
+        width: 200px;
+        height: 200px;
+        display: inline-block;
+        position: fixed;
+        left: 0;
+        top: 0;
+        background-position: center center;
+        background-size: 70% auto;
+        background-repeat: no-repeat;
+    }
+
+    [quickpaper]>ul {
+        text-align: center;
+        margin-top: 30px;
+        margin-bottom: 50px;
+    }
+
+    [quickpaper]>ul>li {
+        display: inline-block;
+        background-color: rgb(211, 210, 210);
+        margin: 10px;
+        width: 80px;
+        height: 30px;
+        line-height: 30px;
+        color: white;
+        cursor: pointer;
+    }
+
+    [quickpaper]>ul>li[active='yes'] {
+        background-color: #af5325;
+    }
+
+    [quickpaper]>div {
+        max-width: 1000px;
+        margin: auto;
+
+    }
+
+    [quickpaper]>footer {
+        text-align: center;
+        background-color: #fafafa;
+        border-top: 1px solid #d3d0d0;
+        line-height: 2em;
+        padding: 20px 0;
+        font-size: 14px;
+        position: relative;
+    }
+
+    [quickpaper]>footer>a {
+        padding: 0 5px;
+    }
+
+    [quickpaper]>footer>a.core {
+        position: absolute;
+        bottom: 36px;
+        right: 23px;
+        background: #ba642e;
+        color: white;
+        text-decoration: underline;
+        padding: 0 10px;
+    }
+</style>

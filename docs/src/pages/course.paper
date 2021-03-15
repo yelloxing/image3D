@@ -1,0 +1,373 @@
+<template class='doc-view'>
+    <p>
+        这里主要是帮助你借助image3D绘制有趣的三维图，你可能需要在阅读的过程中翻阅
+        <a href="https://hai2007.gitee.io/image3d/#/api" target="_blank" class='link'>接口文档</a>
+        查询一些方法或对象的使用细节，当然，更多需要了解的，你可以直接提
+        <a href="https://github.com/hai2007/image3D/issues" target="_blank" class='link'>issue</a>
+        来向我们提问。
+    </p>
+    <p>
+        此外，我们欢迎任何人加入我们，帮助我们改进项目或编辑文档，如果想加入我们，请在
+        <a href="https://github.com/hai2007/image3D/blob/master/.mailmap" target="_blank" class='link'>作者邮箱</a>
+        和
+        <a href="https://github.com/hai2007/image3D/blob/master/AUTHORS.txt" target="_blank" class='link'>作者列表</a>
+        里面添加你的消息，前者用于联系，后者是github上注册的账号和邮箱，如果我们同意了
+        <span class="important">pull requests</span>
+        表示你初步加入了我们。
+    </p>
+    <h2>
+        一个简单的例子
+    </h2>
+    <p>
+        首先，我们不得不说明一下绘图的基本流程： 编辑着色器 → 创建3D对象 → 准备好数据 → 绘制
+    </p>
+    <p>
+        我们接下来准备绘制一个点，点的颜色、大小和位置不停改变。
+    </p>
+    <h3>
+        着色器
+    </h3>
+    <p>
+        绘图的时候，本质上我们都是需要通过着色器来和GPU进行数据交互，因此，需要传递的数据都需要在这里提前定义好，看看本例子的着色器：
+    </p>
+    <pre q-code='html'>
+<!-- 顶点着色器 -->
+<script type='x-shader/x-vertex' id='vs'>
+    attribute vec4 a_position;
+    attribute float a_size;
+    attribute vec4 a_color;
+    varying vec4 v_color;
+    void main(){
+        gl_Position=a_position;
+        gl_PointSize=a_size;
+        v_color=a_color;
+    }
+<script>
+
+<!-- 片段着色器 -->
+<script type='x-shader/x-fragment' id='fs'>
+    precision mediump float;
+    varying vec4 v_color;
+    void main(){
+        gl_FragColor=v_color;
+    }
+<script>
+    </pre>
+    <p>
+        着色器分两类：顶点着色器和片段着色器，前者用于传递点的位置和大小，后者用于传递点的颜色。
+    </p>
+    <p>
+        本质上来讲，着色器其实就是两个字符串，用script标签包裹是为了在html文本中方便编辑，在后面的过程就可以看出来了。
+    </p>
+    <p>
+        着色器的代码有点像C语言，我们目前需要了解这三点：
+    </p>
+    <ol>
+        <li>
+            gl开头的有三个，分别对应点的位置、大小和颜色（从上到下），这是着色器内置的变量，分别隶属于两个着色器，我们所谓的传值，从这个层次看，就是最终给这三个变量赋值。
+        </li>
+        <li>
+            然后再看看attribute修饰的三个变量，被这个修饰符修饰的变量等于暴露了一个入口，image3D提供了传值的方法，所谓的传值，也就是通过这个入口实现的（第二个修饰符，vec4和float是变量的数据类型，类似别的语言）。
+        </li>
+        <li>
+            前一条说的入口由attribute修饰实现，是针对每个点提供的，片段着色器是针对全部的点，因此attribute不可以直接出现在第二类着色器中，我们需要使用varying修饰符来标记一个桥梁，实现二个着色器之间的数据传递。
+        </li>
+    </ol>
+    <h3>
+        3D对象
+    </h3>
+    <p>
+        着色器准备好了以后，我们就可以使用这两个着色器创建3D对象了，同样的，看看本例中的代码：
+    </p>
+    <pre q-code='html'>
+var image3d = new image3D(document.getElementsByTagName('canvas')[0], {
+
+    // 传递着色器
+    "vertex-shader": document.getElementById("vs").innerText,
+    "fragment-shader": document.getElementById("fs").innerText
+
+});
+    </pre>
+    <p>
+        从这里是不是可以看出来，着色器只不过是两段字符串。
+    </p>
+    <h3>
+        传递数据
+    </h3>
+    <p>
+        实际的例子是不停的改变，我们为了方便说明，这里假设某个瞬间的操作：
+    </p>
+    <pre q-code>
+image3d
+    // 设置点的位置
+    .setAttributeFloat("a_position", 0.5, 0.5, 0.0)
+    // 设置点的大小
+    .setAttributeFloat("a_size", 50.0)
+    // 设置点的颜色
+    .setAttributeFloat("a_color", 1.0, 0.0, 0.0);
+    </pre>
+    <p>
+        比如点的位置，“a_position”是和着色器中attribute修饰的变量对应的。大部分根据感觉应该就可以看出来，下面稍微提二点：
+    </p>
+    <ol>
+        <li>
+            image3D选择的是右手坐标系，记作uvz（对应数学中的坐标系就是xyz）,每个轴的有效可视范围是-1.0~1.0，因此这里的坐标(0.5, 0.5,
+            0.0)页面上看上去就是位于第一象限中心（右上角），请注意和浏览器的坐标区分。
+        </li>
+        <li>
+            点的颜色需要传递三个值，范围是0.0~1.0，分别对应RGB（当然还可以有一个alpha透明度，这里没有传递）。
+        </li>
+    </ol>
+    <h3>
+        绘制
+    </h3>
+    <p>
+        一切准备完毕，获取画笔绘制即可：
+    </p>
+    <pre q-code>
+        image3d.Painter().drawPoint(0, 1);
+    </pre>
+    <p>
+        这里缩减版的例子最终会绘制一个大小是50px，位于第一象限中心的红色正方形。完整的例子请
+        <a href="./examples/course-001.html" target="_blank" class='link'>点击此处</a>
+        查看运行效果。
+    </p>
+    <h2>
+        使用缓冲区
+    </h2>
+    <p>
+        上一个例子我们是绘制了一个点，现在，我们准备绘制一个正立方体，由于使用 setAttributeFloat 方法一次只能传递一个点的坐标，就不得不提一下缓冲区了。
+    </p>
+    <p>
+        什么是缓冲区？简单的理解就是：一个和GPU交换大量数据的快速通道！
+    </p>
+    <h3>
+        顶点缓冲区
+    </h3>
+    <p>
+        我们先来演示一下比较简单的第一种缓冲区的使用方法。其实相比于绘制一个点，不同的地方只有点的个数和绘制方法，别的都类似。
+    </p>
+    <p>
+        先来简单提一下绘制方法，这里采用的是 drawFanTriangle 用于绘制三角形的，立方体的每个面是一个正方形，绘制的时候是通过绘制两个三角形拼接实现的。
+    </p>
+    <p>
+        然后说说数据传递部分。这里需要通过缓冲区把六个面，每个面四个点，一共二十四个点一次性传递给顶点着色器：
+    </p>
+    <pre q-code>
+// 准备数据
+var datas = new Float32Array([
+
+    // 前
+    0.5, 0.5, 0.5, 0.5, -0.5, 0.5, -0.5, -0.5, 0.5, -0.5, 0.5, 0.5,
+
+    // 后
+    0.5, 0.5, -0.5, 0.5, -0.5, -0.5, -0.5, -0.5, -0.5, -0.5, 0.5, -0.5,
+
+    // 左
+    - 0.5, -0.5, 0.5, -0.5, 0.5, 0.5, -0.5, 0.5, -0.5, -0.5, -0.5, -0.5,
+
+    // 右
+    0.5, -0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, 0.5, -0.5, -0.5,
+
+    // 上
+    0.5, 0.5, 0.5, -0.5, 0.5, 0.5, -0.5, 0.5, -0.5, 0.5, 0.5, -0.5,
+
+    // 下
+    0.5, -0.5, 0.5, -0.5, -0.5, 0.5, -0.5, - 0.5, -0.5, 0.5, -0.5, -0.5
+
+]);
+
+// 获取缓冲区
+var buffer = image3d.Buffer();
+
+// 数据写入缓冲区
+buffer.write(datas);
+
+// 分配缓冲区中的数据
+buffer.use("a_position", 3, 3, 0);
+    </pre>
+    <p>
+        点传递好了以后，使用上面的绘制三角形的方法绘制每个面即可（绘制每个面的时候，需要提前使用 setAttributeFloat 修改颜色）。你可以
+        <a href="./examples/course-002.html" target="_blank" class='link'>点击此处</a>
+        查看最终效果。
+    </p>
+    <h3>
+        索引缓冲区
+    </h3>
+    <p>
+        你应该注意到了，一个立方体我们传递了二十四个点，其实只有六个点，如果是更复杂的图形更浪费资源，因此， 索引缓冲区 就出现了。
+    </p>
+    <p>
+        相比于第一种缓冲区，我们只需要传递六个点和六个点的组合关系，先看一下具体的代码：
+    </p>
+    <pre q-code>
+// 点的坐标
+var datas = new Float32Array([
+
+    0.5, 0.5, 0.5,
+    0.5, -0.5, 0.5,
+    -0.5, -0.5, 0.5,
+    -0.5, 0.5, 0.5,
+    0.5, 0.5, -0.5,
+    0.5, -0.5, -0.5,
+    -0.5, -0.5, -0.5,
+    -0.5, 0.5, -0.5
+]);
+
+// 顶点索引数组
+var indexes = new Uint8Array([
+
+    // 前
+    0, 1, 2, 3,
+    // 后
+    4, 5, 6, 7,
+    // 上
+    0, 4, 7, 3,
+    // 下
+    1, 5, 6, 2,
+    // 右
+    0, 1, 5, 4,
+    // 左
+    2, 6, 7, 3
+
+]);
+
+// 顶点写入
+image3d.Buffer().write(datas).use("a_position", 3, 3, 0);
+// 索引写入
+image3d.Buffer(true).write(indexes);
+    </pre>
+    <p>
+        此时，顶点缓冲区中记录了六个点，索引缓冲区中记录了这六个点的一种组合，因此，绘制三角形的方法需要使用索引相关的方法 elemFanTriangle 来绘制。
+    </p>
+    <p>
+        运行效果和上面的一样，你可以
+        <a href="./examples/course-003.html" target="_blank" class='link'>点击此处</a>
+        查看运行效果。
+    </p>
+    <h2>
+        使用纹理
+    </h2>
+    <p>
+        到目前为止，理论上我们已经可以绘制任何形状的3D图形，但是，为了让绘制的图形看上去更丰富，下面来说明一下纹理。
+    </p>
+    <p>
+        纹理有很多种，目前 image3D 提供了两种纹理：二维纹理和立方纹理。
+    </p>
+    <h3>
+        二维纹理
+    </h3>
+    <p>
+        我们先来简单的说明一下二维纹理。我们会绘制一个长方形，之前是传递一个颜色来确定绘制的长方形色彩，现在，我们会传递一个纹理给片元着色器（简单的理解就是一张图片），看看着色器代码：
+    </p>
+    <pre q-code='html'>
+<!-- 顶点着色器 -->
+<script type='x-shader/x-vertex' id='vs'>
+    attribute vec4 a_position;
+    attribute vec2 a_textcoord;
+    varying vec2 v_textcoord;
+    void main(){
+        gl_Position=a_position;
+        v_textcoord=a_textcoord;
+    }
+<script>
+
+<!-- 片段着色器 -->
+<script type='x-shader/x-fragment' id='fs'>
+    precision mediump float;
+    uniform sampler2D u_sampler;
+    varying vec2 v_textcoord;
+    void main(){
+        gl_FragColor=texture2D(u_sampler,v_textcoord);
+    }
+<script>
+    </pre>
+    <p>
+        我们在片元着色器中使用了着色器内置方法 texture2D 来计算当前点应该是什么颜色（当然是根据传递的图片进行计算）：
+    </p>
+    <ul>
+        <li>
+            u_sampler表示纹理单元，可以理解为你把图片写入的地址。
+        </li>
+        <li>
+            v_textcoord表示图片和绘制的图形坐标的对应关系，也就是确定图片贴上去的位置。
+        </li>
+    </ul>
+    <p>
+        相信有了前面代码的铺垫，最终代码大部分都可以看懂了，我们直接跳过通过缓冲区设置数据部分，看看和纹理相关的代码：
+    </p>
+    <pre q-code>
+// 创建纹理对象
+var texture = image3d.Texture2D(1);
+
+var image = new Image();
+image.onload = function () {
+
+    // 绘制图片
+    texture.write(image);
+    image3d.setUniformInt('u_sampler', 1);
+    painter.drawStripTriangle(0, 4);
+
+};
+image.src = '../images/cat.jpeg';
+    </pre>
+    <p>
+        可以看见，我们在创建纹理对象的时候传递了整数1，表示这个纹理对象操作1号纹理（其实编号可以从0开始），然后通过write方法把图片写入该纹理单元。
+    </p>
+    <p>
+        相信看到这里应该基本理解了，其实二维纹理就是相比普通的绘图多了片元着色器中的计算。你可以
+        <a href="./examples/course-004.html" target="_blank" class='link'>点击此处</a>
+        查看运行结果，可以看见一只猫（是的，是我的猫~）。
+    </p>
+    <h3>
+        立方纹理
+    </h3>
+    <p>
+        立方纹理顾名思义就是用一个矩形盒子去贴图，有点像盒子慢慢变小，直到碰到物体，最后好像物体表面有了一层膜的感觉，比较简单的比喻就是皮肤。
+    </p>
+    <p>
+        我们准备绘制一个二十四面体，同样的，先从着色器开始：
+    </p>
+    <pre q-code='html'>
+<!-- 顶点着色器 -->
+<script type='x-shader/x-vertex' id='vs'>
+    attribute vec4 a_position;
+    varying vec3 v_normal;
+    uniform mat4 u_matrix;
+    void main(){
+        gl_Position=u_matrix * a_position;
+        // 因为位置是以几何中心为原点的,可以用顶点坐标作为法向量
+        v_normal=normalize(a_position.xyz);
+    }
+<script>
+
+<!-- 片段着色器 -->
+<script type='x-shader/x-fragment' id='fs'>
+    precision mediump float;
+    varying vec3 v_normal;
+    uniform samplerCube u_texture;
+    void main(){
+        gl_FragColor=textureCube(u_texture,normalize(v_normal));
+    }
+<script>
+    </pre>
+    <p>
+        类似的，只不过我们这里使用 textureCube 来计算颜色。
+    </p>
+    <p>
+        前面说了，矩形盒子，因此需要六张图片：
+    </p>
+    <pre q-code>
+// 创建纹理对象
+var texture = image3d.TextureCube(500, 500);
+// 写入图片
+texture.write(image1, image2, image3, image4, image5, image6);
+// 纹理传递给着色器
+image3d.setUniformInt('u_texture', texture);
+    </pre>
+    <p>
+        一切准备好了以后，就可以直接绘图了，这和以前一样，就不再赘述了。完整的例子请
+        <a href="./examples/course-005.html" target="_blank" class='link'>点击此处</a>
+        查看。
+    </p>
+</template>
