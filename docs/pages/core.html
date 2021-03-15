@@ -16,7 +16,7 @@
 
     <p class="tips">
         <span>
-            温馨提示：请勿直接在项目中使用这里的接口，仅供学习交流和内部研发查阅，如果想使用image3D绘图，请移步<a href="./api.html">接口文档</a>查阅，谢谢！
+            温馨提示：此接口主要提供给新框架复用，减小代码量，如果想使用image3D绘图，你可以移步<a href="./api.html">接口文档</a>查阅，谢谢！
         </span>
     </p>
 
@@ -44,10 +44,14 @@
         </ul>
         <div>
 
-            <pre class='prettyprint lang-js'>var core = image3D.core(document.getElementsByTagName('canvas')[0]);</pre>
+            <pre class='prettyprint lang-js'>// 引入核心
+import image3DCode from 'image3d/build/image3D-core.min.js';
+
+// 创建核心对象
+var core = image3DCode(document.getElementsByTagName('canvas')[0]);</pre>
 
             <p>
-                通过调用image3D上的core方法，传递一个canvas结点，返回的是一个对象，记作core，通过它你可以直接使用image3D提供的最基础的原始方法。
+                引入核心把柄以后，传递一个canvas结点，返回的是一个对象，记作core，通过它你可以直接使用image3D提供的最基础的原始方法。
             </p>
 
             <h2 id='shader'>着色器</h2>

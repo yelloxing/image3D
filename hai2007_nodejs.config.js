@@ -6,9 +6,9 @@ const babel = require('babel-core');
 const cp = require('child_process');
 
 // 生成banner
-let banner = function (pkg) {
+let banner = function (pkg, name) {
     return `/*!
-* image3D - `+ pkg.description + `
+* ${name} - ` + pkg.description + `
 * `+ pkg.repository.url + `
 *
 * author `+ pkg.author + `
@@ -50,9 +50,6 @@ module.exports = {
 
         end(cuf) {
 
-            // 准备一份用于文档中的例子
-            cuf.copySync('./build/image3D.min.js', './docs/examples/image3D.examples.js');
-
             cuf.log("\n-----------------------\n打包完毕！\n-----------------------");
             cuf.print("Date : " + new Date() + "\n");
 
@@ -70,8 +67,9 @@ module.exports = {
                 cuf.error('模块打包完毕');
             }
 
-            cuf.log("\n[1]模块打包:./build/module.new.js\n");
+            cuf.log("\n[1]模块打包\n");
 
+            // 打包image3D
             build({
                 input: 'src/index.js',
                 plugins: [
@@ -95,6 +93,31 @@ module.exports = {
                 name: "temp",
                 file: './build/module.new.js'
             });
+
+            // 打包核心
+            build({
+                input: 'src/index.core.js',
+                plugins: [
+
+                    // 帮助 Rollup 查找外部模块，然后安装
+                    rollupPluginNodeResolve({
+                        customResolveOptions: {
+                            moduleDirectory: 'node_modules'
+                        }
+                    }),
+
+                    // 将CommonJS模块转换为 ES2015 供 Rollup 处理
+                    rollupPluginCommonjs({
+                        include: "node_modules/**",
+                        exclude: []
+                    })
+
+                ]
+            }, {
+                format: 'iife',
+                name: "temp",
+                file: './build/module-core.new.js'
+            });
         },
 
         /**
@@ -103,13 +126,27 @@ module.exports = {
          */
         babel(cuf, pkg) {
 
-            cuf.log("\n[2]babel转义:./build/module.new.js → ./build/image3D.js\n");
+            cuf.log("\n[2]babel转义\n");
 
+            // 打包image3D
             babel.transformFile("./build/module.new.js", {}, function (err, result) {
                 if (!err) {
-                    fs.writeFileSync("./build/image3D.js", banner(pkg));
+                    fs.writeFileSync("./build/image3D.js", banner(pkg,'image3D'));
                     fs.appendFileSync("./build/image3D.js", result.code);
                     cuf.deleteSync("./build/module.new.js");
+
+                    cuf.error('转义完毕');
+                } else {
+                    console.log(err);
+                }
+            });
+
+            // 打包核心
+            babel.transformFile("./build/module-core.new.js", {}, function (err, result) {
+                if (!err) {
+                    fs.writeFileSync("./build/image3D-core.js", banner(pkg,'image3DCore'));
+                    fs.appendFileSync("./build/image3D-core.js", result.code);
+                    cuf.deleteSync("./build/module-core.new.js");
 
                     cuf.error('转义完毕');
                 } else {
@@ -124,19 +161,34 @@ module.exports = {
          */
         uglifyjs(cuf, pkg) {
 
-            cuf.log("\n[3]压缩代码:./build/image3D.js → ./build/image3D.min.js\n");
+            cuf.log("\n[3]压缩代码\n");
 
+            // 打包image3D
             cp.exec("uglifyjs ./build/image3D.js -m -o ./build/uglifyjs.new.js", function (error) {
                 if (error) {
                     console.log(error);
                 } else {
 
-                    fs.writeFileSync("./build/image3D.min.js", banner(pkg));
+                    fs.writeFileSync("./build/image3D.min.js", banner(pkg,'image3D'));
                     fs.appendFileSync("./build/image3D.min.js", fs.readFileSync("./build/uglifyjs.new.js"));
 
                     cuf.error('压缩完毕');
                 }
                 cuf.deleteSync("./build/uglifyjs.new.js");
+            });
+
+            // 打包核心
+            cp.exec("uglifyjs ./build/image3D-core.js -m -o ./build/uglifyjs-core.new.js", function (error) {
+                if (error) {
+                    console.log(error);
+                } else {
+
+                    fs.writeFileSync("./build/image3D-core.min.js", banner(pkg,'image3DCore'));
+                    fs.appendFileSync("./build/image3D-core.min.js", fs.readFileSync("./build/uglifyjs-core.new.js"));
+
+                    cuf.error('压缩完毕');
+                }
+                cuf.deleteSync("./build/uglifyjs-core.new.js");
             });
         }
 
