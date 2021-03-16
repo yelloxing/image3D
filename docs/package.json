@@ -1,6 +1,6 @@
 {
   "name": "image3d.doc",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "🍊 前端绘图工具库image3d官方文档",
   "scripts": {
     "start": "npm install && npm run dev",
@@ -22,7 +22,7 @@
     "@hai2007/style": "^0.2.3",
     "@hai2007/tool": "^0.6.3",
     "clunch": "^1.4.4",
-    "image3d": "^2.1.0",
+    "image3d": "^3.0.0",
     "quick-paper": "^0.4.1"
   },
   "devDependencies": {

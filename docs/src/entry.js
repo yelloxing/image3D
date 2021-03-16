@@ -4,19 +4,29 @@ import QuickPaper from 'quick-paper';
 import '@hai2007/polyfill/Promise.js';
 
 // 启动界面
-import App from './App.paper';
-import core from './pages/core.paper';
+let pages = {
+    app: () => import('./App.paper'),
+    core: () => import('./pages/core.paper')
+};
 
 // 引入样式
 import "@hai2007/style/normalize.css";
 import '@hai2007/style/doc-view.css';
+import './style.css';
 
-window.quickPaper = new QuickPaper({
+import fixedScroll from './services/fixedScroll'; QuickPaper.prototype.fixedScroll = fixedScroll;
+import doScroll from './services/doScroll'; QuickPaper.prototype.doScroll = doScroll;
 
-    // 挂载点
-    el: document.getElementById('root'),
+pages[QuickPaper.urlFormat(window.location.href).router[0] == 'core' ? 'core' : 'app']().then(data => {
 
-    // 启动组件
-    render: createElement => createElement(QuickPaper.urlFormat(window.location.href).router[0] == 'core' ? core : App)
+    window.quickPaper = new QuickPaper({
+
+        // 挂载点
+        el: document.getElementById('root'),
+
+        // 启动组件
+        render: createElement => createElement(data.default)
+
+    });
 
 });

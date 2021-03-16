@@ -15,7 +15,7 @@
         <span class="important">pull requests</span>
         表示你初步加入了我们。
     </p>
-    <h2>
+    <h2 @click='doScroll("example1")' id='fixed-example1' class='canClick'>
         一个简单的例子
     </h2>
     <p>
@@ -132,7 +132,7 @@ image3d
         <a href="./examples/course-001.html" target="_blank" class='link'>点击此处</a>
         查看运行效果。
     </p>
-    <h2>
+    <h2 @click='doScroll("example2")' id='fixed-example2' class='canClick'>
         使用缓冲区
     </h2>
     <p>
@@ -245,7 +245,7 @@ image3d.Buffer(true).write(indexes);
         <a href="./examples/course-003.html" target="_blank" class='link'>点击此处</a>
         查看运行效果。
     </p>
-    <h2>
+    <h2 @click='doScroll("example3")' id='fixed-example3' class='canClick'>
         使用纹理
     </h2>
     <p>

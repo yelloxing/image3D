@@ -16,7 +16,7 @@ var core = image3DCode(document.getElementsByTagName('canvas')[0]);
     <p>
         引入核心把柄以后，传递一个canvas结点，返回的是一个对象，记作core，通过它你可以直接使用image3D提供的最基础的原始方法。
     </p>
-    <h2>
+    <h2 @click='doScroll("shader")' id='fixed-shader' class='canClick'>
         着色器
     </h2>
     <pre q-code='html'>
@@ -40,7 +40,7 @@ core.shader(
     document.getElementById('fs').innerHTML
 );
     </pre>
-    <h2>
+    <h2 @click='doScroll("setdata")' id='fixed-setdata' class='canClick'>
         设置数据
     </h2>
     <p>
@@ -64,7 +64,7 @@ core.shader(
     <pre q-code>
         core.setUniformMatrix[2,3,4]fv(location, value);
     </pre>
-    <h2>
+    <h2 @click='doScroll("buffer")' id='fixed-buffer' class='canClick'>
         缓冲区
     </h2>
     <p>
@@ -102,7 +102,7 @@ core.shader(
             offset：整数，表示读取起点。
         </li>
     </ol>
-    <h2>
+    <h2 @click='doScroll("texture")' id='fixed-texture' class='canClick'>
         纹理
     </h2>
     <p>
@@ -143,7 +143,7 @@ core.shader(
     <p>
         到这一步，纹理准备工作已经完成了，后面的就是在片元着色器中去使用这个纹理了。
     </p>
-    <h2>
+    <h2 @click='doScroll("painter")' id='fixed-painter' class='canClick'>
         基础画笔
     </h2>
     <h3>

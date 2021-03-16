@@ -1,5 +1,5 @@
 <template class='doc-view'>
-    <h2>
+    <h2 @click='doScroll("import")' id='fixed-import' class='canClick'>
         如何引入？
     </h2>
     <h3>
@@ -22,7 +22,7 @@
         安装好了以后，在需要的地方引入即可：
     </p>
     <pre q-code>import image3D from 'image3d';</pre>
-    <h2>
+    <h2 @click='doScroll("object")' id='fixed-object' class='canClick'>
         3D对象
     </h2>
     <pre q-code>var image3d = new image3D(canvas, config);</pre>
@@ -63,7 +63,7 @@
     <p>
         "depth"用于配置是否开启深度计算，默认false关闭，如果配置true表示开启，开启意味着渲染的时候根据z值进行计算。
     </p>
-    <h2>
+    <h2 @click='doScroll("painter")' id='fixed-painter' class='canClick'>
         画笔
     </h2>
     <pre q-code>var painter = image3d.Painter();</pre>
@@ -132,7 +132,7 @@
         旋转围绕三角形
     </h4>
     <pre q-code>painter.elemFanTriangle(first, count, type);</pre>
-    <h2>
+    <h2 @click='doScroll("data")' id='fixed-data' class='canClick'>
         数据传递
     </h2>
     <h3>
@@ -161,7 +161,7 @@
         设置Uniform类型的矩阵，value应该是一个数组，会自动根据此数组的长度来判断是2x2、3x3还是4x4尺寸：
     </p>
     <pre q-code>image3d.setUniformMatrix(location, value);</pre>
-    <h2>
+    <h2 @click='doScroll("buffer")' id='fixed-buffer' class='canClick'>
         缓冲区
     </h2>
     <pre q-code>var buffer = image3d.Buffer(isElement);</pre>
@@ -193,7 +193,7 @@
             offset：整数，表示读取起点
         </li>
     </ol>
-    <h2>
+    <h2 @click='doScroll("texture")' id='fixed-texture' class='canClick'>
         纹理
     </h2>
     <h3>
@@ -218,7 +218,7 @@
     <p>
         类似一个长方体，有六个面，因此我们需要写入六张图片。
     </p>
-    <h2>
+    <h2 @click='doScroll("camera")' id='fixed-camera' class='canClick'>
         照相机
     </h2>
     <pre q-code>var camera = image3d.Camera();</pre>

@@ -3,13 +3,57 @@
         <span>
             image3D.js
         </span>
+        <div>
+            Drawing three-dimensional images using webGL.
+        </div>
     </header>
     <ul>
-        <li @click='openPage("api")' :active='flag=="api"?"yes":"no"'>
-            接口文档
+        <a href="https://github.com/hai2007/image3D" target="_blank">
+            image3D.js
+        </a>
+        <li :active='flag=="api"?"yes":"no"'>
+            <span @click='openPage("api")'>
+                接口文档
+            </span>
+            <ul>
+                <li @click='doScroll("import")'>
+                    如何引入？
+                </li>
+                <li @click='doScroll("object")'>
+                    3D对象
+                </li>
+                <li @click='doScroll("painter")'>
+                    画笔
+                </li>
+                <li @click='doScroll("data")'>
+                    数据传递
+                </li>
+                <li @click='doScroll("buffer")'>
+                    缓冲区
+                </li>
+                <li @click='doScroll("texture")'>
+                    纹理
+                </li>
+                <li @click='doScroll("camera")'>
+                    照相机
+                </li>
+            </ul>
         </li>
-        <li @click='openPage("course")' :active='flag=="course"?"yes":"no"'>
-            教程
+        <li :active='flag=="course"?"yes":"no"'>
+            <span @click='openPage("course")'>
+                教程
+            </span>
+            <ul>
+                <li @click='doScroll("example1")'>
+                    一个简单的例子
+                </li>
+                <li @click='doScroll("example2")'>
+                    使用缓冲区
+                </li>
+                <li @click='doScroll("example3")'>
+                    使用纹理
+                </li>
+            </ul>
         </li>
     </ul>
     <div>
@@ -48,6 +92,7 @@
         },
         methods: {
             openPage(pagename) {
+                document.documentElement.scrollTop = 0;
                 window.location.href = "#/" + pagename;
                 this.flag = pagename;
                 pages[pagename]().then(data => {
@@ -70,6 +115,7 @@
         left: 0;
         top: 0;
         pointer-events: none;
+        z-index: 1;
     }
 
     [quickpaper]>header>span {
@@ -86,25 +132,75 @@
         background-repeat: no-repeat;
     }
 
-    [quickpaper]>ul {
+    [quickpaper]>header>div {
+        position: fixed;
+        pointer-events: none;
+        width: 600px;
+        height: 40px;
+        line-height: 40px;
+        transform: rotate(-45deg);
+        transform-origin: center center;
+        top: 154px;
+        left: -104px;
+        display: inline-block;
+        font-size: 20px;
         text-align: center;
-        margin-top: 30px;
-        margin-bottom: 50px;
+        z-index: 8;
+        background-color: #af5331;
+        color: white;
     }
 
-    [quickpaper]>ul>li {
-        display: inline-block;
+    [quickpaper]>ul {
+        text-align: center;
+        position: fixed;
+        right: 50px;
+        top: 70px;
+        z-index: 7;
+        background-color: white;
+        box-shadow: 0 0 6px 3px grey;
+    }
+
+    [quickpaper]>ul>li>span {
         background-color: rgb(211, 210, 210);
         margin: 10px;
-        width: 80px;
+        width: 120px;
         height: 30px;
         line-height: 30px;
         color: white;
         cursor: pointer;
+        display: block;
     }
 
-    [quickpaper]>ul>li[active='yes'] {
+    [quickpaper]>ul>a {
+        top: 30px;
+        width: 240px;
+        text-align: center;
+        right: 0;
+        color: #af5331;
+        font-size: 24px;
+        font-family: fantasy;
+        position: fixed;
+    }
+
+    [quickpaper]>ul>li>ul {
+        display: none;
+    }
+
+    [quickpaper]>ul>li[active='yes']>span {
         background-color: #af5325;
+    }
+
+    [quickpaper]>ul>li[active='yes']>ul {
+        display: block;
+    }
+
+    [quickpaper]>ul>li>ul>li {
+        cursor: pointer;
+        padding: 5px 0;
+    }
+
+    [quickpaper]>ul>li>ul>li:hover {
+        text-decoration: underline;
     }
 
     [quickpaper]>div {
