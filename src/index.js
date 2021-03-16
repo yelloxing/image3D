@@ -1,7 +1,7 @@
 import image3D from './Object/index';
 import core from './core/index';
 
-// 挂载核心方法（不推荐绘制的时候直接使用）
+// 挂载核心方法
 image3D.core = core;
 
 if (typeof module === "object" && typeof module.exports === "object") {

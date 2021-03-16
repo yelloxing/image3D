@@ -1,0 +1,45 @@
+{
+  "name": "image3d.doc",
+  "version": "0.0.1",
+  "description": "🍊 前端绘图工具库image3d官方文档",
+  "scripts": {
+    "start": "npm install && npm run dev",
+    "dev": "webpack-dev-server --config webpack.dev.js",
+    "build": "hai2007_nodejs -d ./dist && webpack --config webpack.prod.js"
+  },
+  "keywords": [
+    "image3d",
+    "doc"
+  ],
+  "author": "你好2007",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hai2007/image3D.git"
+  },
+  "dependencies": {
+    "@hai2007/polyfill": "0.1.1",
+    "@hai2007/style": "^0.2.3",
+    "@hai2007/tool": "^0.6.3",
+    "clunch": "^1.4.4",
+    "image3d": "^3.0.0",
+    "quick-paper": "^0.4.1"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.10.2",
+    "@babel/preset-env": "^7.10.2",
+    "@hai2007/nodejs": "^1.0.0",
+    "autoprefixer": "^9.7.1",
+    "babel-loader": "^8.1.0",
+    "babel-plugin-dynamic-import-webpack": "^1.1.0",
+    "css-loader": "^2.1.1",
+    "file-loader": "^4.2.0",
+    "postcss": "^7.0.21",
+    "postcss-loader": "^3.0.0",
+    "url-loader": "^2.2.0",
+    "webpack": "^4.41.2",
+    "webpack-cli": "^3.3.10",
+    "webpack-dev-server": "^3.11.0",
+    "webpack-merge": "^4.2.2"
+  }
+}

@@ -1,0 +1,235 @@
+<template>
+    <header>
+        <span>
+            image3D.js
+        </span>
+        <div>
+            Drawing three-dimensional images using webGL.
+        </div>
+    </header>
+    <ul>
+        <a href="https://github.com/hai2007/image3D" target="_blank">
+            image3D.js
+        </a>
+        <li :active='flag=="api"?"yes":"no"'>
+            <span @click='openPage("api")'>
+                接口文档
+            </span>
+            <ul>
+                <li @click='doScroll("import")'>
+                    如何引入？
+                </li>
+                <li @click='doScroll("object")'>
+                    3D对象
+                </li>
+                <li @click='doScroll("painter")'>
+                    画笔
+                </li>
+                <li @click='doScroll("data")'>
+                    数据传递
+                </li>
+                <li @click='doScroll("buffer")'>
+                    缓冲区
+                </li>
+                <li @click='doScroll("texture")'>
+                    纹理
+                </li>
+                <li @click='doScroll("camera")'>
+                    照相机
+                </li>
+            </ul>
+        </li>
+        <li :active='flag=="course"?"yes":"no"'>
+            <span @click='openPage("course")'>
+                教程
+            </span>
+            <ul>
+                <li @click='doScroll("example1")'>
+                    一个简单的例子
+                </li>
+                <li @click='doScroll("example2")'>
+                    使用缓冲区
+                </li>
+                <li @click='doScroll("example3")'>
+                    使用纹理
+                </li>
+            </ul>
+        </li>
+    </ul>
+    <div>
+        <component :is='page' />
+    </div>
+    <footer>
+        Copyright © 2019-2021
+        <a href="https://hai2007.gitee.io/sweethome/" target="_blank">
+            hai2007 走一步，再走一步。
+        </a>
+        All rights reserved.
+        <br>
+        本项目由“你好2007”设计、开发和维护
+        <a href="#/core" class="core" target="_blank">查看核心</a>
+    </footer>
+</template>
+<script>
+
+    let pages = {
+        api: () => import('./pages/api.paper'),
+        course: () => import('./pages/course.paper')
+    };
+
+    import QuickPaper from 'quick-paper';
+
+    export default {
+        data() {
+            return {
+                page: null,
+                flag: ""
+            };
+        },
+        mounted() {
+            let result = QuickPaper.urlFormat(window.location.href);
+            this.openPage(['api', 'course'].indexOf(result.router[0]) < 0 ? "api" : result.router[0]);
+        },
+        methods: {
+            openPage(pagename) {
+                document.documentElement.scrollTop = 0;
+                window.location.href = "#/" + pagename;
+                this.flag = pagename;
+                pages[pagename]().then(data => {
+                    this.page = data.default;
+                });
+            }
+        }
+    };
+</script>
+<style>
+    [quickpaper]>header {
+        display: inline-block;
+        border-style: solid;
+        border-width: 200px;
+        border-color: rgba(201, 208, 159, 0.4) transparent transparent rgba(201, 208, 159, 0.4);
+        font-size: 0;
+        width: 0;
+        height: 0;
+        position: fixed;
+        left: 0;
+        top: 0;
+        pointer-events: none;
+        z-index: 1;
+    }
+
+    [quickpaper]>header>span {
+        background-image: url('./assets/image3D.png');
+        background-position: left top;
+        width: 200px;
+        height: 200px;
+        display: inline-block;
+        position: fixed;
+        left: 0;
+        top: 0;
+        background-position: center center;
+        background-size: 70% auto;
+        background-repeat: no-repeat;
+    }
+
+    [quickpaper]>header>div {
+        position: fixed;
+        pointer-events: none;
+        width: 600px;
+        height: 40px;
+        line-height: 40px;
+        transform: rotate(-45deg);
+        transform-origin: center center;
+        top: 154px;
+        left: -104px;
+        display: inline-block;
+        font-size: 20px;
+        text-align: center;
+        z-index: 8;
+        background-color: #af5331;
+        color: white;
+    }
+
+    [quickpaper]>ul {
+        text-align: center;
+        position: fixed;
+        right: 50px;
+        top: 70px;
+        z-index: 7;
+        background-color: white;
+        box-shadow: 0 0 6px 3px grey;
+    }
+
+    [quickpaper]>ul>li>span {
+        background-color: rgb(211, 210, 210);
+        margin: 10px;
+        width: 120px;
+        height: 30px;
+        line-height: 30px;
+        color: white;
+        cursor: pointer;
+        display: block;
+    }
+
+    [quickpaper]>ul>a {
+        top: 30px;
+        width: 240px;
+        text-align: center;
+        right: 0;
+        color: #af5331;
+        font-size: 24px;
+        font-family: fantasy;
+        position: fixed;
+    }
+
+    [quickpaper]>ul>li>ul {
+        display: none;
+    }
+
+    [quickpaper]>ul>li[active='yes']>span {
+        background-color: #af5325;
+    }
+
+    [quickpaper]>ul>li[active='yes']>ul {
+        display: block;
+    }
+
+    [quickpaper]>ul>li>ul>li {
+        cursor: pointer;
+        padding: 5px 0;
+    }
+
+    [quickpaper]>ul>li>ul>li:hover {
+        text-decoration: underline;
+    }
+
+    [quickpaper]>div {
+        max-width: 1000px;
+        margin: auto;
+
+    }
+
+    [quickpaper]>footer {
+        text-align: center;
+        background-color: #fafafa;
+        border-top: 1px solid #d3d0d0;
+        line-height: 2em;
+        padding: 20px 0;
+        font-size: 14px;
+        position: relative;
+    }
+
+    [quickpaper]>footer>a {
+        padding: 0 5px;
+    }
+
+    [quickpaper]>footer>a.core {
+        position: absolute;
+        bottom: 36px;
+        right: 23px;
+        background: #ba642e;
+        color: white;
+        text-decoration: underline;
+        padding: 0 10px;
+    }
+</style>
