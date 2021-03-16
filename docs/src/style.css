@@ -1,0 +1,8 @@
+.canClick:hover{
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.link{
+    margin: 0 10px;
+}

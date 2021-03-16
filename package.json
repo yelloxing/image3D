@@ -1,6 +1,6 @@
 {
   "name": "image3d",
-  "version": "2.1.0",
+  "version": "3.0.0",
   "description": "🍊 使用webGL绘制三维图片。Drawing three-dimensional images using webGL.",
   "main": "build/image3D.min.js",
   "scripts": {
@@ -29,8 +29,8 @@
   },
   "homepage": "https://hai2007.github.io/image3D",
   "devDependencies": {
-    "@hai2007/nodejs": "^0.1.0",
-    "@hai2007/tool": "^0.4.0",
+    "@hai2007/nodejs": "^1.0.0",
+    "@hai2007/tool": "^0.6.3",
     "babel-core": "^6.26.0",
     "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-preset-es2015": "^6.24.1",
